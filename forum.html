@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球建筑文化交流论坛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 15px 50px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .chinese-icon {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #DAA520;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .navbar-brand span {
+            color: #DAA520;
+        }
+        .english-brand {
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            margin-left: 15px;
+            opacity: 0.9;
+        }
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .lang-btn {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .lang-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .lang-btn.active {
+            background: #8B4513;
+            color: #F5DEB3;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+        .navbar-menu a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.5;
+        }
+        .navbar-menu a:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #DAA520;
+            transition: width 0.3s;
+        }
+        .navbar-menu a:hover::after {
+            width: 80%;
+        }
+        
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: block;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 10px 0;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #DAA520;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139,69,19,0.2);
+            color: #F5DEB3;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .navbar-search {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: 2px solid #8B4513;
+            border-radius: 4px 0 0 4px;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #DAA520;
+            box-shadow: 0 0 10px rgba(139,69,19,0.3);
+        }
+        
+        .search-button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 0 4px 4px 0;
+            color: #F5DEB3;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        /* 主要内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 40px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #8B0000;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #DAA520;
+        }
+        .section-title p {
+            color: #666;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        /* 论坛内容 */
+        .forum-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 30px;
+        }
+        
+        .forum-main {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .forum-sidebar {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .post-form {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #8B0000;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .submit-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: none;
+            border-radius: 4px;
+            color: #F5DEB3;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        .post-list {
+            margin-top: 30px;
+        }
+        
+        .post-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .post-item:hover {
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .post-author {
+            font-weight: 600;
+            color: #8B0000;
+        }
+        
+        .post-time {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .post-content {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: #8B4513;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .action-btn:hover {
+            color: #A0522D;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-section h3 {
+            color: #8B0000;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #DAA520;
+            padding-bottom: 5px;
+        }
+        
+        .sidebar-list {
+            list-style: none;
+        }
+        
+        .sidebar-list li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-list a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-list a:hover {
+            color: #8B0000;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            color: #DAA520;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 3px solid #8B4513;
+            margin-top: 50px;
+        }
+        footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        footer .footer-links a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            transition: color 0.3s;
+        }
+        footer .footer-links a:hover {
+            color: #F5DEB3;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-links a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .forum-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-menu {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            .navbar-menu a {
+                font-size: 0.85rem;
+                padding: 3px 8px;
+            }
+            .navbar-search {
+                justify-content: center;
+            }
+            .search-input {
+                width: 200px;
+                font-size: 0.85rem;
+            }
+            .search-button {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+            .container {
+                padding: 160px 20px 40px;
+            }
+            .forum-main,
+            .forum-sidebar {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="chinese-icon">亭</span>
+            <span>中国古代建筑</span>
+            <span class="english-brand">Cross-Border Exchange Platform</span>
+            <span>文化跨境交流平台</span>
+        </a>
+        <div class="navbar-content">
+            <ul class="navbar-menu">
+                <li><a href="index.html" data-lang-key="home">首页</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
+                    <div class="dropdown-menu">
+                        <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
+                        <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
+                    <div class="dropdown-menu">
+                        <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
+                        <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
+                    <div class="dropdown-menu">
+                        <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
+                        <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
+                        <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
+                    <div class="dropdown-menu">
+                        <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
+                        <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
+                        <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
+                        <a href="forum.html" data-lang-key="global-forum">全球建筑文化交流论坛</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
+                        <a href="contact.html" data-lang-key="contact-us">联系我们</a>
+                        <a href="join.html" data-lang-key="join-us">加入我们</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="language-switcher">
+                <button class="lang-btn" onclick="toggleTranslator()" style="margin-right: 10px; background: rgba(218,165,32,0.2);" title="智能翻译">
+                    🌐 翻译
+                </button>
+                <button class="lang-btn" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ja">日本語</button>
+                <button class="lang-btn" data-lang="ko">한국어</button>
+                <button class="lang-btn" data-lang="fr">Français</button>
+                <button class="lang-btn" data-lang="es">Español</button>
+                <button class="lang-btn" data-lang="de">Deutsch</button>
+            </div>
+            <div class="navbar-search">
+                <form action="https://baike.baidu.com/search/word" method="get" target="_blank">
+                    <input type="text" placeholder="搜索中国古代建筑知识..." name="word" class="search-input" data-lang-key="search-placeholder">
+                    <button type="submit" class="search-button" data-lang-key="search">搜索</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="section-title">
+            <h2 data-lang-key="global-forum-title">全球建筑文化交流论坛</h2>
+            <p data-lang-key="global-forum-desc">分享国际建筑文化观点，促进跨文化交流与合作</p>
+        </div>
+        
+        <div class="forum-container">
+            <div class="forum-main">
+                <!-- 发帖表单 -->
+                <div class="post-form">
+                    <h3 data-lang-key="post-form-title">发表新主题</h3>
+                    <form id="postForm">
+                        <div class="form-group">
+                            <label for="author" data-lang-key="author">作者</label>
+                            <input type="text" id="author" name="author" placeholder="请输入您的名字">
+                        </div>
+                        <div class="form-group">
+                            <label for="title" data-lang-key="title">标题</label>
+                            <input type="text" id="title" name="title" placeholder="请输入主题标题">
+                        </div>
+                        <div class="form-group">
+                            <label for="content" data-lang-key="content">内容</label>
+                            <textarea id="content" name="content" placeholder="请分享您对建筑文化的观点..."></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn" data-lang-key="submit">发布</button>
+                    </form>
+                </div>
+                
+                <!-- 帖子列表 -->
+                <div class="post-list">
+                    <div class="post-item">
+                        <div class="post-header">
+                            <span class="post-author">John Smith</span>
+                            <span class="post-time">2026-12-01 10:30</span>
+                        </div>
+                        <h3 class="post-title">The Influence of Chinese Ancient Architecture on Modern Design</h3>
+                        <p class="post-content">I've been studying Chinese ancient architecture for years and I'm amazed by how its principles continue to influence modern architects around the world. The concepts of harmony with nature and balance are particularly relevant today.</p>
+                        <div class="post-actions">
+                            <button class="action-btn">回复</button>
+                            <button class="action-btn">点赞</button>
+                            <button class="action-btn">分享</button>
+                        </div>
+                    </div>
+                    
+                    <div class="post-item">
+                        <div class="post-header">
+                            <span class="post-author">张明</span>
+                            <span class="post-time">2026-11-30 15:45</span>
+                        </div>
+                        <h3 class="post-title">中国古代建筑的可持续发展理念</h3>
+                        <p class="post-content">中国古代建筑在设计中注重与自然环境的和谐统一，这种理念对于当今的可持续建筑设计具有重要的参考价值。我们应该更多地挖掘和传承这些传统智慧。</p>
+                        <div class="post-actions">
+                            <button class="action-btn">回复</button>
+                            <button class="action-btn">点赞</button>
+                            <button class="action-btn">分享</button>
+                        </div>
+                    </div>
+                    
+                    <div class="post-item">
+                        <div class="post-header">
+                            <span class="post-author">Maria Garcia</span>
+                            <span class="post-time">2026-11-29 09:15</span>
+                        </div>
+                        <h3 class="post-title">Cross-Cultural Exchange in Architecture Education</h3>
+                        <p class="post-content">As an architecture professor, I believe that cross-cultural exchange is essential for students to develop a global perspective. Chinese ancient architecture offers valuable lessons that can enrich architectural education worldwide.</p>
+                        <div class="post-actions">
+                            <button class="action-btn">回复</button>
+                            <button class="action-btn">点赞</button>
+                            <button class="action-btn">分享</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="forum-sidebar">
+                <div class="sidebar-section">
+                    <h3 data-lang-key="popular-topics">热门主题</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#">中国古代建筑对世界的影响</a></li>
+                        <li><a href="#">传统与现代建筑的融合</a></li>
+                        <li><a href="#">国际建筑文化交流案例</a></li>
+                        <li><a href="#">建筑文化遗产保护</a></li>
+                        <li><a href="#">跨文化建筑设计挑战</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 data-lang-key="active-members">活跃成员</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#">John Smith</a></li>
+                        <li><a href="#">张明</a></li>
+                        <li><a href="#">Maria Garcia</a></li>
+                        <li><a href="#">Hans Mueller</a></li>
+                        <li><a href="#">李明</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 data-lang-key="upcoming-events">近期活动</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#">国际建筑学术研讨会 (2026-12-15)</a></li>
+                        <li><a href="#">建筑文化摄影大赛 (2026-12-20)</a></li>
+                        <li><a href="#">跨境建筑文化讲座 (2026-12-25)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 中国古代建筑文化跨境交流平台 | Cross-Border Exchange Platform for Ancient Chinese Architecture | 辽宁省计算机设计竞赛</p>
+        <div class="footer-links">
+            <a href="terms.html" data-lang-key="terms">使用条款</a>
+            <a href="privacy.html" data-lang-key="privacy">隐私政策</a>
+            <a href="contact.html" data-lang-key="contact">联系我们</a>
+            <a href="sitemap.html" data-lang-key="sitemap">网站地图</a>
+        </div>
+        <div class="social-links">
+            <a href="https://twitter.com/" target="_blank">Twitter</a>
+            <a href="https://facebook.com/" target="_blank">Facebook</a>
+            <a href="https://instagram.com/" target="_blank">Instagram</a>
+            <a href="https://linkedin.com/" target="_blank">LinkedIn</a>
+        </div>
+    </footer>
+    
+    <script>
+        // 多语言支持
+        const translations = {
+            zh: {
+                home: '首页',
+                'architecture-appreciation': '建筑欣赏',
+                'cultural-cities': '中国文化名城',
+                'famous-buildings': '著名建筑',
+                'ai-qa': 'AI问答',
+                'intelligent-qa': '智能问答系统',
+                'ask-doubao': '古典建筑问豆包',
+                'culture-topics': '文化专题',
+                'architecture-culture': '建筑文化',
+                'architecture-technique': '建筑技法',
+                'architecture-style': '建筑风格',
+                'international-exchange': '国际交流',
+                'cross-border-impact': '建筑文化跨境影响',
+                'master-perspectives': '国际大师观点',
+                'exchange-cases': '跨境交流案例',
+                'global-forum': '全球建筑文化交流论坛',
+                'about-us': '关于我们',
+                'platform-intro': '平台介绍',
+                'contact-us': '联系我们',
+                'join-us': '加入我们',
+                'search-placeholder': '搜索中国古代建筑知识...',
+                'search': '搜索',
+                'global-forum-title': '全球建筑文化交流论坛',
+                'global-forum-desc': '分享国际建筑文化观点，促进跨文化交流与合作',
+                'post-form-title': '发表新主题',
+                'author': '作者',
+                'title': '标题',
+                'content': '内容',
+                'submit': '发布',
+                'popular-topics': '热门主题',
+                'active-members': '活跃成员',
+                'upcoming-events': '近期活动',
+                'terms': '使用条款',
+                'privacy': '隐私政策',
+                'contact': '联系我们',
+                'sitemap': '网站地图'
+            },
+            en: {
+                home: 'Home',
+                'architecture-appreciation': 'Architecture Appreciation',
+                'cultural-cities': 'Cultural Cities',
+                'famous-buildings': 'Famous Buildings',
+                'ai-qa': 'AI Q&A',
+                'intelligent-qa': 'Intelligent Q&A System',
+                'ask-doubao': 'Ask Doubao about Ancient Architecture',
+                'culture-topics': 'Cultural Topics',
+                'architecture-culture': 'Architecture Culture',
+                'architecture-technique': 'Architecture Techniques',
+                'architecture-style': 'Architecture Styles',
+                'international-exchange': 'International Exchange',
+                'cross-border-impact': 'Cross-Border Impact',
+                'master-perspectives': 'Master Perspectives',
+                'exchange-cases': 'Exchange Cases',
+                'global-forum': 'Global Architecture Culture Forum',
+                'about-us': 'About Us',
+                'platform-intro': 'Platform Introduction',
+                'contact-us': 'Contact Us',
+                'join-us': 'Join Us',
+                'search-placeholder': 'Search ancient Chinese architecture knowledge...',
+                'search': 'Search',
+                'global-forum-title': 'Global Architecture Culture Exchange Forum',
+                'global-forum-desc': 'Share international architectural culture perspectives, promote cross-cultural exchange and cooperation',
+                'post-form-title': 'Create New Post',
+                'author': 'Author',
+                'title': 'Title',
+                'content': 'Content',
+                'submit': 'Submit',
+                'popular-topics': 'Popular Topics',
+                'active-members': 'Active Members',
+                'upcoming-events': 'Upcoming Events',
+                'terms': 'Terms of Service',
+                'privacy': 'Privacy Policy',
+                'contact': 'Contact Us',
+                'sitemap': 'Sitemap'
+            },
+            ja: {
+                home: 'ホーム',
+                'architecture-appreciation': '建築鑑賞',
+                'cultural-cities': '中国文化都市',
+                'famous-buildings': '有名な建築',
+                'ai-qa': 'AI質問応答',
+                'intelligent-qa': 'インテリジェント質問応答システム',
+                'ask-doubao': '古典建築について豆包に質問',
+                'culture-topics': '文化トピック',
+                'architecture-culture': '建築文化',
+                'architecture-technique': '建築技法',
+                'architecture-style': '建築様式',
+                'international-exchange': '国際交流',
+                'cross-border-impact': '国境を越えた建築文化の影響',
+                'master-perspectives': '国際マスターの見方',
+                'exchange-cases': '国境を越えた交流事例',
+                'global-forum': 'グローバル建築文化交流フォーラム',
+                'about-us': '私たちについて',
+                'platform-intro': 'プラットフォーム紹介',
+                'contact-us': 'お問い合わせ',
+                'join-us': '参加する',
+                'search-placeholder': '中国古代建築の知識を検索...',
+                'search': '検索',
+                'global-forum-title': 'グローバル建築文化交流フォーラム',
+                'global-forum-desc': '国際的な建築文化の視点を共有し、異文化間の交流と協力を促進する',
+                'post-form-title': '新しいトピックを作成',
+                'author': '作成者',
+                'title': 'タイトル',
+                'content': '内容',
+                'submit': '送信',
+                'popular-topics': '人気のトピック',
+                'active-members': 'アクティブなメンバー',
+                'upcoming-events': '今後のイベント',
+                'terms': '利用規約',
+                'privacy': 'プライバシーポリシー',
+                'contact': 'お問い合わせ',
+                'sitemap': 'サイトマップ'
+            },
+            ko: {
+                home: '홈',
+                'architecture-appreciation': '건축 감상',
+                'cultural-cities': '중국 문화 도시',
+                'famous-buildings': '유명 건축물',
+                'ai-qa': 'AI 질문 응답',
+                'intelligent-qa': '지능형 질문 응답 시스템',
+                'ask-doubao': '고전 건축에 대해 도우바오에게 물어보기',
+                'culture-topics': '문화 주제',
+                'architecture-culture': '건축 문화',
+                'architecture-technique': '건축 기법',
+                'architecture-style': '건축 스타일',
+                'international-exchange': '국제 교류',
+                'cross-border-impact': '국경을 넘어선 건축 문화의 영향',
+                'master-perspectives': '국제 마스터의 관점',
+                'exchange-cases': '국경을 넘어선 교류 사례',
+                'global-forum': '글로벌 건축 문화 교류 포럼',
+                'about-us': '우리에 대해',
+                'platform-intro': '플랫폼 소개',
+                'contact-us': '연락처',
+                'join-us': '가입하기',
+                'search-placeholder': '중국 고대 건축 지식을 검색...',
+                'search': '검색',
+                'global-forum-title': '글로벌 건축 문화 교류 포럼',
+                'global-forum-desc': '국제 건축 문화 관점을 공유하고 문화 간 교류와 협력을 촉진합니다',
+                'post-form-title': '새 주제 작성',
+                'author': '작성자',
+                'title': '제목',
+                'content': '내용',
+                'submit': '제출',
+                'popular-topics': '인기 주제',
+                'active-members': '활동 멤버',
+                'upcoming-events': '예정된 이벤트',
+                'terms': '이용 약관',
+                'privacy': '개인 정보 정책',
+                'contact': '연락처',
+                'sitemap': '사이트맵'
+            },
+            fr: {
+                home: 'Accueil',
+                'architecture-appreciation': 'Appréciation de larchitecture',
+                'cultural-cities': 'Villes culturelles chinoises',
+                'famous-buildings': 'Bâtiments célèbres',
+                'ai-qa': 'Q&A IA',
+                'intelligent-qa': 'Système de Q&A intelligent',
+                'ask-doubao': 'Demander à Doubao sur larchitecture classique',
+                'culture-topics': 'Thèmes culturels',
+                'architecture-culture': 'Culture architecturale',
+                'architecture-technique': 'Techniques architecturales',
+                'architecture-style': 'Styles architecturaux',
+                'international-exchange': 'Échange international',
+                'cross-border-impact': 'Impact transfrontalier de la culture architecturale',
+                'master-perspectives': 'Perspectives des maîtres internationaux',
+                'exchange-cases': 'Cas déchange transfrontalier',
+                'global-forum': 'Forum mondial d\'échange de culture architecturale',
+                'about-us': 'À propos de nous',
+                'platform-intro': 'Introduction de la plateforme',
+                'contact-us': 'Contactez-nous',
+                'join-us': 'Rejoignez-nous',
+                'search-placeholder': 'Rechercher des connaissances sur larchitecture ancienne chinoise...',
+                'search': 'Rechercher',
+                'global-forum-title': 'Forum mondial d\'échange de culture architecturale',
+                'global-forum-desc': 'Partager des perspectives internationales sur la culture architecturale, promouvoir l\'échange et la coopération interculturels',
+                'post-form-title': 'Créer un nouveau sujet',
+                'author': 'Auteur',
+                'title': 'Titre',
+                'content': 'Contenu',
+                'submit': 'Soumettre',
+                'popular-topics': 'Sujets populaires',
+                'active-members': 'Membres actifs',
+                'upcoming-events': 'Événements à venir',
+                'terms': 'Conditions d\'utilisation',
+                'privacy': 'Politique de confidentialité',
+                'contact': 'Contactez-nous',
+                'sitemap': 'Plan du site'
+            },
+            es: {
+                home: 'Inicio',
+                'architecture-appreciation': 'Apreciación de la arquitectura',
+                'cultural-cities': 'Ciudades culturales chinas',
+                'famous-buildings': 'Edificios famosos',
+                'ai-qa': 'Preguntas y respuestas de IA',
+                'intelligent-qa': 'Sistema inteligente de preguntas y respuestas',
+                'ask-doubao': 'Preguntar a Doubao sobre arquitectura clásica',
+                'culture-topics': 'Temas culturales',
+                'architecture-culture': 'Cultura arquitectónica',
+                'architecture-technique': 'Técnicas arquitectónicas',
+                'architecture-style': 'Estilos arquitectónicos',
+                'international-exchange': 'Intercambio internacional',
+                'cross-border-impact': 'Impacto transfronterizo de la cultura arquitectónica',
+                'master-perspectives': 'Perspectivas de maestros internacionales',
+                'exchange-cases': 'Casos de intercambio transfronterizo',
+                'global-forum': 'Foro global de intercambio de cultura arquitectónica',
+                'about-us': 'Sobre nosotros',
+                'platform-intro': 'Introducción de la plataforma',
+                'contact-us': 'Contáctanos',
+                'join-us': 'Únete a nosotros',
+                'search-placeholder': 'Buscar conocimientos sobre arquitectura antigua china...',
+                'search': 'Buscar',
+                'global-forum-title': 'Foro global de intercambio de cultura arquitectónica',
+                'global-forum-desc': 'Compartir perspectivas internacionales sobre cultura arquitectónica, promover el intercambio y la cooperación interculturales',
+                'post-form-title': 'Crear un nuevo tema',
+                'author': 'Autor',
+                'title': 'Título',
+                'content': 'Contenido',
+                'submit': 'Enviar',
+                'popular-topics': 'Temas populares',
+                'active-members': 'Miembros activos',
+                'upcoming-events': 'Eventos próximos',
+                'terms': 'Términos de servicio',
+                'privacy': 'Política de privacidad',
+                'contact': 'Contáctanos',
+                'sitemap': 'Mapa del sitio'
+            },
+            de: {
+                home: 'Startseite',
+                'architecture-appreciation': 'Architekturbetrachtung',
+                'cultural-cities': 'Chinesische Kulturstädte',
+                'famous-buildings': 'Berühmte Gebäude',
+                'ai-qa': 'KI-Fragen und -Antworten',
+                'intelligent-qa': 'Intelligentes Fragen-Antworten-System',
+                'ask-doubao': 'Fragen Sie Doubao über klassische Architektur',
+                'culture-topics': 'Kulturelle Themen',
+                'architecture-culture': 'Architekturkultur',
+                'architecture-technique': 'Architekturtechniken',
+                'architecture-style': 'Architekturstile',
+                'international-exchange': 'Internationaler Austausch',
+                'cross-border-impact': 'Grenzdurchdringende Auswirkungen der Architekturkultur',
+                'master-perspectives': 'Perspektiven internationaler Meister',
+                'exchange-cases': 'Grenzdurchdringende Austauschfälle',
+                'global-forum': 'Globales Forum für Architekturkulturaustausch',
+                'about-us': 'Über uns',
+                'platform-intro': 'Plattformvorstellung',
+                'contact-us': 'Kontaktieren Sie uns',
+                'join-us': 'Schließen Sie sich uns an',
+                'search-placeholder': 'Suchen Sie nach Wissen über chinesische alte Architektur...',
+                'search': 'Suchen',
+                'global-forum-title': 'Globales Forum für Architekturkulturaustausch',
+                'global-forum-desc': 'Teilen Sie internationale Perspektiven zur Architekturkultur, fördern Sie den interkulturellen Austausch und die Zusammenarbeit',
+                'post-form-title': 'Neues Thema erstellen',
+                'author': 'Autor',
+                'title': 'Titel',
+                'content': 'Inhalt',
+                'submit': 'Senden',
+                'popular-topics': 'Beliebte Themen',
+                'active-members': 'Aktive Mitglieder',
+                'upcoming-events': 'Kommende Veranstaltungen',
+                'terms': 'Nutzungsbedingungen',
+                'privacy': 'Datenschutzrichtlinie',
+                'contact': 'Kontaktieren Sie uns',
+                'sitemap': 'Sitemap'
+            }
+        };
+        
+                    });
+            
+            // 更新语言按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // 保存语言偏好
+            localStorage.setItem('language', lang);
+        }
+        
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('language') || 'zh';
+            changeLanguage(savedLang);
+            
+            // 语言切换事件
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    changeLanguage(this.getAttribute('data-lang'));
+                });
+            });
+            
+            // 表单提交
+            document.getElementById('postForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('帖子发布成功！');
+                this.reset();
+            });
+        });
+    
+        // 切换翻译小部件显示
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>

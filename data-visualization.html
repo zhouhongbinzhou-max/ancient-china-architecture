@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化 - 中国古代建筑文化跨境交流平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 15px 50px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .chinese-icon {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #DAA520;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .navbar-brand span {
+            color: #DAA520;
+        }
+        .english-brand {
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            margin-left: 15px;
+            opacity: 0.9;
+        }
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .lang-btn {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .lang-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .lang-btn.active {
+            background: #8B4513;
+            color: #F5DEB3;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+        .navbar-menu a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.5;
+        }
+        .navbar-menu a:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #DAA520;
+            transition: width 0.3s;
+        }
+        .navbar-menu a:hover::after {
+            width: 80%;
+        }
+        
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: block;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 10px 0;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #DAA520;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139,69,19,0.2);
+            color: #F5DEB3;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .navbar-search {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: 2px solid #8B4513;
+            border-radius: 4px 0 0 4px;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #DAA520;
+            box-shadow: 0 0 10px rgba(139,69,19,0.3);
+        }
+        
+        .search-button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 0 4px 4px 0;
+            color: #F5DEB3;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        /* 主要内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 40px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .page-title h1 {
+            font-size: 2.8rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: #8B4513;
+        }
+        
+        .page-title p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 15px;
+        }
+        
+        /* 数据可视化区域 */
+        .visualization-section {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: #8B4513;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 80%;
+            background: #DAA520;
+            border-radius: 5px;
+        }
+        
+        .visualization-container {
+            width: 100%;
+            height: 500px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .timeline-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .visualization-description {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            color: #DAA520;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 3px solid #8B4513;
+            margin-top: 50px;
+        }
+        footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        footer .footer-links a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            transition: color 0.3s;
+        }
+        footer .footer-links a:hover {
+            color: #F5DEB3;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-menu {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            .navbar-menu a {
+                font-size: 0.85rem;
+                padding: 3px 8px;
+            }
+            .navbar-search {
+                justify-content: center;
+            }
+            .search-input {
+                width: 200px;
+                font-size: 0.85rem;
+            }
+            .search-button {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+            .container {
+                padding: 150px 20px 40px;
+            }
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+            .visualization-section {
+                padding: 20px;
+            }
+            .visualization-container {
+                height: 300px;
+            }
+        }
+    </style>
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- 引入世界地图数据 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="chinese-icon">亭</span>
+            <span>中国古代建筑</span>
+            <span class="english-brand">Cross-Border Exchange Platform</span>
+            <span>文化跨境交流平台</span>
+        </a>
+        <div class="navbar-content">
+            <ul class="navbar-menu">
+                <li><a href="index.html" data-lang-key="home">首页</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
+                    <div class="dropdown-menu">
+                        <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
+                        <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
+                    <div class="dropdown-menu">
+                        <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
+                        <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
+                    <div class="dropdown-menu">
+                        <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
+                        <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
+                        <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
+                    <div class="dropdown-menu">
+                        <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
+                        <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
+                        <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="data-visualization">数据可视化</a>
+                    <div class="dropdown-menu">
+                        <a href="data-visualization.html" data-lang-key="global-influence">全球影响力地图</a>
+                        <a href="data-visualization.html#timeline" data-lang-key="exchange-timeline">交流时间轴</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
+                        <a href="contact.html" data-lang-key="contact-us">联系我们</a>
+                        <a href="join.html" data-lang-key="join-us">加入我们</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="language-switcher">
+                <button class="lang-btn" onclick="toggleTranslator()" style="margin-right: 10px; background: rgba(218,165,32,0.2);" title="智能翻译">
+                    🌐 翻译
+                </button>
+                <button class="lang-btn" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ja">日本語</button>
+                <button class="lang-btn" data-lang="ko">한국어</button>
+                <button class="lang-btn" data-lang="fr">Français</button>
+                <button class="lang-btn" data-lang="es">Español</button>
+                <button class="lang-btn" data-lang="de">Deutsch</button>
+            </div>
+            <div class="navbar-search">
+                <form action="https://baike.baidu.com/search/word" method="get" target="_blank">
+                    <input type="text" placeholder="搜索中国古代建筑知识..." name="word" class="search-input" data-lang-key="search-placeholder">
+                    <button type="submit" class="search-button" data-lang-key="search">搜索</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1 data-lang-key="data-visualization-title">数据可视化</h1>
+            <p data-lang-key="data-visualization-subtitle">直观展示中国古代建筑文化的全球影响力和交流历史</p>
+        </div>
+        
+        <!-- 全球影响力地图 -->
+        <section class="visualization-section" id="global-influence">
+            <h2 class="section-title" data-lang-key="global-influence-map">中国古代建筑全球影响力地图</h2>
+            <div class="visualization-container">
+                <div class="map-container" id="influenceMap"></div>
+            </div>
+            <div class="visualization-description" data-lang-key="global-influence-desc">
+                <p>中国古代建筑文化对世界建筑产生了深远的影响，特别是在东亚和东南亚地区。通过这张全球影响力地图，我们可以直观地看到中国古代建筑文化的传播路径和影响范围。地图上的热力值表示中国古代建筑文化对该地区的影响程度，颜色越深表示影响越大。</p>
+                <p>从地图上可以看出，中国古代建筑文化的影响主要集中在东亚、东南亚和部分中亚地区，这些地区的建筑风格都或多或少地受到了中国古代建筑的影响。随着时间的推移，中国古代建筑文化的影响也逐渐扩展到了世界各地，成为世界建筑文化的重要组成部分。</p>
+            </div>
+        </section>
+        
+        <!-- 建筑文化交流时间轴 -->
+        <section class="visualization-section" id="timeline">
+            <h2 class="section-title" data-lang-key="exchange-timeline">建筑文化交流时间轴</h2>
+            <div class="visualization-container">
+                <div class="timeline-container" id="exchangeTimeline"></div>
+            </div>
+            <div class="visualization-description" data-lang-key="timeline-desc">
+                <p>中国古代建筑文化的跨境交流历史悠久，从古代的丝绸之路到现代的国际建筑学术交流，中国古代建筑文化一直在与世界其他文化进行着交流与融合。通过这个时间轴，我们可以看到中国古代建筑文化与世界建筑文化交流的重要历史事件。</p>
+                <p>时间轴展示了从汉代到现代的重要建筑文化交流事件，包括丝绸之路的开通、佛教建筑的传入、西方建筑技术的引进等。这些事件不仅推动了中国古代建筑文化的发展，也对世界建筑文化产生了深远的影响。</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 中国古代建筑文化跨境交流平台 | 辽宁省计算机设计竞赛</p>
+        <div class="footer-links">
+            <a href="terms.html">使用条款</a>
+            <a href="privacy.html">隐私政策</a>
+            <a href="contact.html">联系我们</a>
+            <a href="sitemap.html">网站地图</a>
+        </div>
+    </footer>
+    
+    <script>
+        // 多语言支持
+        const translations = {
+            zh: {
+                home: '首页',
+                'architecture-appreciation': '建筑欣赏',
+                'cultural-cities': '中国文化名城',
+                'famous-buildings': '著名建筑',
+                'ai-qa': 'AI问答',
+                'intelligent-qa': '智能问答系统',
+                'ask-doubao': '古典建筑问豆包',
+                'culture-topics': '文化专题',
+                'architecture-culture': '建筑文化',
+                'architecture-technique': '建筑技法',
+                'architecture-style': '建筑风格',
+                'international-exchange': '国际交流',
+                'cross-border-impact': '建筑文化跨境影响',
+                'master-perspectives': '国际大师观点',
+                'exchange-cases': '跨境交流案例',
+                'data-visualization': '数据可视化',
+                'global-influence': '全球影响力地图',
+                'exchange-timeline': '交流时间轴',
+                'about-us': '关于我们',
+                'platform-intro': '平台介绍',
+                'contact-us': '联系我们',
+                'join-us': '加入我们',
+                'search-placeholder': '搜索中国古代建筑知识...',
+                'search': '搜索',
+                'data-visualization-title': '数据可视化',
+                'data-visualization-subtitle': '直观展示中国古代建筑文化的全球影响力和交流历史',
+                'global-influence-map': '中国古代建筑全球影响力地图',
+                'global-influence-desc': '中国古代建筑文化对世界建筑产生了深远的影响，特别是在东亚和东南亚地区。通过这张全球影响力地图，我们可以直观地看到中国古代建筑文化的传播路径和影响范围。地图上的热力值表示中国古代建筑文化对该地区的影响程度，颜色越深表示影响越大。从地图上可以看出，中国古代建筑文化的影响主要集中在东亚、东南亚和部分中亚地区，这些地区的建筑风格都或多或少地受到了中国古代建筑的影响。随着时间的推移，中国古代建筑文化的影响也逐渐扩展到了世界各地，成为世界建筑文化的重要组成部分。',
+                'exchange-timeline': '建筑文化交流时间轴',
+                'timeline-desc': '中国古代建筑文化的跨境交流历史悠久，从古代的丝绸之路到现代的国际建筑学术交流，中国古代建筑文化一直在与世界其他文化进行着交流与融合。通过这个时间轴，我们可以看到中国古代建筑文化与世界建筑文化交流的重要历史事件。时间轴展示了从汉代到现代的重要建筑文化交流事件，包括丝绸之路的开通、佛教建筑的传入、西方建筑技术的引进等。这些事件不仅推动了中国古代建筑文化的发展，也对世界建筑文化产生了深远的影响。'
+            },
+            en: {
+                home: 'Home',
+                'architecture-appreciation': 'Architecture Appreciation',
+                'cultural-cities': 'Cultural Cities',
+                'famous-buildings': 'Famous Buildings',
+                'ai-qa': 'AI Q&A',
+                'intelligent-qa': 'Intelligent Q&A System',
+                'ask-doubao': 'Ask Doubao about Ancient Architecture',
+                'culture-topics': 'Cultural Topics',
+                'architecture-culture': 'Architecture Culture',
+                'architecture-technique': 'Architecture Techniques',
+                'architecture-style': 'Architecture Styles',
+                'international-exchange': 'International Exchange',
+                'cross-border-impact': 'Cross-Border Impact',
+                'master-perspectives': 'Master Perspectives',
+                'exchange-cases': 'Exchange Cases',
+                'data-visualization': 'Data Visualization',
+                'global-influence': 'Global Influence Map',
+                'exchange-timeline': 'Exchange Timeline',
+                'about-us': 'About Us',
+                'platform-intro': 'Platform Introduction',
+                'contact-us': 'Contact Us',
+                'join-us': 'Join Us',
+                'search-placeholder': 'Search ancient Chinese architecture knowledge...',
+                'search': 'Search',
+                'data-visualization-title': 'Data Visualization',
+                'data-visualization-subtitle': 'Intuitively display the global influence and exchange history of ancient Chinese architectural culture',
+                'global-influence-map': 'Global Influence Map of Ancient Chinese Architecture',
+                'global-influence-desc': 'Ancient Chinese architectural culture has had a profound impact on world architecture, especially in East Asia and Southeast Asia. Through this global influence map, we can intuitively see the spread path and influence range of ancient Chinese architectural culture. The heat value on the map indicates the degree of influence of ancient Chinese architectural culture on the region, with darker colors indicating greater influence. From the map, we can see that the influence of ancient Chinese architectural culture is mainly concentrated in East Asia, Southeast Asia and parts of Central Asia, where architectural styles have been more or less influenced by ancient Chinese architecture. Over time, the influence of ancient Chinese architectural culture has gradually expanded to all parts of the world, becoming an important part of world architectural culture.',
+                'exchange-timeline': 'Architecture Culture Exchange Timeline',
+                'timeline-desc': 'The cross-border exchange history of ancient Chinese architectural culture has a long history. From the ancient Silk Road to modern international architectural academic exchanges, ancient Chinese architectural culture has been exchanging and integrating with other world cultures. Through this timeline, we can see important historical events of cultural exchange between ancient Chinese architecture and world architectural culture. The timeline shows important architectural cultural exchange events from the Han Dynasty to the present, including the opening of the Silk Road, the introduction of Buddhist architecture, and the introduction of Western architectural technology. These events not only promoted the development of ancient Chinese architectural culture, but also had a profound impact on world architectural culture.'
+            },
+            ja: {
+                home: 'ホーム',
+                'architecture-appreciation': '建築鑑賞',
+                'cultural-cities': '中国文化都市',
+                'famous-buildings': '有名な建築',
+                'ai-qa': 'AI質問応答',
+                'intelligent-qa': 'インテリジェント質問応答システム',
+                'ask-doubao': '古典建築について豆包に質問',
+                'culture-topics': '文化トピック',
+                'architecture-culture': '建築文化',
+                'architecture-technique': '建築技法',
+                'architecture-style': '建築様式',
+                'international-exchange': '国際交流',
+                'cross-border-impact': '国境を越えた建築文化の影響',
+                'master-perspectives': '国際マスターの見方',
+                'exchange-cases': '国境を越えた交流事例',
+                'data-visualization': 'データ可視化',
+                'global-influence': '世界的影響力マップ',
+                'exchange-timeline': '交流タイムライン',
+                'about-us': '私たちについて',
+                'platform-intro': 'プラットフォーム紹介',
+                'contact-us': 'お問い合わせ',
+                'join-us': '参加する',
+                'search-placeholder': '中国古代建築の知識を検索...',
+                'search': '検索',
+                'data-visualization-title': 'データ可視化',
+                'data-visualization-subtitle': '中国古代建築文化の世界的影響力と交流歴史を直感的に表示',
+                'global-influence-map': '中国古代建築の世界的影響力マップ',
+                'global-influence-desc': '中国古代建築文化は、特に東アジアおよび東南アジア地域において、世界の建築に深い影響を与えてきました。この世界的影響力マップを通じて、中国古代建築文化の伝播経路と影響範囲を直感的に見ることができます。地図の熱値は、中国古代建築文化がその地域に与えた影響の程度を示しており、色が濃いほど影響が大きいことを意味します。地図からは、中国古代建築文化の影響は主に東アジア、東南アジア、および中央アジアの一部に集中しており、これらの地域の建築様式は、多かれ少なかれ中国古代建築の影響を受けていることがわかります。時間の経過とともに、中国古代建築文化の影響は徐々に世界中に広がり、世界の建築文化の重要な部分となっています。',
+                'exchange-timeline': '建築文化交流タイムライン',
+                'timeline-desc': '中国古代建築文化の国境を越えた交流の歴史は長く、古代のシルクロードから現代の国際建築学術交流まで、中国古代建築文化は常に世界の他の文化と交流・融合してきました。このタイムラインを通じて、中国古代建築文化と世界建築文化との交流の重要な歴史的出来事を見ることができます。タイムラインには、漢代から現代までの重要な建築文化交流の出来事が表示されており、シルクロードの開通、仏教建築の導入、西洋建築技術の導入などが含まれています。これらの出来事は、中国古代建築文化の発展を促進しただけでなく、世界の建築文化にも深い影響を与えました。'
+            },
+            ko: {
+                home: '홈',
+                'architecture-appreciation': '건축 감상',
+                'cultural-cities': '중국 문화 도시',
+                'famous-buildings': '유명 건축물',
+                'ai-qa': 'AI 질문 응답',
+                'intelligent-qa': '지능형 질문 응답 시스템',
+                'ask-doubao': '고전 건축에 대해 도우바오에게 물어보기',
+                'culture-topics': '문화 주제',
+                'architecture-culture': '건축 문화',
+                'architecture-technique': '건축 기법',
+                'architecture-style': '건축 스타일',
+                'international-exchange': '국제 교류',
+                'cross-border-impact': '국경을 넘어선 건축 문화의 영향',
+                'master-perspectives': '국제 마스터의 관점',
+                'exchange-cases': '국경을 넘어선 교류 사례',
+                'data-visualization': '데이터 시각화',
+                'global-influence': '글로벌 영향력 지도',
+                'exchange-timeline': '교류 타임라인',
+                'about-us': '우리에 대해',
+                'platform-intro': '플랫폼 소개',
+                'contact-us': '연락처',
+                'join-us': '가입하기',
+                'search-placeholder': '중국 고대 건축 지식을 검색...',
+                'search': '검색',
+                'data-visualization-title': '데이터 시각화',
+                'data-visualization-subtitle': '중국 고대 건축 문화의 글로벌 영향력과 교류 역사를 직관적으로 보여줌',
+                'global-influence-map': '중국 고대 건축 글로벌 영향력 지도',
+                'global-influence-desc': '중국 고대 건축 문화는 특히 동아시아와 동남아시아 지역에서 세계 건축에 깊은 영향을 미쳤습니다. 이 글로벌 영향력 지도를 통해 중국 고대 건축 문화의 전파 경로와 영향 범위를 직관적으로 볼 수 있습니다. 지도의 열 값은 중국 고대 건축 문화가 해당 지역에 미친 영향 정도를 나타내며, 색상이 짙을수록 영향이 더 크다는 의미입니다. 지도에서 알 수 있듯이, 중국 고대 건축 문화의 영향은 주로 동아시아, 동남아시아 및 중앙아시아 일부에 집중되어 있으며, 이러한 지역의 건축 스타일은 다소간 중국 고대 건축의 영향을 받았습니다. 시간이 지남에 따라 중국 고대 건축 문화의 영향은 점차 세계 각지로 확장되어 세계 건축 문화의 중요한 부분이 되었습니다.',
+                'exchange-timeline': '건축 문화 교류 타임라인',
+                'timeline-desc': '중국 고대 건축 문화의 국경을 넘어선 교류 역사는 오래되었으며, 고대 실크로드에서 현대 국제 건축 학술 교류에 이르기까지 중국 고대 건축 문화는 항상 세계 다른 문화와 교류하고 융합해 왔습니다. 이 타임라인을 통해 중국 고대 건축 문화와 세계 건축 문화 간 교류의 중요한 역사적 사건을 볼 수 있습니다. 타임라인에는 한대부터 현대까지의 중요한 건축 문화 교류 사건이 표시되어 있으며, 실크로드의 개통, 불교 건축의 도입, 서양 건축 기술의 도입 등이 포함되어 있습니다. 이러한 사건은 중국 고대 건축 문화의 발전을 촉진했을 뿐만 아니라 세계 건축 문화에도 깊은 영향을 미쳤습니다.'
+            },
+            fr: {
+                home: 'Accueil',
+                'architecture-appreciation': 'Appréciation de l\'architecture',
+                'cultural-cities': 'Villes culturelles chinoises',
+                'famous-buildings': 'Bâtiments célèbres',
+                'ai-qa': 'Q&A IA',
+                'intelligent-qa': 'Système de Q&A intelligent',
+                'ask-doubao': 'Demander à Doubao sur l\'architecture classique',
+                'culture-topics': 'Thèmes culturels',
+                'architecture-culture': 'Culture architecturale',
+                'architecture-technique': 'Techniques architecturales',
+                'architecture-style': 'Styles architecturaux',
+                'international-exchange': 'Échange international',
+                'cross-border-impact': 'Impact transfrontalier de la culture architecturale',
+                'master-perspectives': 'Perspectives des maîtres internationaux',
+                'exchange-cases': 'Cas d\'échange transfrontalier',
+                'data-visualization': 'Visualisation de données',
+                'global-influence': 'Carte d\'influence mondiale',
+                'exchange-timeline': 'Chronologie d\'échange',
+                'about-us': 'À propos de nous',
+                'platform-intro': 'Introduction de la plateforme',
+                'contact-us': 'Contactez-nous',
+                'join-us': 'Rejoignez-nous',
+                'search-placeholder': 'Rechercher des connaissances sur l\'architecture ancienne chinoise...',
+                'search': 'Rechercher',
+                'data-visualization-title': 'Visualisation de données',
+                'data-visualization-subtitle': 'Afficher intuitivement l\'influence mondiale et l\'histoire des échanges de la culture architecturale chinoise ancienne',
+                'global-influence-map': 'Carte d\'influence mondiale de l\'architecture chinoise ancienne',
+                'global-influence-desc': 'La culture architecturale chinoise ancienne a eu un impact profond sur l\'architecture mondiale, en particulier en Asie de l\'Est et en Asie du Sud-Est. Grâce à cette carte d\'influence mondiale, nous pouvons voir intuitivement la trajectoire de propagation et la portée d\'influence de la culture architecturale chinoise ancienne. La valeur thermique sur la carte indique le degré d\'influence de la culture architecturale chinoise ancienne sur la région, plus la couleur est foncée, plus l\'influence est grande. De la carte, nous pouvons voir que l\'influence de la culture architecturale chinoise ancienne est principalement concentrée en Asie de l\'Est, en Asie du Sud-Est et dans certaines parties de l\'Asie centrale, où les styles architecturaux ont été plus ou moins influencés par l\'architecture chinoise ancienne. Au fil du temps, l\'influence de la culture architecturale chinoise ancienne s\'est progressivement étendue à toutes les parties du monde, devenant une partie importante de la culture architecturale mondiale.',
+                'exchange-timeline': 'Chronologie des échanges culturels architecturaux',
+                'timeline-desc': 'L\'histoire des échanges transfrontaliers de la culture architecturale chinoise ancienne est ancienne, depuis la Route de la Soie antique jusqu\'aux échanges académiques architecturaux internationaux modernes, la culture architecturale chinoise ancienne a toujours échangé et fusionné avec d\'autres cultures du monde. Grâce à cette chronologie, nous pouvons voir les événements historiques importants des échanges entre la culture architecturale chinoise ancienne et la culture architecturale mondiale. La chronologie présente des événements importants d\'échanges culturels architecturaux depuis la dynastie Han jusqu\'à nos jours, y compris l\'ouverture de la Route de la Soie, l\'introduction de l\'architecture bouddhique et l\'introduction de la technologie architecturale occidentale. Ces événements ont non seulement favorisé le développement de la culture architecturale chinoise ancienne, mais ont également eu un impact profond sur la culture architecturale mondiale.'
+            },
+            es: {
+                home: 'Inicio',
+                'architecture-appreciation': 'Apreciación de la arquitectura',
+                'cultural-cities': 'Ciudades culturales chinas',
+                'famous-buildings': 'Edificios famosos',
+                'ai-qa': 'Preguntas y respuestas de IA',
+                'intelligent-qa': 'Sistema inteligente de preguntas y respuestas',
+                'ask-doubao': 'Preguntar a Doubao sobre arquitectura clásica',
+                'culture-topics': 'Temas culturales',
+                'architecture-culture': 'Cultura arquitectónica',
+                'architecture-technique': 'Técnicas arquitectónicas',
+                'architecture-style': 'Estilos arquitectónicos',
+                'international-exchange': 'Intercambio internacional',
+                'cross-border-impact': 'Impacto transfronterizo de la cultura arquitectónica',
+                'master-perspectives': 'Perspectivas de maestros internacionales',
+                'exchange-cases': 'Casos de intercambio transfronterizo',
+                'data-visualization': 'Visualización de datos',
+                'global-influence': 'Mapa de influencia global',
+                'exchange-timeline': 'Línea de tiempo de intercambio',
+                'about-us': 'Sobre nosotros',
+                'platform-intro': 'Introducción de la plataforma',
+                'contact-us': 'Contáctanos',
+                'join-us': 'Únete a nosotros',
+                'search-placeholder': 'Buscar conocimientos sobre arquitectura antigua china...',
+                'search': 'Buscar',
+                'data-visualization-title': 'Visualización de datos',
+                'data-visualization-subtitle': 'Mostrar de forma intuitiva la influencia global y la historia de los intercambios de la cultura arquitectónica china antigua',
+                'global-influence-map': 'Mapa de influencia global de la arquitectura china antigua',
+                'global-influence-desc': 'La cultura arquitectónica china antigua ha tenido un impacto profundo en la arquitectura mundial, especialmente en Asia Oriental y Sudoriental. A través de este mapa de influencia global, podemos ver de forma intuitiva la trayectoria de propagación y el alcance de influencia de la cultura arquitectónica china antigua. El valor térmico en el mapa indica el grado de influencia de la cultura arquitectónica china antigua en la región, cuanto más oscuro el color, mayor la influencia. Del mapa, podemos ver que la influencia de la cultura arquitectónica china antigua se concentra principalmente en Asia Oriental, Sudoriental y partes de Asia Central, donde los estilos arquitectónicos han estado más o menos influenciados por la arquitectura china antigua. Con el paso del tiempo, la influencia de la cultura arquitectónica china antigua se ha extendido gradualmente a todas partes del mundo, convirtiéndose en una parte importante de la cultura arquitectónica mundial.',
+                'exchange-timeline': 'Línea de tiempo de intercambio cultural arquitectónico',
+                'timeline-desc': 'La historia de los intercambios transfronterizos de la cultura arquitectónica china antigua es antigua, desde la Ruta de la Seda en la antigüedad hasta los intercambios académicos arquitectónicos internacionales modernos, la cultura arquitectónica china antigua siempre ha estado intercambiando y fusionándose con otras culturas del mundo. A través de esta línea de tiempo, podemos ver los eventos históricos importantes de los intercambios entre la cultura arquitectónica china antigua y la cultura arquitectónica mundial. La línea de tiempo muestra eventos importantes de intercambio cultural arquitectónico desde la dinastía Han hasta la actualidad, incluyendo la apertura de la Ruta de la Seda, la introducción de la arquitectura budista y la introducción de la tecnología arquitectónica occidental. Estos eventos no solo promovieron el desarrollo de la cultura arquitectónica china antigua, sino que también tuvieron un impacto profundo en la cultura arquitectónica mundial.'
+            },
+            de: {
+                home: 'Startseite',
+                'architecture-appreciation': 'Architekturbetrachtung',
+                'cultural-cities': 'Chinesische Kulturstädte',
+                'famous-buildings': 'Berühmte Gebäude',
+                'ai-qa': 'KI-Fragen und -Antworten',
+                'intelligent-qa': 'Intelligentes Fragen-Antworten-System',
+                'ask-doubao': 'Fragen Sie Doubao über klassische Architektur',
+                'culture-topics': 'Kulturelle Themen',
+                'architecture-culture': 'Architekturkultur',
+                'architecture-technique': 'Architekturtechniken',
+                'architecture-style': 'Architekturstile',
+                'international-exchange': 'Internationaler Austausch',
+                'cross-border-impact': 'Grenzdurchdringende Auswirkungen der Architekturkultur',
+                'master-perspectives': 'Perspektiven internationaler Meister',
+                'exchange-cases': 'Grenzdurchdringende Austauschfälle',
+                'data-visualization': 'Datenvisualisierung',
+                'global-influence': 'Globale Einflusskarte',
+                'exchange-timeline': 'Austauschzeitachse',
+                'about-us': 'Über uns',
+                'platform-intro': 'Plattformvorstellung',
+                'contact-us': 'Kontaktieren Sie uns',
+                'join-us': 'Schließen Sie sich uns an',
+                'search-placeholder': 'Suchen Sie nach Wissen über chinesische alte Architektur...',
+                'search': 'Suchen',
+                'data-visualization-title': 'Datenvisualisierung',
+                'data-visualization-subtitle': 'Zeigen Sie直观 die globale Einfluss und den Austauschverlauf der antiken chinesischen Architekturkultur',
+                'global-influence-map': 'Globale Einflusskarte der antiken chinesischen Architektur',
+                'global-influence-desc': 'Die antike chinesische Architekturkultur hat eine tiefe Wirkung auf die Weltarchitektur gehabt, insbesondere in Ostasien und Südostasien. Durch diese globale Einflusskarte können wir den Verbreitungspfad und den Einflussbereich der antiken chinesischen Architekturkultur直观 sehen. Der Hitzewert auf der Karte zeigt den Einflussgrad der antiken chinesischen Architekturkultur auf die Region an, je dunkler die Farbe, desto größer der Einfluss. Aus der Karte können wir sehen, dass sich der Einfluss der antiken chinesischen Architekturkultur hauptsächlich auf Ostasien, Südostasien und Teile Zentralasiens konzentriert, wo die Architekturstile mehr oder weniger von der antiken chinesischen Architektur beeinflusst wurden. Mit der Zeit hat sich der Einfluss der antiken chinesischen Architekturkultur allmählich auf die ganze Welt ausgeweitet und ist zu einem wichtigen Teil der Weltarchitekturkultur geworden.',
+                'exchange-timeline': 'Architekturkultur-Austauschzeitachse',
+                'timeline-desc': 'Die Geschichte des grenzüberschreitenden Austauschs der antiken chinesischen Architekturkultur ist alt. Von der alten Seidenstraße bis zu modernen internationalen architektonischen akademischen Austauschen hat die antike chinesische Architekturkultur immer mit anderen Kulturen der Welt ausgetauscht und fusioniert. Durch diese Zeitachse können wir wichtige historische Ereignisse des Austauschs zwischen der antiken chinesischen Architekturkultur und der Weltarchitekturkultur sehen. Die Zeitachse zeigt wichtige architektonische kulturelle Austauschereignisse von der Han-Dynastie bis zur Gegenwart, einschließlich der Eröffnung der Seidenstraße, der Einführung buddhistischer Architektur und der Einführung westlicher Architekturtechnologie. Diese Ereignisse haben nicht nur die Entwicklung der antiken chinesischen Architekturkultur gefördert, sondern auch die Weltarchitekturkultur nachhaltig beeinflusst.'
+            }
+        };
+        
+                    });
+            
+            // 翻译页面内容
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[lang][key]) {
+                    if (element.tagName === 'INPUT') {
+                        element.placeholder = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // 重新初始化图表
+            initInfluenceMap();
+            initExchangeTimeline();
+            
+            // 保存语言偏好
+            localStorage.setItem('language', lang);
+        }
+        
+        // 初始化全球影响力地图
+        function initInfluenceMap() {
+            const lang = localStorage.getItem('language') || 'zh';
+            const chart = echarts.init(document.getElementById('influenceMap'));
+            
+            const option = {
+                title: {
+                    text: lang === 'zh' ? '中国古代建筑全球影响力地图' : 'Global Influence Map of Ancient Chinese Architecture',
+                    left: 'center',
+                    textStyle: {
+                        color: '#333',
+                        fontSize: 18
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        if (params.value > 0) {
+                            return params.name + ': ' + (lang === 'zh' ? '影响程度: ' : 'Influence Level: ') + params.value;
+                        } else {
+                            return params.name;
+                        }
+                    }
+                },
+                visualMap: {
+                    min: 0,
+                    max: 100,
+                    left: 'left',
+                    top: 'bottom',
+                    text: [lang === 'zh' ? '高' : 'High', lang === 'zh' ? '低' : 'Low'],
+                    calculable: true,
+                    inRange: {
+                        color: ['#e0f2f1', '#80cbc4', '#26a69a', '#00796b', '#004d40']
+                    }
+                },
+                series: [{
+                    name: lang === 'zh' ? '影响程度' : 'Influence Level',
+                    type: 'map',
+                    map: 'world',
+                    roam: true,
+                    emphasis: {
+                        label: {
+                            show: true
+                        },
+                        itemStyle: {
+                            areaColor: '#ffcc80'
+                        }
+                    },
+                    data: [
+                        { name: 'China', value: 100 },
+                        { name: 'Japan', value: 90 },
+                        { name: 'Korea', value: 85 },
+                        { name: 'Vietnam', value: 80 },
+                        { name: 'Thailand', value: 70 },
+                        { name: 'Singapore', value: 65 },
+                        { name: 'Malaysia', value: 60 },
+                        { name: 'Indonesia', value: 55 },
+                        { name: 'Philippines', value: 50 },
+                        { name: 'Mongolia', value: 45 },
+                        { name: 'Russia', value: 40 },
+                        { name: 'India', value: 35 },
+                        { name: 'Pakistan', value: 30 },
+                        { name: 'Iran', value: 25 },
+                        { name: 'Turkey', value: 20 },
+                        { name: 'United States', value: 15 },
+                        { name: 'United Kingdom', value: 15 },
+                        { name: 'France', value: 15 },
+                        { name: 'Germany', value: 10 },
+                        { name: 'Italy', value: 10 }
+                    ]
+                }]
+            };
+            
+            chart.setOption(option);
+            
+            // 响应式
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+        
+        // 初始化建筑文化交流时间轴
+        function initExchangeTimeline() {
+            const lang = localStorage.getItem('language') || 'zh';
+            const chart = echarts.init(document.getElementById('exchangeTimeline'));
+            
+            const option = {
+                title: {
+                    text: lang === 'zh' ? '建筑文化交流时间轴' : 'Architecture Culture Exchange Timeline',
+                    left: 'center',
+                    textStyle: {
+                        color: '#333',
+                        fontSize: 18
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: lang === 'zh' ? ['汉代', '唐代', '宋代', '元代', '明代', '清代', '民国', '现代'] : ['Han Dynasty', 'Tang Dynasty', 'Song Dynasty', 'Yuan Dynasty', 'Ming Dynasty', 'Qing Dynasty', 'Republic of China', 'Modern'],
+                    axisLabel: {
+                        rotate: 45
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: lang === 'zh' ? '交流活跃度' : 'Exchange Activity',
+                    min: 0,
+                    max: 100
+                },
+                series: [{
+                    name: lang === 'zh' ? '交流活跃度' : 'Exchange Activity',
+                    type: 'bar',
+                    data: [30, 80, 60, 70, 85, 90, 65, 95],
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#83bff6' },
+                            { offset: 0.5, color: '#188df0' },
+                            { offset: 1, color: '#188df0' }
+                        ])
+                    },
+                    label: {
+                        show: true,
+                        position: 'top'
+                    }
+                }]
+            };
+            
+            chart.setOption(option);
+            
+            // 响应式
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载保存的语言偏好
+            const savedLang = localStorage.getItem('language') || 'zh';
+            changeLanguage(savedLang);
+            
+            // 添加语言切换事件监听
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+            
+            // 初始化图表
+            initInfluenceMap();
+            initExchangeTimeline();
+        });
+    
+        // 切换翻译小部件显示
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>

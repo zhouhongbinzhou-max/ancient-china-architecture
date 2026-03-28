@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国文化名城 - 中国古代建筑AI探索平台</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 12px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
+        .navbar-brand span {
+            color: #DAA520;
+        }
+        .english-brand {
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
+            margin-left: 12px;
+            opacity: 0.9;
+        }
+        .language-switcher {
+            position: relative;
+        }
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .lang-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .lang-btn.active {
+            background: #8B4513;
+            color: #F5DEB3;
+        }
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 6px 0;
+            min-width: 110px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+        .lang-selector:hover .lang-dropdown {
+            display: block;
+        }
+        .lang-option {
+            padding: 6px 14px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+        .lang-option:hover {
+            background: rgba(139,69,19,0.3);
+            color: #F5DEB3;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar-menu a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+        .navbar-menu a:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #DAA520;
+            transition: width 0.3s;
+        }
+        .navbar-menu a:hover::after {
+            width: 80%;
+        }
+        
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: block;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 8px 0;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #DAA520;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            border-radius: 0;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139,69,19,0.2);
+            color: #F5DEB3;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
+        .navbar-search {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            padding: 6px 12px;
+            border: 2px solid #8B4513;
+            border-radius: 4px 0 0 4px;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            width: 200px;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #DAA520;
+            box-shadow: 0 0 10px rgba(139,69,19,0.3);
+        }
+        
+        .search-button {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 0 4px 4px 0;
+            color: #F5DEB3;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        /* 主要内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .page-title h1 {
+            font-size: 2.8rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #8B4513;
+        }
+        
+        .page-title p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 15px;
+        }
+        
+        /* 文化名城网格 */
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .city-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid #ddd;
+        }
+        
+        .city-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #8B4513;
+        }
+        
+        .city-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .city-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .city-card:hover .city-image img {
+            transform: scale(1.05);
+        }
+        
+        .city-info {
+            padding: 20px;
+        }
+        
+        .city-info h3 {
+            font-size: 1.4rem;
+            color: #2C3E50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .city-info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .city-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .city-feature {
+            background: rgba(139,69,19,0.1);
+            color: #8B4513;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .city-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: #F5DEB3;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .city-link:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            color: #DAA520;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 3px solid #8B4513;
+        }
+        footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        footer .footer-links a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            transition: color 0.3s;
+        }
+        footer .footer-links a:hover {
+            color: #F5DEB3;
+        }
+        
+
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .cities-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-menu {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            .navbar-menu a {
+                font-size: 0.85rem;
+                padding: 3px 8px;
+            }
+            .navbar-search {
+                justify-content: center;
+            }
+            .search-input {
+                width: 200px;
+                font-size: 0.85rem;
+            }
+            .search-button {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+            .container {
+                padding: 120px 20px 40px;
+            }
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+            .cities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="logo.png" alt="中国古代建筑文化平台" style="width: 40px; height: 40px; margin-right: 10px;">
+            <span>中国古代建筑</span>
+            <span class="english-brand">Cross-Border Exchange Platform</span>
+            <span>文化跨境交流平台</span>
+        </a>
+        <div class="navbar-content">
+            <ul class="navbar-menu">
+                <li><a href="index.html" data-lang-key="home">首页</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
+                    <div class="dropdown-menu">
+                        <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
+                        <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
+                    <div class="dropdown-menu">
+                        <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
+                        <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
+                    <div class="dropdown-menu">
+                        <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
+                        <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
+                        <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
+                    <div class="dropdown-menu">
+                        <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
+                        <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
+                        <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
+                        <a href="contact.html" data-lang-key="contact-us">联系我们</a>
+                        <a href="join.html" data-lang-key="join-us">加入我们</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="language-switcher">
+                </div>
+            </div>
+            <div class="navbar-search">
+                <form action="https://baike.baidu.com/search/word" method="get" target="_blank">
+                    <input type="text" placeholder="搜索中国古代建筑知识..." name="word" class="search-input" data-lang-key="search-placeholder">
+                    <button type="submit" class="search-button" data-lang-key="search">搜索</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1 data-lang-key="cities.title">中国文化名城</h1>
+            <p data-lang-key="cities.subtitle">探索承载着中国古代建筑精髓的历史文化名城</p>
+        </div>
+        
+        <!-- 文化名城网格 -->
+        <div class="cities-grid">
+            <!-- 北京 -->
+            <div class="city-card">
+                <div class="city-image">
+                    <img src="zijincheng.png" alt="北京" data-lang-key="cities.beijing.image.alt">
+                </div>
+                <div class="city-info">
+                    <h3 data-lang-key="cities.beijing.name">北京</h3>
+                    <p data-lang-key="cities.beijing.description">北京是中国的首都，拥有3000多年的建城史和800多年的建都史，是世界上拥有世界文化遗产最多的城市之一。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.beijing.feature1">故宫</span>
+                        <span class="city-feature" data-lang-key="cities.beijing.feature2">长城</span>
+                        <span class="city-feature" data-lang-key="cities.beijing.feature3">天坛</span>
+                        <span class="city-feature" data-lang-key="cities.beijing.feature4">颐和园</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E5%8C%97%E4%BA%AC" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+            
+            <!-- 西安 -->
+            <div class="city-card">
+                <div class="city-image">
+                    <img src="changchen.png" alt="西安" data-lang-key="cities.xian.image.alt">
+                </div>
+                <div class="city-info">
+                    <h3 data-lang-key="cities.xian.name">西安</h3>
+                    <p data-lang-key="cities.xian.description">西安是中国四大古都之一，古称长安，是丝绸之路的起点，拥有丰富的历史文化遗产和古代建筑。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.xian.feature1">兵马俑</span>
+                        <span class="city-feature" data-lang-key="cities.xian.feature2">大雁塔</span>
+                        <span class="city-feature" data-lang-key="cities.xian.feature3">明城墙</span>
+                        <span class="city-feature" data-lang-key="cities.xian.feature4">华清宫</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E8%A5%BF%E5%AE%89" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+            
+            <!-- 南京 -->
+            <div class="city-card">
+                <div class="city-image">
+                    <img src="tiantan.png" alt="南京" data-lang-key="cities.nanjing.image.alt">
+                </div>
+                <div class="city-info">
+                    <h3 data-lang-key="cities.nanjing.name">南京</h3>
+                    <p data-lang-key="cities.nanjing.description">南京是中国四大古都之一，古称金陵，拥有2500多年的建城史，是中国南方的政治、经济、文化中心。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.nanjing.feature1">明孝陵</span>
+                        <span class="city-feature" data-lang-key="cities.nanjing.feature2">南京城墙</span>
+                        <span class="city-feature" data-lang-key="cities.nanjing.feature3">夫子庙</span>
+                        <span class="city-feature" data-lang-key="cities.nanjing.feature4">中山陵</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E5%8D%97%E4%BA%AC" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+            
+            <!-- 洛阳 -->
+        <div class="city-card">
+            <div class="city-image">
+                <img src="yiheyuan.png" alt="洛阳" data-lang-key="cities.luoyang.image.alt">
+            </div>
+            <div class="city-info">
+                    <h3 data-lang-key="cities.luoyang.name">洛阳</h3>
+                    <p data-lang-key="cities.luoyang.description">洛阳是中国四大古都之一，古称洛邑，是中国古代建都时间最长的城市之一，拥有丰富的历史文化遗产。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.luoyang.feature1">龙门石窟</span>
+                        <span class="city-feature" data-lang-key="cities.luoyang.feature2">白马寺</span>
+                        <span class="city-feature" data-lang-key="cities.luoyang.feature3">关林</span>
+                        <span class="city-feature" data-lang-key="cities.luoyang.feature4">洛阳博物馆</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E6%B4%9B%E9%98%B3" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+            
+            <!-- 杭州 -->
+            <div class="city-card">
+                <div class="city-image">
+                    <img src="zijincheng.png" alt="杭州" data-lang-key="cities.hangzhou.image.alt">
+                </div>
+                <div class="city-info">
+                    <h3 data-lang-key="cities.hangzhou.name">杭州</h3>
+                    <p data-lang-key="cities.hangzhou.description">杭州是中国七大古都之一，古称临安，是中国著名的风景旅游城市，拥有西湖等世界文化遗产。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.hangzhou.feature1">西湖</span>
+                        <span class="city-feature" data-lang-key="cities.hangzhou.feature2">灵隐寺</span>
+                        <span class="city-feature" data-lang-key="cities.hangzhou.feature3">六和塔</span>
+                        <span class="city-feature" data-lang-key="cities.hangzhou.feature4">岳王庙</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E6%9D%AD%E5%B7%9E" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+            
+            <!-- 苏州 -->
+            <div class="city-card">
+                <div class="city-image">
+                    <img src="changchen.png" alt="苏州" data-lang-key="cities.suzhou.image.alt">
+                </div>
+                <div class="city-info">
+                    <h3 data-lang-key="cities.suzhou.name">苏州</h3>
+                    <p data-lang-key="cities.suzhou.description">苏州是中国著名的历史文化名城，古称姑苏，以苏州园林为代表的古典建筑闻名于世。</p>
+                    <div class="city-features">
+                        <span class="city-feature" data-lang-key="cities.suzhou.feature1">拙政园</span>
+                        <span class="city-feature" data-lang-key="cities.suzhou.feature2">留园</span>
+                        <span class="city-feature" data-lang-key="cities.suzhou.feature3">网师园</span>
+                        <span class="city-feature" data-lang-key="cities.suzhou.feature4">狮子林</span>
+                    </div>
+                    <a href="https://baike.baidu.com/item/%E8%8B%8F%E5%B7%9E" target="_blank" class="city-link" data-lang-key="cities.learnMore">了解详情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p data-lang-key="footer.copyright">&copy; 2026 中国古代建筑成就AI探索平台 | 辽宁省计算机设计竞赛</p>
+        <div class="footer-links">
+            <a href="#" data-lang-key="footer.terms">使用条款</a>
+            <a href="#" data-lang-key="footer.privacy">隐私政策</a>
+            <a href="contact.html" data-lang-key="navbar.contact">联系我们</a>
+            <a href="#" data-lang-key="footer.sitemap">网站地图</a>
+        </div>
+    </footer>
+    <script>
+        // 语言切换功能
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                changeLanguage(lang);
+            });
+        });
+        
+                // 切换翻译小部件显示
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>

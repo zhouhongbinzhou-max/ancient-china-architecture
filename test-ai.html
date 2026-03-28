@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古典建筑文化问豆包 - 中国古代建筑 AI 探索平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: transparent;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 全屏背景图层 */
+        .page-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('创作素材/ai问答全屏背景图.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+    
+        
+        /* 主对话框毛玻璃效果 */
+        .main-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        
+        
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 12px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+        
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+        
+        .page-title p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .doubao-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 180px);
+            min-height: 600px;
+        }
+        
+        .doubao-header {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            color: #DAA520;
+            padding: 20px 30px;
+            border-bottom: 2px solid #8B4513;
+            flex-shrink: 0;
+        }
+        
+        .doubao-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .doubao-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .chat-sidebar {
+            width: 300px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .refresh-btn:hover {
+            transform: rotate(180deg);
+            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+        }
+        
+        .refresh-btn:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .suggested-questions {
+            list-style: none;
+        }
+        
+        .suggested-question {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .suggested-question:hover {
+            background: #f0f0f0;
+            border-color: #8B4513;
+        }
+        
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            max-width: 80%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .ai-message {
+            align-self: flex-start;
+        }
+        
+        .message-actions {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+        
+        .user-message .message-actions {
+            right: -10px;
+        }
+        
+        .recall-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .recall-btn:hover {
+            background: #ff4444;
+            color: white;
+            border-color: #ff4444;
+        }
+        
+        .message-content {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: 15px 20px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        
+        .user-message .message-content {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.9) 0%, rgba(160, 82, 45, 0.9) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            color: #F5DEB3;
+            border-bottom-right-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .ai-message .message-content {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            color: #333;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .user-message .message-time {
+            text-align: right;
+        }
+        
+        .chat-input-area {
+            border-top: 1px solid #e0e0e0;
+            padding: 20px;
+            background: #f9f9f9;
+            flex-shrink: 0;
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .image-preview-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            min-height: 60px;
+            border: 2px dashed #e0e0e0;
+            align-items: center;
+        }
+        
+        .image-preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .image-preview-item:hover .image-remove-btn {
+            opacity: 1;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+        }
+        
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .hidden-file-input {
+            display: none;
+        }
+        
+        .chat-input {
+            flex: 1;
+            min-height: 60px;
+            max-height: 150px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            resize: none;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .chat-input:focus {
+            border-color: #8B4513;
+            box-shadow: 0 0 0 2px rgba(139,69,19,0.1);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: #F5DEB3;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            height: 60px;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.3);
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 20px;
+        }
+        
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: #8B4513;
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+        
+        .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes loading {
+            0%, 100% { transform: scale(0.5); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .doubao-content {
+                flex-direction: column;
+            }
+            .chat-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 全屏背景图 -->
+    <div class="page-background"></div>
+    <div class="page-overlay"></div>
+    
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="logo.png" alt="Logo">
+            <span>中国古代建筑 AI 探索平台</span>
+        </a>
+        <button class="translate-btn" onclick="toggleTranslator()" style="margin-right: 20px; padding: 8px 16px; background: rgba(218,165,32,0.2); border: 1px solid #DAA520; color: #DAA520; border-radius: 6px; cursor: pointer; font-size: 14px;" title="智能翻译">
+            🌐 翻译
+        </button>
+    </nav>
+    
+    <div class="container">
+        <div class="page-title">
+            <h1>古典建筑文化问豆包</h1>
+            <p>智能探索中国古代建筑的文化内涵与历史魅力</p>
+        </div>
+        
+        <div class="doubao-container">
+            <div class="doubao-header">
+                <h2>中国古典建筑文化问答</h2>
+                <p>在这里，您可以询问关于中国古代建筑的任何问题</p>
+            </div>
+            
+            <div class="doubao-content">
+                <div class="chat-sidebar">
+                    <div class="sidebar-section">
+                        <h3>
+                            猜你想问
+                            <button class="refresh-btn" onclick="refreshQuestions()" title="换一批问题">
+                                🔄 刷新
+                            </button>
+                        </h3>
+                        <ul class="suggested-questions" id="suggestedQuestions">
+                            <li class="suggested-question">故宫的建筑特色有哪些？</li>
+                            <li class="suggested-question">长城的历史意义是什么？</li>
+                            <li class="suggested-question">颐和园的园林设计有什么特点？</li>
+                            <li class="suggested-question">天坛的建筑布局有什么象征意义？</li>
+                            <li class="suggested-question">苏州园林的设计理念是什么？</li>
+                            <li class="suggested-question">布达拉宫的建筑风格有什么独特之处？</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="chat-main">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                你好！我是豆包，专注于中国古代建筑文化的智能助手。你可以问我关于中国古代建筑的任何问题，比如建筑历史、文化内涵、旅游信息等。我会尽力为你提供详细的解答。
+                            </div>
+                            <div class="message-time" id="welcomeTime"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="image-upload-container">
+                            <div class="image-preview-area" id="imagePreviewArea" style="display: none;">
+                                <!-- 图片预览将在这里动态添加 -->
+                            </div>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                📷 上传图片
+                            </button>
+                            <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
+                        </div>
+                        <div class="chat-input-wrapper">
+                            <textarea class="chat-input" id="chatInput" placeholder="请输入你的问题...（支持粘贴图片）" rows="1"></textarea>
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 建议问题库
+        const suggestedQuestions = [
+            "故宫的建筑特色有哪些？",
+            "长城的历史意义是什么？",
+            "颐和园的园林设计有什么特点？",
+            "天坛的建筑布局有什么象征意义？",
+            "苏州园林的设计理念是什么？",
+            "布达拉宫的建筑风格有什么独特之处？",
+            "中国古代建筑的榫卯结构原理是什么？",
+            "中国古代建筑中的风水观念体现在哪些方面？",
+            "北京有哪些值得参观的古代建筑？",
+            "西安的古代建筑有哪些特色？",
+            "中国古代建筑的屋顶有哪些样式？",
+            "斗拱在中国古代建筑中的作用是什么？",
+            "中国古代建筑的色彩运用有什么特点？",
+            "中国古代建筑与自然环境如何和谐统一？",
+            "中国古代建筑的装饰艺术有哪些表现形式？",
+            "中国古代建筑的等级制度体现在哪些方面？",
+            "中国古代建筑的庭院布局有什么特点？",
+            "中国古代建筑的门窗艺术有什么特色？",
+            "中国古代建筑的台基有什么作用？",
+            "中国古代建筑的彩绘艺术有什么寓意？"
+        ];
+        
+        // 刷新问题
+        function refreshQuestions() {
+            const container = document.getElementById('suggestedQuestions');
+            container.innerHTML = '';
+            
+            // 随机选择 6 个问题
+            const shuffled = [...suggestedQuestions].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 6);
+            
+            selected.forEach((question, index) => {
+                const li = document.createElement('li');
+                li.className = 'suggested-question';
+                li.textContent = question;
+                li.onclick = () => {
+                    document.getElementById('chatInput').value = question;
+                    document.getElementById('chatInput').focus();
+                };
+                li.style.animation = `fadeIn 0.3s ease ${index * 0.1}s both`;
+                container.appendChild(li);
+            });
+        }
+        
+        // 初始化
+        function init() {
+            updateTime();
+            setInterval(updateTime, 60000);
+            refreshQuestions();  // 使用刷新函数初始化问题
+            initChatInput();
+        }
+        
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('welcomeTime').textContent = timeStr;
+        }
+        
+        // 初始化建议问题（保留函数但不再使用，因为使用 refreshQuestions 替代）
+        function initSuggestedQuestions() {
+            refreshQuestions();
+        }
+        
+        // 初始化输入框
+        function initChatInput() {
+            const input = document.getElementById('chatInput');
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+        
+        // 消息 ID 计数器
+        let messageIdCounter = 0;
+        // 存储消息 ID 的映射关系（用户消息 ID -> AI 回复消息 ID）
+        const messageMap = new Map();
+        // 当前正在处理的请求
+        let currentRequest = null;
+        // 已撤回的消息 ID 列表
+        const recalledMessageIds = new Set();
+        // 当前上传的图片列表
+        let uploadedImages = [];
+        // 对话上下文中的图片（用于连续对话）
+        let conversationImages = [];
+        // 对话历史
+        const conversationHistory = [];
+        
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            handleFiles(files);
+            // 清空 input 以便重复选择同一文件
+            event.target.value = '';
+        }
+        
+        // 处理文件
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    uploadedImages.push({
+                        name: file.name,
+                        data: imageData,
+                        file: file
+                    });
+                    renderImagePreviews();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // 渲染图片预览
+        function renderImagePreviews() {
+            const previewArea = document.getElementById('imagePreviewArea');
+            
+            if (uploadedImages.length === 0) {
+                previewArea.style.display = 'none';
+                return;
+            }
+            
+            previewArea.style.display = 'flex';
+            previewArea.innerHTML = '';
+            
+            uploadedImages.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-preview-item';
+                div.innerHTML = `
+                    <img src="${img.data}" alt="${img.name}">
+                    <button class="image-remove-btn" onclick="removeImage(${index})">×</button>
+                `;
+                previewArea.appendChild(div);
+            });
+        }
+        
+        // 移除图片
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            renderImagePreviews();
+        }
+        
+        // 处理粘贴事件
+        function handlePaste(event) {
+            const items = event.clipboardData.items;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.startsWith('image/')) {
+                    const file = items[i].getAsFile();
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        uploadedImages.push({
+                            name: 'pasted-image-' + Date.now() + '.png',
+                            data: e.target.result,
+                            file: file
+                        });
+                        renderImagePreviews();
+                    };
+                    
+                    reader.readAsDataURL(file);
+                    event.preventDefault();
+                    break; // 只处理第一个图片
+                }
+            }
+        }
+        
+        // 初始化输入框（增加粘贴处理）
+        function initChatInput() {
+            const input = document.getElementById('chatInput');
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // 添加粘贴事件监听
+            input.addEventListener('paste', handlePaste);
+        }
+        
+        // 调用后端图片分析 API（支持多图）
+        async function analyzeImageBackend(images, question) {
+            const API_URL = 'http://localhost:3001/api/analyze-image';
+            
+            console.log('📸 开始调用图片分析 API...');
+            console.log('API URL:', API_URL);
+            console.log('图片数量:', images.length);
+            console.log('问题:', question);
+            console.log('第一张图片数据长度:', images[0]?.data?.length);
+            
+            // 重试机制：最多重试 3 次
+            const maxRetries = 3;
+            let lastError = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    console.log(`🔄 第${attempt}次尝试...`);
+                    
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            images: images,  // 发送所有图片
+                            question: question
+                        })
+                    });
+                    
+                    console.log('📥 API 响应状态:', response.status);
+                    console.log('📥 API 响应头:', response.headers.get('content-type'));
+                    
+                    const responseText = await response.text();
+                    console.log('📥 API 原始响应:', responseText.substring(0, 500));
+                    
+                    if (!response.ok) {
+                        let errorData = {};
+                        try {
+                            errorData = JSON.parse(responseText);
+                        } catch (e) {
+                            console.error('无法解析错误响应');
+                        }
+                        console.error('❌ API 错误响应:', errorData);
+                        
+                        // 如果是服务器过载，等待后重试
+                        if (errorData.code === 'ServerOverloaded' && attempt < maxRetries) {
+                            console.log(`服务器过载，等待 ${attempt * 1000}ms 后重试...`);
+                            await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+                            continue;
+                        }
+                        
+                        throw new Error('图片分析失败：' + (errorData.message || response.status));
+                    }
+                    
+                    const data = JSON.parse(responseText);
+                    console.log('📦 API 返回数据:', data);
+                    console.log('📦 返回数据结构:', {
+                        success: data.success,
+                        response: data.response ? '存在' : '不存在',
+                        isArchitecture: data.isArchitecture,
+                        imageCount: data.imageCount
+                    });
+                    
+                    // 确保返回正确的数据结构
+                    if (data.success && data.response) {
+                        console.log('✅ 图片分析成功');
+                        return data;  // 返回整个对象，调用方会提取 response
+                    } else {
+                        console.error('❌ API 返回数据格式异常:', data);
+                        throw new Error('图片分析失败：返回数据格式异常');
+                    }
+                } catch (error) {
+                    console.error(`图片分析 API 调用异常 (第${attempt}次):`, error);
+                    console.error('错误堆栈:', error.stack);
+                    lastError = error;
+                    
+                    // 如果是最后一次重试，抛出错误
+                    if (attempt === maxRetries) {
+                        console.error('❌ 所有重试失败，抛出最终错误');
+                        throw lastError;
+                    }
+                }
+            }
+            
+            throw lastError || new Error('图片分析失败');
+        }
+        
+        // 发送消息
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            const sendBtn = document.getElementById('sendBtn');
+            
+            // 检查是否有图片或文字
+            if (!message && uploadedImages.length === 0) return;
+            
+            // 生成消息 ID
+            const userMessageId = ++messageIdCounter;
+            
+            // 构建消息内容（包含图片）
+            let messageContent = message;
+            const hasImages = uploadedImages.length > 0;
+            const hasText = message.length > 0;
+            
+            // 确定使用哪组图片
+            let imagesToSend = [];
+            if (hasImages) {
+                // 有新图片，使用新图片并更新上下文
+                imagesToSend = [...uploadedImages];
+                conversationImages = [...uploadedImages];  // 更新上下文图片
+            } else if (conversationImages.length > 0) {
+                // 没有新图片，但有上下文图片，使用上下文的图片
+                imagesToSend = [...conversationImages];
+            }
+            
+            // 添加用户消息（可撤回）
+            if (imagesToSend.length > 0) {
+                addMessageWithImages(messageContent, imagesToSend, 'user', true, userMessageId);
+            } else {
+                addMessage(messageContent, 'user', true, userMessageId);
+            }
+            
+            // 如果有上下文图片但没有新图片，添加提示
+            if (!hasImages && conversationImages.length > 0 && message) {
+                const tipDiv = document.createElement('div');
+                tipDiv.style.cssText = 'font-size: 12px; color: #999; margin-top: 5px; font-style: italic;';
+                tipDiv.textContent = '💡 正在基于上一张图片继续提问...';
+                const lastUserMessage = document.querySelector('.user-message:last-child .message-content');
+                if (lastUserMessage) {
+                    lastUserMessage.appendChild(tipDiv);
+                }
+            }
+            
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // 清空当前上传的图片（已经保存到上下文）
+            uploadedImages = [];
+            renderImagePreviews();
+            
+            // 禁用发送按钮
+            sendBtn.disabled = true;
+            
+            // 显示加载状态
+            showLoading();
+            
+            try {
+                currentRequest = { messageId: userMessageId, cancelled: false };
+                let response;
+                
+                if (imagesToSend.length > 0) {
+                    // 有图片，调用后端图片分析 API（支持多图）
+                    const result = await analyzeImageBackend(imagesToSend, message);
+                    response = result.response;
+                } else {
+                    // 纯文字消息
+                    response = await callDoubaoAPI(message);
+                }
+                
+                // 检查该消息是否已被撤回
+                if (recalledMessageIds.has(userMessageId)) {
+                    console.log('消息已被撤回，不显示回复');
+                    recalledMessageIds.delete(userMessageId);
+                    return;
+                }
+                
+                // 检查请求是否被取消
+                if (currentRequest && currentRequest.messageId === userMessageId && !currentRequest.cancelled) {
+                    hideLoading();
+                    const aiMessageId = ++messageIdCounter;
+                    messageMap.set(userMessageId, aiMessageId);
+                    addMessage(response, 'ai', false, aiMessageId, userMessageId);
+                }
+            } catch (error) {
+                console.error('API 调用失败:', error);
+                // 检查该消息是否已被撤回
+                if (recalledMessageIds.has(userMessageId)) {
+                    console.log('消息已被撤回，不显示错误提示');
+                    recalledMessageIds.delete(userMessageId);
+                    return;
+                }
+                
+                // 只有在请求未被取消时才显示错误
+                if (currentRequest && currentRequest.messageId === userMessageId && !currentRequest.cancelled) {
+                    hideLoading();
+                    // API 失败时使用模拟回复
+                    const mockResponse = getMockResponse(message);
+                    const aiMessageId = ++messageIdCounter;
+                    messageMap.set(userMessageId, aiMessageId);
+                    addMessage('【AI 服务暂时不可用，使用模拟回复】\n\n' + mockResponse, 'ai', false, aiMessageId, userMessageId);
+                }
+            } finally {
+                // 只有当前请求是最后一个时才启用发送按钮
+                if (currentRequest && currentRequest.messageId === userMessageId) {
+                    sendBtn.disabled = false;
+                    currentRequest = null;
+                }
+            }
+        }
+        
+        // 调用豆包 API（通过本地后端代理）
+        async function callDoubaoAPI(message) {
+            const API_URL = 'http://localhost:3001/api/ask';
+            
+            console.log('开始调用本地 API...');
+            console.log('API URL:', API_URL);
+            console.log('问题:', message);
+            
+            // 重试机制：最多重试 3 次
+            const maxRetries = 3;
+            let lastError = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            question: message
+                        })
+                    });
+                    
+                    console.log('API 响应状态:', response.status);
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error('API 错误详情:', errorData);
+                        
+                        // 如果是服务器过载，等待后重试
+                        if (errorData.code === 'ServerOverloaded' && attempt < maxRetries) {
+                            console.log(`服务器过载，等待 ${attempt * 1000}ms 后重试...`);
+                            await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+                            continue;
+                        }
+                        
+                        throw new Error(`API 请求失败：${response.status} - ${errorData.error || '未知错误'}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('API 返回数据:', data);
+                    
+                    if (data.answer) {
+                        const content = data.answer;
+                        console.log('AI 回复:', content);
+                        return content;
+                    } else {
+                        console.error('API 返回数据格式错误:', data);
+                        throw new Error('API 返回数据格式错误');
+                    }
+                } catch (error) {
+                    console.error(`API 调用异常 (第${attempt}次):`, error);
+                    lastError = error;
+                    
+                    // 如果是最后一次重试，抛出错误
+                    if (attempt === maxRetries) {
+                        throw lastError;
+                    }
+                }
+            }
+            
+            throw lastError || new Error('API 调用失败');
+        }
+        
+        // 添加消息
+        function addMessage(text, type, isRecallable = false, messageId = null, relatedMessageId = null) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.dataset.messageId = messageId; // 存储消息 ID
+            messageDiv.dataset.relatedMessageId = relatedMessageId; // 存储关联的消息 ID
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = text;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            const now = new Date();
+            timeDiv.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+            
+            // 只有用户消息才添加撤回按钮
+            if (isRecallable && type === 'user') {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                
+                const recallBtn = document.createElement('button');
+                recallBtn.className = 'recall-btn';
+                recallBtn.textContent = '撤回';
+                recallBtn.onclick = () => recallMessage(messageDiv);
+                
+                actionsDiv.appendChild(recallBtn);
+                messageDiv.appendChild(actionsDiv);
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // 添加带图片的消息
+        function addMessageWithImages(text, images, type, isRecallable = false, messageId = null, relatedMessageId = null) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.dataset.messageId = messageId;
+            messageDiv.dataset.relatedMessageId = relatedMessageId;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            // 添加文字内容
+            if (text) {
+                const textDiv = document.createElement('div');
+                textDiv.textContent = text;
+                textDiv.style.marginBottom = images.length > 0 ? '10px' : '0';
+                contentDiv.appendChild(textDiv);
+            }
+            
+            // 添加图片
+            if (images && images.length > 0) {
+                const imagesContainer = document.createElement('div');
+                imagesContainer.style.display = 'flex';
+                imagesContainer.style.flexWrap = 'wrap';
+                imagesContainer.style.gap = '8px';
+                
+                images.forEach(img => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = img.data;
+                    imgElement.style.maxWidth = '200px';
+                    imgElement.style.maxHeight = '200px';
+                    imgElement.style.borderRadius = '8px';
+                    imgElement.style.objectFit = 'cover';
+                    imgElement.style.cursor = 'pointer';
+                    imgElement.onclick = () => {
+                        // 点击图片在新窗口打开
+                        const win = window.open();
+                        win.document.write(`<img src="${img.data}" style="max-width:100%;height:auto;">`);
+                    };
+                    imagesContainer.appendChild(imgElement);
+                });
+                
+                contentDiv.appendChild(imagesContainer);
+            }
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            const now = new Date();
+            timeDiv.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+            
+            // 只有用户消息才添加撤回按钮
+            if (isRecallable && type === 'user') {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                
+                const recallBtn = document.createElement('button');
+                recallBtn.className = 'recall-btn';
+                recallBtn.textContent = '撤回';
+                recallBtn.onclick = () => recallMessage(messageDiv);
+                
+                actionsDiv.appendChild(recallBtn);
+                messageDiv.appendChild(actionsDiv);
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // 撤回消息
+        function recallMessage(messageDiv) {
+            // 添加确认提示
+            if (confirm('确定要撤回这条消息吗？撤回后将不再回答该问题。')) {
+                const messageId = parseInt(messageDiv.dataset.messageId);
+                const relatedMessageId = parseInt(messageDiv.dataset.relatedMessageId);
+                
+                // 如果是用户消息，检查是否有对应的 AI 回复
+                if (messageId && !relatedMessageId) {
+                    // 将该消息 ID 标记为已撤回
+                    recalledMessageIds.add(messageId);
+                    
+                    // 取消当前请求
+                    if (currentRequest && currentRequest.messageId === messageId) {
+                        currentRequest.cancelled = true;
+                        console.log('已取消当前 AI 请求');
+                    }
+                    
+                    // 查找并删除对应的 AI 回复
+                    const aiMessageId = messageMap.get(messageId);
+                    if (aiMessageId) {
+                        const aiMessageDiv = document.querySelector(`[data-message-id="${aiMessageId}"]`);
+                        if (aiMessageDiv) {
+                            aiMessageDiv.remove();
+                            console.log('已删除对应的 AI 回复');
+                        }
+                        messageMap.delete(messageId);
+                    }
+                    
+                    // 隐藏加载动画（如果正在显示）
+                    hideLoading();
+                }
+                
+                // 如果是 AI 消息，检查是否有对应的用户消息
+                if (relatedMessageId) {
+                    const userMessageDiv = document.querySelector(`[data-message-id="${relatedMessageId}"]`);
+                    if (userMessageDiv) {
+                        // 移除用户消息的撤回按钮
+                        const actionsDiv = userMessageDiv.querySelector('.message-actions');
+                        if (actionsDiv) {
+                            actionsDiv.remove();
+                        }
+                    }
+                }
+                
+                // 添加撤回提示
+                const container = document.getElementById('chatMessages');
+                const recallNotice = document.createElement('div');
+                recallNotice.className = 'message ai-message';
+                recallNotice.style.opacity = '0.6';
+                recallNotice.innerHTML = '<div class="message-content" style="font-size: 0.85rem; font-style: italic; color: #666;">您撤回了一条消息</div>';
+                
+                // 在撤回消息前插入提示
+                container.insertBefore(recallNotice, messageDiv);
+                
+                // 移除原消息
+                messageDiv.remove();
+                
+                // 滚动到底部
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            const container = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai-message';
+            loadingDiv.id = 'loading';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const loadingContainer = document.createElement('div');
+            loadingContainer.className = 'loading';
+            loadingContainer.innerHTML = '<div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>';
+            
+            contentDiv.appendChild(loadingContainer);
+            loadingDiv.appendChild(contentDiv);
+            container.appendChild(loadingDiv);
+            
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            if (loading) loading.remove();
+        }
+        
+        // 获取模拟回复
+        function getMockResponse(message) {
+            const responses = {
+                '故宫': '故宫，又称紫禁城，是中国明清两代的皇家宫殿。其建筑特色包括：1. 中轴线对称布局；2. 木结构为主；3. 重檐歇山顶；4. 红墙黄瓦配色；5. 斗拱结构精美。故宫是世界上现存规模最大、保存最完整的古代宫殿建筑群。',
+                '长城': '长城是中国古代的军事防御工程，历史意义包括：1. 军事防御作用；2. 促进边疆开发；3. 象征中华民族精神；4. 世界文化遗产。长城始建于春秋战国时期，现存主要为明长城。',
+                '颐和园': '颐和园是清代皇家园林，园林设计特点：1. 以昆明湖、万寿山为基础；2. 借景西山；3. 长廊连接各景点；4. 十七孔桥横跨湖面；5. 融合南北园林艺术。它是中国现存最完整的皇家园林。',
+                '天坛': '天坛是明清皇帝祭天的场所，建筑布局象征意义：1. 圜丘坛象征天圆；2. 祈年殿祈求丰收；3. 回音壁展示声学智慧；4. 整体布局体现"天人合一"思想。',
+                '苏州园林': '苏州园林设计理念：1. "虽由人作，宛自天开"；2. 小中见大，咫尺山林；3. 借景、对景、框景等手法；4. 诗画意境；5. 文人雅趣。代表园林有拙政园、留园等。',
+                '布达拉宫': '布达拉宫位于拉萨，建筑风格独特：1. 藏式碉房建筑；2. 依山而建，气势雄伟；3. 红白黄三色搭配；4. 金顶辉煌；5. 融合藏汉建筑艺术。它是西藏的象征。'
+            };
+            
+            for (const [key, value] of Object.entries(responses)) {
+                if (message.includes(key)) {
+                    return value;
+                }
+            }
+            
+            return '感谢您的提问！关于中国古代建筑，这是一个非常丰富的话题。中国古代建筑以其独特的木结构体系、精美的装饰艺术和深厚的文化内涵闻名于世。如果您有具体的建筑或问题，我很乐意为您详细解答。';
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', init);
+        
+        // 切换翻译小部件显示
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>

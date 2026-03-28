@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国古代建筑文化跨境交流平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: #f5f5f5;
+            color: #333;
+            /* 全屏背景图 */
+            background-image: url('创作素材/首页全屏背景图.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 12px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            flex-shrink: 1;
+            min-width: 0;
+        }
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
+        .navbar-brand span {
+            color: #DAA520;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+        .english-brand {
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
+            margin-left: 12px;
+            opacity: 0.9;
+        }
+        .language-switcher {
+            position: relative;
+        }
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .lang-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .lang-btn.active {
+            background: #8B4513;
+            color: #F5DEB3;
+        }
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 6px 0;
+            min-width: 140px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+        .lang-option {
+            padding: 6px 14px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            text-align: left;
+        }
+        .lang-selector:hover .lang-dropdown {
+            display: block;
+        }
+        .lang-option:hover {
+            background: rgba(139,69,19,0.3);
+            color: #F5DEB3;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+            align-items: center;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            min-width: 0;
+        }
+        .navbar-menu a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        .navbar-menu a:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #DAA520;
+            transition: width 0.3s;
+        }
+        .navbar-menu a:hover::after {
+            width: 80%;
+        }
+        
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: block;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 8px 0;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #DAA520;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            border-radius: 0;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139,69,19,0.2);
+            color: #F5DEB3;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .navbar-search {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            padding: 6px 12px;
+            border: 2px solid #8B4513;
+            border-radius: 4px 0 0 4px;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            width: 150px;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #DAA520;
+            box-shadow: 0 0 10px rgba(139,69,19,0.3);
+        }
+        
+        .search-button {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 0 4px 4px 0;
+            color: #F5DEB3;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        /* 轮播图 */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .carousel-slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 60px 50px 40px;
+            color: #fff;
+        }
+        .carousel-slide-content h2 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 700;
+        }
+        .carousel-slide-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            margin-bottom: 10px;
+        }
+        .carousel-slide-content-en {
+            font-family: Arial, sans-serif;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .carousel-slide-content h3.carousel-slide-content-en {
+            font-size: 1.5rem;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .carousel-slide-content p.carousel-slide-content-en {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            right: 50px;
+            display: flex;
+            gap: 10px;
+        }
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .carousel-dot.active {
+            background: #d4af37;
+            transform: scale(1.2);
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            z-index: 10;
+        }
+        .carousel-arrow:hover {
+            background: #d4af37;
+        }
+        .carousel-arrow.prev {
+            left: 20px;
+        }
+        .carousel-arrow.next {
+            right: 20px;
+        }
+        
+        /* 主要内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* AI智能功能区 */
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #8B0000;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #DAA520;
+        }
+        .section-title p {
+            color: #666;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .ai-feature-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 1px solid #eee;
+        }
+        .ai-feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #d4af37;
+        }
+        .ai-feature-icon {
+            width: 70px;
+            height: 70px;
+            background: #f5f5f5;
+            border: 2px solid #8B0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: #8B0000;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: bold;
+        }
+        .ai-feature-card h3 {
+            color: #8B0000;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 600;
+        }
+        .ai-feature-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        /* 问答系统 */
+        .qa-section {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            border-radius: 8px;
+            padding: 50px;
+            margin-bottom: 50px;
+            color: #DAA520;
+            border: 2px solid #8B4513;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .qa-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 700;
+            color: #DAA520;
+        }
+        .qa-input-wrapper {
+            display: flex;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        .qa-input {
+            flex: 1;
+            padding: 18px 25px;
+            border: 2px solid #8B4513;
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
+        }
+        .qa-button {
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 4px;
+            color: #F5DEB3;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(139,69,19,0.4);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .qa-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139,69,19,0.6);
+        }
+        .qa-result {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 80px;
+        }
+        .qa-result p {
+            line-height: 1.8;
+            color: #DAA520;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        /* 建筑展示区 */
+        .buildings-section {
+            margin-bottom: 50px;
+        }
+        .buildings-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .building-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .building-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .building-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .building-card:hover .building-image {
+            transform: scale(1.05);
+        }
+        .building-detail-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #8B0000;
+            color: #F5DEB3;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .building-detail-btn:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        .building-info {
+            padding: 20px;
+        }
+        .building-info h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 600;
+        }
+        .building-info p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        /* 统计数据区 */
+        .stats-section {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            border-radius: 8px;
+            padding: 50px;
+            margin-bottom: 50px;
+            border: 2px solid #8B4513;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+        .stat-item {
+            color: #DAA520;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            color: #DAA520;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            color: #DAA520;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 3px solid #8B4513;
+        }
+        footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        footer .footer-links a {
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            transition: color 0.3s;
+        }
+        footer .footer-links a:hover {
+            color: #F5DEB3;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .ai-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .buildings-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .navbar-menu {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            .navbar-menu a {
+                font-size: 0.85rem;
+                padding: 3px 8px;
+            }
+            .navbar-search {
+                justify-content: center;
+            }
+            .search-input {
+                width: 200px;
+                font-size: 0.85rem;
+            }
+            .search-button {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+            .carousel {
+                height: 350px;
+            }
+            .carousel-slide-content h2 {
+                font-size: 1.5rem;
+            }
+            .ai-features {
+                grid-template-columns: 1fr;
+            }
+            .buildings-grid {
+                grid-template-columns: 1fr;
+            }
+            .qa-input-wrapper {
+                flex-direction: column;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="logo.png" alt="中国古代建筑文化平台" style="width: 40px; height: 40px; margin-right: 10px;">
+            <span>中国古代建筑</span>
+            <span class="english-brand">Cross-Border Exchange Platform</span>
+            <span>文化跨境交流平台</span>
+        </a>
+        <div class="navbar-content">
+            <ul class="navbar-menu">
+                <li><a href="index.html" data-lang-key="home">首页</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
+                    <div class="dropdown-menu">
+                        <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
+                        <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
+                    <div class="dropdown-menu">
+                        <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
+                        <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
+                    <div class="dropdown-menu">
+                        <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
+                        <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
+                        <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
+                    <div class="dropdown-menu">
+                        <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
+                        <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
+                        <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
+                    <div class="dropdown-menu">
+                        <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
+                        <a href="contact.html" data-lang-key="contact-us">联系我们</a>
+                        <a href="join.html" data-lang-key="join-us">加入我们</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="language-switcher">
+                <button class="lang-btn" onclick="toggleTranslator()" title="智能翻译">
+                    🌐 翻译
+                </button>
+            </div>
+            <div class="navbar-search">
+                <form action="https://baike.baidu.com/search/word" method="get" target="_blank">
+                    <input type="text" placeholder="搜索中国古代建筑知识..." name="word" class="search-input" data-lang-key="search-placeholder">
+                    <button type="submit" class="search-button" data-lang-key="search">搜索</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 轮播图 -->
+    <div class="carousel">
+        <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+                <img src="zijincheng.png" alt="故宫">
+                <div class="carousel-slide-content">
+                    <h2>故宫 - 紫禁城</h2>
+                    <h3 class="carousel-slide-content-en">Forbidden City - The Imperial Palace</h3>
+                    <p>世界上现存规模最大、保存最为完整的木质结构古建筑群,中国明清两代的皇家宫殿</p>
+                    <p class="carousel-slide-content-en">The largest and best-preserved wooden ancient architectural complex in the world, the imperial palace of the Ming and Qing dynasties in China</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="changchen.png" alt="长城">
+                <div class="carousel-slide-content">
+                    <h2>长城 - 万里长城</h2>
+                    <h3 class="carousel-slide-content-en">Great Wall - The Long Wall</h3>
+                    <p>中国古代伟大的防御工程,中华民族的象征,世界文化遗产</p>
+                    <p class="carousel-slide-content-en">Ancient China's great defensive project, symbol of the Chinese nation, world cultural heritage</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="tiantan.png" alt="天坛">
+                <div class="carousel-slide-content">
+                    <h2>天坛</h2>
+                    <h3 class="carousel-slide-content-en">Temple of Heaven</h3>
+                    <p>明清两代皇帝祭天、祈求五谷丰登的场所,中国古代天人合一哲学思想的体现</p>
+                    <p class="carousel-slide-content-en">A place where emperors of the Ming and Qing dynasties worshiped heaven and prayed for good harvests, embodying the ancient Chinese philosophical thought of harmony between heaven and humanity</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="yiheyuan.jpg" alt="颐和园">
+                <div class="carousel-slide-content">
+                    <h2>颐和园</h2>
+                    <h3 class="carousel-slide-content-en">Summer Palace</h3>
+                    <p>中国现存规模最大、保存最完整的皇家园林,被誉为皇家园林博物馆</p>
+                    <p class="carousel-slide-content-en">The largest and best-preserved imperial garden in China, known as the imperial garden museum</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="buda.jpeg" alt="布达拉宫">
+                <div class="carousel-slide-content">
+                    <h2>布达拉宫</h2>
+                    <h3 class="carousel-slide-content-en">Potala Palace</h3>
+                    <p>世界上海拔最高的古代宫殿,藏传佛教的圣地,融合藏汉建筑风格</p>
+                    <p class="carousel-slide-content-en">The highest ancient palace in the world, a sacred place of Tibetan Buddhism, integrating Tibetan and Han architectural styles</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-arrow prev" onclick="prevSlide()">❮</button>
+        <button class="carousel-arrow next" onclick="nextSlide()">❯</button>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+    
+    <div class="container">
+        <!-- AI智能功能 -->
+        <div class="section-title">
+            <h2>AI智能功能</h2>
+            <p>利用人工智能技术探索中国古代建筑的智慧与成就</p>
+        </div>
+        <div class="ai-features">
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon">鉴</div>
+                <h3>建筑识别与分析</h3>
+                <p>上传建筑图片,AI自动识别建筑类型、年代和特征,提供详细分析报告</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon">文</div>
+                <h3>历史文化解读</h3>
+                <p>基于AI的自然语言处理,深入解读古代建筑背后的历史文化内涵</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon">变</div>
+                <h3>建筑风格演变</h3>
+                <p>通过AI分析,展示中国古代建筑风格的演变历程和地域特色</p>
+            </div>
+        </div>
+        
+        <!-- AI问答系统 -->
+        <div class="qa-section">
+            <h2>智能问答系统</h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <a href="test-ai.html" class="qa-button" style="text-decoration: none; display: inline-block;">前往古典建筑文化问豆包</a>
+            </div>
+            <div style="text-align: center; padding: 40px;">
+                <p style="color: #DAA520; font-size: 1.2rem; margin-bottom: 20px;">在这里，您可以智能询问关于中国古代建筑的任何问题，包括建筑文化、历史背景、旅游信息等。</p>
+                <p style="color: #F5DEB3; font-size: 1rem;">点击上方按钮进入专业的豆包问答页面，获得更全面的建筑知识。</p>
+            </div>
+        </div>
+        
+        <!-- 统计数据 -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">历史建筑</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">56</div>
+                    <div class="stat-label">民族建筑</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5000</div>
+                    <div class="stat-label">年历史</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">世界遗产</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 建筑展示 -->
+        <div class="section-title">
+            <h2>中国古代建筑精选</h2>
+            <p>探索中华五千年文明的建筑瑰宝</p>
+        </div>
+        <div class="buildings-grid">
+            <div class="building-card">
+                <div class="building-image">
+                    <img src="创作素材/宫殿建筑/故宫太和殿.jpg" alt="故宫" style="width: 100%; height: 100%; object-fit: cover;">
+                    <a href="https://baike.baidu.com/search/word?word=故宫" target="_blank" class="building-detail-btn">了解详情</a>
+                </div>
+                <div class="building-info">
+                    <h3>故宫</h3>
+                    <p>中国明清两代的皇家宫殿,世界上现存规模最大、保存最为完整的木质结构古建筑之一</p>
+                </div>
+            </div>
+            <div class="building-card">
+                <div class="building-image">
+                    <img src="创作素材/防御建筑/万里长城.jpg" alt="长城" style="width: 100%; height: 100%; object-fit: cover;">
+                    <a href="https://baike.baidu.com/search/word?word=长城" target="_blank" class="building-detail-btn">了解详情</a>
+                </div>
+                <div class="building-info">
+                    <h3>长城</h3>
+                    <p>中国古代伟大的防御工程,是中华民族的象征,被列为世界文化遗产</p>
+                </div>
+            </div>
+            <div class="building-card">
+                <div class="building-image">
+                    <img src="创作素材/宫殿建筑/天坛.jpg" alt="天坛" style="width: 100%; height: 100%; object-fit: cover;">
+                    <a href="https://baike.baidu.com/search/word?word=天坛" target="_blank" class="building-detail-btn">了解详情</a>
+                </div>
+                <div class="building-info">
+                    <h3>天坛</h3>
+                    <p>明清两代皇帝祭天、祈求五谷丰登的场所,体现了中国古代天人合一的哲学思想</p>
+                </div>
+            </div>
+            <div class="building-card">
+                <div class="building-image">
+                    <img src="创作素材/宫殿建筑/颐和园佛香阁.jpg" alt="颐和园" style="width: 100%; height: 100%; object-fit: cover;">
+                    <a href="https://baike.baidu.com/search/word?word=颐和园" target="_blank" class="building-detail-btn">了解详情</a>
+                </div>
+                <div class="building-info">
+                    <h3>颐和园</h3>
+                    <p>中国现存规模最大、保存最完整的皇家园林,被誉为皇家园林博物馆</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 中国古代建筑文化跨境交流平台 | Cross-Border Exchange Platform for Ancient Chinese Architecture | 辽宁省计算机设计竞赛</p>
+        <div class="footer-links">
+            <a href="terms.html" data-lang-key="terms">使用条款</a>
+            <a href="privacy.html" data-lang-key="privacy">隐私政策</a>
+            <a href="contact.html" data-lang-key="contact">联系我们</a>
+            <a href="sitemap.html" data-lang-key="sitemap">网站地图</a>
+        </div>
+        <div class="social-links" style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+            <a href="https://twitter.com/" target="_blank" style="color: #DAA520; text-decoration: none; font-size: 1.2rem;">Twitter</a>
+            <a href="https://facebook.com/" target="_blank" style="color: #DAA520; text-decoration: none; font-size: 1.2rem;">Facebook</a>
+            <a href="https://instagram.com/" target="_blank" style="color: #DAA520; text-decoration: none; font-size: 1.2rem;">Instagram</a>
+            <a href="https://linkedin.com/" target="_blank" style="color: #DAA520; text-decoration: none; font-size: 1.2rem;">LinkedIn</a>
+        </div>
+    </footer>
+    
+    <script>
+        // 轮播图功能 - 实现丝滑的循环轮播
+        let currentSlide = 1; // 从1开始，因为我们会在开头添加克隆的最后一张
+        let slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.getElementById('carouselDots');
+        const carouselSlides = document.getElementById('carouselSlides');
+        
+        // 初始化轮播图，添加克隆幻灯片用于无缝循环
+        function initCarousel() {
+            // 确保slides已经正确获取
+            slides = document.querySelectorAll('.carousel-slide');
+            if (slides.length === 0) return;
+            
+            // 清除现有的克隆幻灯片（如果有）
+            const originalSlides = Array.from(slides).slice();
+            
+            // 克隆第一张和最后一张幻灯片
+            const firstSlide = originalSlides[0].cloneNode(true);
+            const lastSlide = originalSlides[originalSlides.length - 1].cloneNode(true);
+            
+            // 将克隆的最后一张添加到开头
+            carouselSlides.insertBefore(lastSlide, originalSlides[0]);
+            // 将克隆的第一张添加到结尾
+            carouselSlides.appendChild(firstSlide);
+            
+            // 更新slides变量
+            slides = document.querySelectorAll('.carousel-slide');
+            
+            // 重置currentSlide
+            currentSlide = 1;
+            
+            // 创建轮播指示器
+            createDots();
+            
+            // 设置初始位置
+            updateSlidePosition();
+        }
+        
+        // 创建轮播指示器
+        function createDots() {
+            // 清除现有指示器
+            dots.innerHTML = '';
+            
+            // 为原始幻灯片创建指示器（不包括克隆的）
+            for (let i = 0; i < slides.length - 2; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('carousel-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i + 1)); // +1 因为我们在开头添加了克隆的幻灯片
+                dots.appendChild(dot);
+            }
+        }
+        
+        // 切换到指定幻灯片
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlidePosition();
+            updateDots();
+        }
+        
+        // 更新幻灯片位置
+        function updateSlidePosition() {
+            const slideWidth = slides[0].offsetWidth;
+            carouselSlides.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+            // 关闭过渡效果，用于无缝切换
+            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+        }
+        
+        // 更新指示器状态
+        function updateDots() {
+            const dotElements = document.querySelectorAll('.carousel-dot');
+            dotElements.forEach((dot, index) => {
+                // 计算实际的幻灯片索引（减去克隆的第一张）
+                const actualIndex = (currentSlide - 1 + (slides.length - 2)) % (slides.length - 2);
+                if (index === actualIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        // 下一张幻灯片
+        function nextSlide() {
+            const slideWidth = slides[0].offsetWidth;
+            
+            // 如果当前在最后一张，继续向右滑动到第一张（平滑过渡）
+            if (currentSlide === slides.length - 2) {
+                // 切换到克隆的第一张
+                currentSlide++;
+                updateSlidePosition();
+                
+                // 监听过渡结束事件
+                const onTransitionEnd = () => {
+                    // 移除监听器
+                    carouselSlides.removeEventListener('transitionend', onTransitionEnd);
+                    
+                    // 关闭过渡效果，瞬间跳回真实的第一张
+                    carouselSlides.style.transition = 'none';
+                    currentSlide = 1;
+                    updateSlidePosition();
+                    
+                    // 下一帧重新开启过渡效果
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+                        });
+                    });
+                };
+                
+                // 添加过渡结束监听
+                carouselSlides.addEventListener('transitionend', onTransitionEnd);
+            } else {
+                // 普通情况，直接下一张
+                currentSlide++;
+                updateSlidePosition();
+            }
+            updateDots();
+        }
+        
+        // 上一张幻灯片
+        function prevSlide() {
+            const slideWidth = slides[0].offsetWidth;
+            
+            // 如果当前在第一张，继续向左滑动到最后一张（平滑过渡）
+            if (currentSlide === 1) {
+                // 切换到克隆的最后一张
+                currentSlide--;
+                updateSlidePosition();
+                
+                // 监听过渡结束事件
+                const onTransitionEnd = () => {
+                    // 移除监听器
+                    carouselSlides.removeEventListener('transitionend', onTransitionEnd);
+                    
+                    // 关闭过渡效果，瞬间跳回真实的最后一张
+                    carouselSlides.style.transition = 'none';
+                    currentSlide = slides.length - 2;
+                    updateSlidePosition();
+                    
+                    // 下一帧重新开启过渡效果
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+                        });
+                    });
+                };
+                
+                // 添加过渡结束监听
+                carouselSlides.addEventListener('transitionend', onTransitionEnd);
+            } else {
+                // 普通情况，直接上一张
+                currentSlide--;
+                updateSlidePosition();
+            }
+            updateDots();
+        }
+        
+        // 自动轮播
+        setInterval(nextSlide, 5000);
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确保DOM完全加载后再初始化轮播图
+            setTimeout(function() {
+                initCarousel();
+                initLanguage();
+            }, 100);
+        });
+        
+        // AI问答系统的全面回答数据
+        const aiResponses = {
+            // 具体建筑
+            '故宫': '故宫,又称紫禁城,是中国明清两代的皇家宫殿,位于北京中轴线的中心。它始建于明永乐四年(1406年),是世界上现存规模最大、保存最为完整的木质结构古建筑之一。故宫的建筑布局严格遵循封建礼制,体现了中国古代宫殿建筑的最高成就。',
+            '紫禁城': '紫禁城,又称故宫,是中国明清两代的皇家宫殿,位于北京中轴线的中心。它始建于明永乐四年(1406年),是世界上现存规模最大、保存最为完整的木质结构古建筑之一。紫禁城的建筑布局严格遵循封建礼制,体现了中国古代宫殿建筑的最高成就。',
+            '长城': '长城是中国古代伟大的防御工程,是中华民族的象征。它始建于春秋战国时期,秦统一六国后连接和修缮了战国长城,形成了万里长城的基础。长城的修建不仅体现了中国古代劳动人民的智慧和勇气,也反映了古代中国的军事防御思想。',
+            '天坛': '天坛是明清两代皇帝祭天、祈求五谷丰登的场所,位于北京城南。它始建于明永乐十八年(1420年),是中国现存最大的古代祭祀性建筑群。天坛的建筑设计体现了中国古代天人合一的哲学思想,是中国古代建筑艺术的杰出代表。',
+            '岳阳楼': '岳阳楼位于湖南省岳阳市,始建于三国时期,是江南三大名楼之一。岳阳楼因范仲淹的《岳阳楼记》而闻名于世,建筑风格独特,具有重要的历史和文化价值。',
+            '滕王阁': '滕王阁位于江西省南昌市,始建于唐永徽四年(653年),是江南三大名楼之一。滕王阁因王勃的《滕王阁序》而名扬天下,是中国古代楼阁建筑的杰出代表。',
+            '黄鹤楼': '黄鹤楼位于湖北省武汉市,始建于三国时期,是江南三大名楼之一。黄鹤楼因崔颢的《黄鹤楼》诗而闻名,是中国古代建筑艺术的瑰宝。',
+            '岳麓书院': '岳麓书院位于湖南省长沙市岳麓山,始建于北宋开宝九年(976年),是中国古代四大书院之一。岳麓书院是中国古代教育制度的重要见证,具有极高的历史和文化价值。',
+            '嵩阳书院': '嵩阳书院位于河南省登封市嵩山,始建于北魏时期,是中国古代四大书院之一。嵩阳书院是中国古代教育的重要场所,保存了大量的历史文物。',
+            '白鹿洞书院': '白鹿洞书院位于江西省九江市庐山,始建于南唐时期,是中国古代四大书院之一。白鹿洞书院是中国古代教育的重要基地,对中国古代教育制度的发展产生了深远影响。',
+            '应天书院': '应天书院位于河南省商丘市,始建于后晋时期,是中国古代四大书院之一。应天书院是中国古代教育的重要场所,培养了大量的人才。',
+            '布达拉宫': '布达拉宫位于西藏自治区拉萨市,始建于公元7世纪,是藏传佛教的圣地。布达拉宫是世界上海拔最高的古代宫殿,融合了藏汉建筑风格,具有极高的历史和艺术价值。',
+            '大昭寺': '大昭寺位于西藏自治区拉萨市,始建于唐代,是藏传佛教的圣地。大昭寺保存了大量的珍贵文物,是西藏宗教和文化的重要象征。',
+            '少林寺': '少林寺位于河南省登封市嵩山,始建于北魏太和十九年(495年),是中国佛教禅宗的发源地。少林寺以武术和佛教文化闻名于世,是中国古代佛教建筑的杰出代表。',
+            '白马寺': '白马寺位于河南省洛阳市,始建于东汉永平十一年(68年),是中国第一座佛教寺院。白马寺是佛教传入中国后的第一座官办寺院,具有重要的历史意义。',
+            '灵隐寺': '灵隐寺位于浙江省杭州市西湖区,始建于东晋咸和元年(326年),是江南著名古刹。灵隐寺环境清幽,建筑宏伟,是中国古代佛教建筑的杰出代表。',
+            '普陀寺': '普陀寺位于浙江省舟山市普陀山,是观音菩萨的道场。普陀寺是中国四大佛教名山之一,具有重要的宗教和文化价值。',
+            '五台山': '五台山位于山西省忻州市,是文殊菩萨的道场。五台山是中国四大佛教名山之一,保存了大量的古代佛教建筑。',
+            '峨眉山': '峨眉山位于四川省乐山市,是普贤菩萨的道场。峨眉山是中国四大佛教名山之一,具有独特的自然景观和丰富的佛教文化。',
+            '九华山': '九华山位于安徽省池州市,是地藏菩萨的道场。九华山是中国四大佛教名山之一,保存了大量的古代佛教建筑。',
+            '苏州园林': '苏州园林是中国古典园林的代表,包括拙政园、留园、网师园等。苏州园林以小巧玲珑、精致典雅著称,体现了中国古代园林艺术的最高成就。',
+            '拙政园': '拙政园位于江苏省苏州市,始建于明代正德年间,是苏州园林中最大的一座。拙政园以水为中心,布局精巧,是中国古典园林的杰出代表。',
+            '留园': '留园位于江苏省苏州市,始建于明代万历年间,是苏州园林的代表作之一。留园以建筑艺术精湛著称,是中国古典园林的重要遗产。',
+            '网师园': '网师园位于江苏省苏州市,始建于南宋时期,是苏州园林中最小的一座。网师园以布局精巧、意境深远著称,是中国古典园林的精品。',
+            '颐和园': '颐和园位于北京市西郊,是中国现存规模最大、保存最完整的皇家园林。颐和园融合了中国古典园林的造园艺术,是中国园林艺术的瑰宝。',
+            '避暑山庄': '避暑山庄位于河北省承德市,是清代皇家园林。避暑山庄以自然景观为基础,融合了南北园林风格,是中国古代皇家园林的杰出代表。',
+            '豫园': '豫园位于上海市黄浦区,始建于明代嘉靖年间,是江南古典园林的代表作。豫园布局精巧,建筑精美,是上海地区保存最完整的古代园林。',
+            '个园': '个园位于江苏省扬州市,始建于清代嘉庆年间,以竹石假山闻名。个园是扬州园林的代表作,体现了中国古代园林艺术的独特风格。',
+            '北京四合院': '北京四合院是中国北方传统民居的代表,以其独特的布局和建筑风格著称。四合院体现了中国传统的家族观念和居住文化,是中国古代民居建筑的杰出代表。',
+            '皖南徽派建筑': '皖南徽派建筑以马头墙、雕花窗棂为特色,是中国南方传统民居的代表。徽派建筑融合了实用与美观,体现了中国古代建筑的智慧。',
+            '福建土楼': '福建土楼是独特的圆形夯土建筑,被誉为"东方古城堡"。土楼是福建客家民居的代表,体现了中国古代民居建筑的独特风格。',
+            '山西平遥古城': '平遥古城位于山西省晋中市,是中国保存最完整的明清古城之一。平遥古城保存了大量的明清时期民居建筑,是中国古代城市规划和建筑的杰出代表。',
+            '云南丽江古城': '丽江古城位于云南省丽江市,是纳西族传统民居建筑群。丽江古城以其独特的水系和建筑风格著称,是中国古代城市规划的杰出代表。',
+            '武冈古城墙': '武冈古城墙位于湖南省武冈市,始建于汉代,现存部分为明代所建。武冈古城墙是湖南保存较为完整的古城墙之一,具有重要的历史价值。',
+            '武冈文庙': '武冈文庙位于湖南省武冈市,始建于宋绍兴年间。武冈文庙是湖南保存较好的文庙建筑,体现了中国古代儒家文化的建筑特色。',
+            '武冈凌云塔': '武冈凌云塔位于湖南省武冈市,建于清道光年间。凌云塔是武冈的标志性建筑,具有独特的建筑风格。',
+            '武冈法相岩': '武冈法相岩位于湖南省武冈市,是唐代佛教石窟。法相岩具有重要的历史和艺术价值,是研究唐代佛教艺术的重要资料。',
+            '武冈中山堂': '武冈中山堂位于湖南省武冈市,建于民国时期。中山堂融合了中西建筑风格,具有重要的历史价值。',
+            
+            // 地区相关
+            '湖南': '湖南省的中国古代建筑有:1. 岳阳楼:位于岳阳,始建于三国时期,是江南三大名楼之一。2. 岳麓书院:位于长沙,始建于北宋,是中国古代四大书院之一。3. 凤凰古城:位于湘西,保存了大量明清时期的民居建筑。4. 南岳大庙:位于衡山,是中国南方最大的古建筑群之一。5. 武冈古城墙:位于武冈,明代所建,保存较为完整。',
+            '北京': '北京市的中国古代建筑有:1. 故宫:明清两代的皇家宫殿,世界上现存规模最大的木质结构古建筑之一。2. 长城:中国古代伟大的防御工程,是中华民族的象征。3. 天坛:明清两代皇帝祭天的场所,中国现存最大的古代祭祀性建筑群。4. 颐和园:中国现存规模最大的皇家园林。5. 圆明园:清代皇家园林,虽然现在仅存遗址,但仍具有重要的历史价值。',
+            '江苏': '江苏省的中国古代建筑有:1. 苏州园林:包括拙政园、留园、网师园等,是中国古典园林的代表。2. 明孝陵:位于南京,明代开国皇帝朱元璋的陵墓。3. 南京城墙:明代所建,是中国现存最长的古代城墙。4. 个园:位于扬州,以竹石假山闻名。5. 瞻园:位于南京,是江南古典园林的代表作。',
+            '浙江': '浙江省的中国古代建筑有:1. 杭州西湖周边建筑:包括灵隐寺、岳王庙等。2. 普陀寺:位于普陀山,是观音菩萨的道场。3. 天一阁:位于宁波,是中国现存最早的私家藏书楼。4. 西泠印社:位于杭州,是中国近代著名的金石篆刻艺术团体所在地。5. 乌镇:保存了大量明清时期的民居建筑。',
+            '河南': '河南省的中国古代建筑有:1. 少林寺:位于嵩山,是中国佛教禅宗的发源地。2. 白马寺:中国第一座佛教寺院。3. 龙门石窟:位于洛阳,是中国四大石窟之一。4. 嵩阳书院:中国古代四大书院之一。5. 开封府:北宋时期的官署建筑。',
+            '山西': '山西省的中国古代建筑有:1. 平遥古城:中国保存最完整的明清古城之一。2. 云冈石窟:位于大同,是中国四大石窟之一。3. 五台山:文殊菩萨的道场,保存了大量古代佛教建筑。4. 应县木塔:建于辽代,是中国现存最高的木塔。5. 乔家大院:清代民居建筑的代表。',
+            '陕西': '陕西省的中国古代建筑有:1. 秦始皇兵马俑:位于西安,是世界文化遗产。2. 大雁塔:位于西安,唐代建筑,是佛教文化的重要象征。3. 小雁塔:位于西安,唐代建筑,保存完好。4. 明城墙:位于西安,明代所建,是中国现存最完整的古代城墙之一。5. 华清宫:唐代皇家园林,因杨贵妃而闻名。',
+            '四川': '四川省的中国古代建筑有:1. 峨眉山:普贤菩萨的道场,保存了大量古代佛教建筑。2. 乐山大佛:唐代石刻佛像,是世界文化遗产。3. 都江堰:战国时期的水利工程,至今仍在使用。4. 武侯祠:位于成都,纪念三国时期的诸葛亮。5. 杜甫草堂:位于成都,唐代诗人杜甫的故居。',
+            '安徽': '安徽省的中国古代建筑有:1. 黄山古建筑群:包括寺庙、亭台等。2. 九华山:地藏菩萨的道场,保存了大量古代佛教建筑。3. 宏村:保存了大量明清时期的徽派建筑。4. 西递:保存了大量明清时期的徽派建筑。5. 徽州古城:保存了大量明清时期的古建筑。',
+            '福建': '福建省的中国古代建筑有:1. 福建土楼:独特的圆形夯土建筑,被誉为"东方古城堡"。2. 武夷山古建筑群:包括寺庙、书院等。3. 泉州开元寺:唐代佛教寺院,保存了大量珍贵文物。4. 厦门南普陀寺:闽南著名佛教寺院。5. 福州三坊七巷:保存了大量明清时期的民居建筑。',
+            
+            // 建筑类型
+            '寺庙': '中国著名的古代佛教建筑有:1. 少林寺:位于河南嵩山,始建于北魏,是中国佛教禅宗的发源地。2. 白马寺:位于河南洛阳,始建于东汉,是中国第一座佛教寺院。3. 大昭寺:位于西藏拉萨,始建于唐代,是藏传佛教的圣地。4. 灵隐寺:位于浙江杭州,始建于东晋,是江南著名古刹。5. 普陀寺:位于浙江普陀山,是观音菩萨的道场。',
+            '佛教建筑': '中国著名的古代佛教建筑有:1. 少林寺:位于河南嵩山,始建于北魏,是中国佛教禅宗的发源地。2. 白马寺:位于河南洛阳,始建于东汉,是中国第一座佛教寺院。3. 大昭寺:位于西藏拉萨,始建于唐代,是藏传佛教的圣地。4. 灵隐寺:位于浙江杭州,始建于东晋,是江南著名古刹。5. 普陀寺:位于浙江普陀山,是观音菩萨的道场。',
+            '园林': '中国著名的古代园林有:1. 苏州园林:包括拙政园、留园、网师园等,是中国古典园林的代表。2. 颐和园:位于北京,是中国现存规模最大的皇家园林。3. 避暑山庄:位于河北承德,是清代皇家园林。4. 豫园:位于上海,是江南古典园林的代表作。5. 个园:位于江苏扬州,以竹石假山闻名。',
+            '园林建筑': '中国著名的古代园林有:1. 苏州园林:包括拙政园、留园、网师园等,是中国古典园林的代表。2. 颐和园:位于北京,是中国现存规模最大的皇家园林。3. 避暑山庄:位于河北承德,是清代皇家园林。4. 豫园:位于上海,是江南古典园林的代表作。5. 个园:位于江苏扬州,以竹石假山闻名。',
+            '民居': '中国著名的古代民居建筑有:1. 北京四合院:中国北方传统民居的代表。2. 皖南徽派建筑:以马头墙、雕花窗棂为特色。3. 福建土楼:独特的圆形夯土建筑,被誉为"东方古城堡"。4. 山西平遥古城:保存了大量明清时期的民居建筑。5. 云南丽江古城:纳西族传统民居建筑群。',
+            '民居建筑': '中国著名的古代民居建筑有:1. 北京四合院:中国北方传统民居的代表。2. 皖南徽派建筑:以马头墙、雕花窗棂为特色。3. 福建土楼:独特的圆形夯土建筑,被誉为"东方古城堡"。4. 山西平遥古城:保存了大量明清时期的民居建筑。5. 云南丽江古城:纳西族传统民居建筑群。',
+            '宫殿': '中国著名的古代宫殿建筑有:1. 故宫:位于北京,是明清两代的皇家宫殿,世界上现存规模最大的木质结构古建筑之一。2. 布达拉宫:位于西藏拉萨,是藏传佛教的圣地,世界上海拔最高的古代宫殿。3. 大明宫:位于西安,唐代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。4. 阿房宫:位于西安,秦代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。5. 未央宫:位于西安,汉代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。',
+            '宫殿建筑': '中国著名的古代宫殿建筑有:1. 故宫:位于北京,是明清两代的皇家宫殿,世界上现存规模最大的木质结构古建筑之一。2. 布达拉宫:位于西藏拉萨,是藏传佛教的圣地,世界上海拔最高的古代宫殿。3. 大明宫:位于西安,唐代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。4. 阿房宫:位于西安,秦代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。5. 未央宫:位于西安,汉代宫殿,虽然现在仅存遗址,但仍具有重要的历史价值。',
+            '城墙': '中国著名的古代城墙有:1. 长城:中国古代伟大的防御工程,是中华民族的象征。2. 南京城墙:明代所建,是中国现存最长的古代城墙。3. 西安城墙:明代所建,是中国现存最完整的古代城墙之一。4. 平遥城墙:明代所建,是中国保存最完整的古城墙之一。5. 荆州城墙:明代所建,是中国保存较为完整的古城墙之一。',
+            '古城墙': '中国著名的古代城墙有:1. 长城:中国古代伟大的防御工程,是中华民族的象征。2. 南京城墙:明代所建,是中国现存最长的古代城墙。3. 西安城墙:明代所建,是中国现存最完整的古代城墙之一。4. 平遥城墙:明代所建,是中国保存最完整的古城墙之一。5. 荆州城墙:明代所建,是中国保存较为完整的古城墙之一。',
+            
+            // 历史时期
+            '唐代建筑': '唐代建筑的特点:1. 规模宏大,气势磅礴。2. 建筑布局整齐,规划合理。3. 木构建筑技术成熟,斗拱结构发达。4. 建筑装饰华丽,色彩丰富。5. 佛教建筑兴盛,如大雁塔、小雁塔等。',
+            '宋代建筑': '宋代建筑的特点:1. 建筑规模相对唐代较小,但更加精巧。2. 建筑布局更加灵活,注重实用性。3. 木构建筑技术更加成熟,斗拱结构更加复杂。4. 建筑装饰更加细腻,注重雕刻和彩绘。5. 园林建筑兴盛,如苏州园林的早期形式。',
+            '元代建筑': '元代建筑的特点:1. 融合了汉族和蒙古族的建筑风格。2. 建筑规模宏大,如大都城的建设。3. 佛教建筑兴盛,尤其是藏传佛教建筑。4. 建筑装饰融合了多种文化元素。5. 木构建筑技术继续发展,但风格更加粗犷。',
+            '明代建筑': '明代建筑的特点:1. 建筑规模宏大,如紫禁城的建设。2. 建筑布局更加严格,遵循封建礼制。3. 木构建筑技术更加成熟,斗拱结构更加简化。4. 建筑装饰更加华丽,注重彩画和雕刻。5. 城墙建筑兴盛,如南京城墙、西安城墙等。',
+            '清代建筑': '清代建筑的特点:1. 建筑规模宏大,如避暑山庄的建设。2. 建筑布局更加严格,遵循封建礼制。3. 木构建筑技术更加成熟,斗拱结构更加简化。4. 建筑装饰更加华丽,注重彩画和雕刻。5. 融合了汉族、满族和其他民族的建筑风格。',
+            
+            // 建筑技术
+            '斗拱': '斗拱是中国古代建筑特有的一种结构,是在立柱和横梁交接处,从柱顶上加的一层层探出成弓形的承重结构。斗拱的主要作用是:1. 承托屋檐,将屋面的重量传递到柱子上。2. 增加建筑的稳定性和抗震能力。3. 美化建筑外观,体现建筑的等级和风格。4. 调节屋顶的坡度和造型。5. 延长建筑的使用寿命。',
+            '榫卯': '榫卯是中国古代建筑中一种独特的连接方式,是通过榫头和卯眼的配合来连接木材。榫卯的主要特点:1. 不用钉子和胶水,完全依靠木材的摩擦力和结构力学原理。2. 结构稳定,抗震能力强。3. 便于拆卸和维修。4. 体现了中国古代工匠的智慧和技艺。5. 是中国古代建筑技术的重要组成部分。',
+            '木构架': '木构架是中国古代建筑的主要结构形式,是由柱子、横梁、斗拱等组成的框架结构。木构架的主要特点:1. 承重与围护结构分离,便于灵活布置内部空间。2. 抗震能力强,能够抵御地震的破坏。3. 施工速度快,便于维修和重建。4. 体现了中国古代建筑的独特风格。5. 是中国古代建筑技术的核心。',
+            '砖雕': '砖雕是中国古代建筑中一种重要的装饰艺术,是在砖面上雕刻各种图案和纹样。砖雕的主要特点:1. 题材广泛,包括人物、花鸟、山水、吉祥图案等。2. 雕刻技法精湛,线条流畅,层次分明。3. 色彩丰富,与建筑整体风格协调。4. 具有很高的艺术价值和历史价值。5. 是中国古代建筑装饰的重要组成部分。',
+            '彩画': '彩画是中国古代建筑中一种重要的装饰艺术,是在建筑的梁、柱、枋等部位绘制各种图案和纹样。彩画的主要特点:1. 色彩鲜艳,对比强烈。2. 图案精美,寓意吉祥。3. 等级分明,不同等级的建筑使用不同的彩画样式。4. 具有很高的艺术价值和历史价值。5. 是中国古代建筑装饰的重要组成部分。',
+            
+            // 建筑文化
+            '风水': '风水是中国古代建筑中一种重要的文化观念,是关于环境与建筑关系的学说。风水的主要内容:1. 选择合适的建筑地点,考虑地形、地貌、水文等因素。2. 规划建筑布局,注重与自然环境的和谐统一。3. 设计建筑形态,体现天人合一的哲学思想。4. 选择建筑材料和装饰,注重象征意义。5. 是中国古代建筑文化的重要组成部分。',
+            '礼制': '礼制是中国古代建筑中一种重要的文化观念,是关于建筑等级和规格的规定。礼制的主要内容:1. 规定不同等级的建筑使用不同的规模、形式和装饰。2. 体现封建等级制度,维护社会秩序。3. 影响建筑的布局和规划,如宫殿、寺庙、民居等。4. 是中国古代建筑文化的重要组成部分。5. 反映了中国古代社会的等级观念和价值体系。',
+            '天人合一': '天人合一是中国古代建筑中一种重要的哲学思想,是关于人与自然关系的学说。天人合一的主要体现:1. 建筑与自然环境的和谐统一,如园林建筑。2. 建筑形态模仿自然,如宫殿的屋顶形式。3. 建筑布局遵循自然规律,如风水学说。4. 建筑装饰体现自然元素,如花鸟、山水等图案。5. 是中国古代建筑文化的核心思想。',
+            
+            // 通用回答
+            'default': '感谢您的问题！中国古代建筑是中华民族智慧的结晶,涵盖了宫殿、园林、寺庙、民居等多种类型。如果您有更具体的问题,我很乐意为您解答。'
+        };
+
+        // 搜索回答的函数
+        function searchAnswer(question) {
+            // 转换为小写以便匹配
+            const lowerQuestion = question.toLowerCase();
+            
+            // 优先匹配具体建筑名称
+            for (const [key, value] of Object.entries(aiResponses)) {
+                if (lowerQuestion.includes(key.toLowerCase())) {
+                    return value;
+                }
+            }
+            
+            // 匹配城市
+            const cities = {
+                '长沙': '湖南省长沙市的中国古代建筑有:1. 岳麓书院:位于岳麓山,始建于北宋,是中国古代四大书院之一。2. 天心阁:位于天心公园,始建于明代,是长沙的标志性建筑。3. 开福寺:位于开福区,始建于五代时期,是长沙最古老的佛教寺院。4. 贾谊故居:位于太平街,始建于西汉,是纪念西汉著名文学家贾谊的场所。5. 长沙古城墙:位于天心阁附近,明代所建,是长沙历史的重要见证。',
+                '北京': '北京市的中国古代建筑有:1. 故宫:明清两代的皇家宫殿,世界上现存规模最大的木质结构古建筑之一。2. 长城:中国古代伟大的防御工程,是中华民族的象征。3. 天坛:明清两代皇帝祭天的场所,中国现存最大的古代祭祀性建筑群。4. 颐和园:中国现存规模最大的皇家园林。5. 圆明园:清代皇家园林,虽然现在仅存遗址,但仍具有重要的历史价值。',
+                '南京': '江苏省南京市的中国古代建筑有:1. 明孝陵:明代开国皇帝朱元璋的陵墓。2. 南京城墙:明代所建,是中国现存最长的古代城墙。3. 夫子庙:始建于东晋,是南京的文化地标。4. 瞻园:江南古典园林的代表作。5. 灵谷寺:明代佛教寺院,位于钟山风景区。',
+                '杭州': '浙江省杭州市的中国古代建筑有:1. 灵隐寺:始建于东晋,是江南著名古刹。2. 岳王庙:纪念南宋抗金名将岳飞的场所。3. 六和塔:始建于北宋,位于钱塘江畔。4. 雷峰塔:始建于北宋,因白娘子传说而闻名。5. 西溪湿地古建筑群:保存了大量明清时期的民居建筑。',
+                '洛阳': '河南省洛阳市的中国古代建筑有:1. 白马寺:中国第一座佛教寺院。2. 龙门石窟:中国四大石窟之一。3. 关林:纪念三国时期关羽的场所。4. 洛阳古城墙:明代所建,是洛阳历史的重要见证。5. 周公庙:纪念西周时期周公旦的场所。',
+                '西安': '陕西省西安市的中国古代建筑有:1. 秦始皇兵马俑:世界文化遗产。2. 大雁塔:唐代建筑,是佛教文化的重要象征。3. 小雁塔:唐代建筑,保存完好。4. 明城墙:明代所建,是中国现存最完整的古代城墙之一。5. 华清宫:唐代皇家园林,因杨贵妃而闻名。',
+                '成都': '四川省成都市的中国古代建筑有:1. 武侯祠:纪念三国时期的诸葛亮。2. 杜甫草堂:唐代诗人杜甫的故居。3. 青羊宫:始建于唐代,是成都最古老的道教宫观。4. 文殊院:清代佛教寺院,保存完好。5. 锦里古街:保存了大量明清时期的民居建筑。',
+                '徽州': '安徽省黄山市的中国古代建筑有:1. 宏村:保存了大量明清时期的徽派建筑。2. 西递:保存了大量明清时期的徽派建筑。3. 徽州古城:保存了大量明清时期的古建筑。4. 棠樾牌坊群:清代牌坊建筑群,是中国牌坊建筑的杰出代表。5. 呈坎:保存了大量明清时期的徽派建筑。',
+                '泉州': '福建省泉州市的中国古代建筑有:1. 开元寺:唐代佛教寺院,保存了大量珍贵文物。2. 清净寺:宋代伊斯兰教寺院,是中国现存最古老的伊斯兰教建筑。3. 天后宫:清代妈祖庙,是泉州的文化地标。4. 洛阳桥:宋代石拱桥,是中国古代桥梁建筑的杰出代表。5. 德济门遗址:宋代城门遗址,是泉州历史的重要见证。',
+                '扬州': '江苏省扬州市的中国古代建筑有:1. 个园:清代园林,以竹石假山闻名。2. 何园:清代园林,被誉为"晚清第一园"。3. 瘦西湖:清代园林,是扬州的标志性景点。4. 大明寺:始建于南朝,是扬州最古老的佛教寺院。5. 扬州古城墙:明代所建,是扬州历史的重要见证。',
+                '苏州': '江苏省苏州市的中国古代建筑有:1. 拙政园:明代园林,是苏州园林中最大的一座。2. 留园:明代园林,以建筑艺术精湛著称。3. 网师园:南宋园林,以布局精巧著称。4. 狮子林:元代园林,以假山群闻名。5. 虎丘:始建于春秋时期,是苏州的文化地标。',
+                '平遥': '山西省晋中市的中国古代建筑有:1. 平遥古城墙:明代所建,是中国保存最完整的古城墙之一。2. 平遥县衙:清代县衙,保存完好。3. 日升昌票号:清代票号,是中国第一家票号。4. 文庙:清代文庙,保存完好。5. 清虚观:元代道观,保存完好。',
+                '丽江': '云南省丽江市的中国古代建筑有:1. 丽江古城:纳西族传统民居建筑群,世界文化遗产。2. 木府:明代纳西族土司府第,保存完好。3. 黑龙潭:清代园林,是丽江的标志性景点。4. 文峰寺:清代佛教寺院,位于文笔山。5. 玉峰寺:清代佛教寺院,以万朵山茶闻名。',
+                '凤凰': '湖南省湘西州的中国古代建筑有:1. 凤凰古城:保存了大量明清时期的民居建筑。2. 沈从文故居:清代民居,是著名作家沈从文的故居。3. 熊希龄故居:清代民居,是民国时期国务总理熊希龄的故居。4. 杨家祠堂:清代祠堂,保存完好。5. 崇德堂:清代民居,保存完好。',
+                '曲阜': '山东省济宁市的中国古代建筑有:1. 孔庙:始建于春秋时期,是祭祀孔子的场所。2. 孔府:明代衍圣公府第,保存完好。3. 孔林:孔子及其后裔的墓地,世界文化遗产。4. 颜庙:祭祀颜回的场所,保存完好。5. 周公庙:祭祀周公旦的场所,保存完好。',
+                '承德': '河北省承德市的中国古代建筑有:1. 避暑山庄:清代皇家园林,世界文化遗产。2. 外八庙:清代佛教寺院群,保存完好。3. 普宁寺:清代佛教寺院,以大乘之阁闻名。4. 普陀宗乘之庙:清代佛教寺院,仿拉萨布达拉宫建造。5. 须弥福寿之庙:清代佛教寺院,仿日喀则扎什伦布寺建造。'
+            };
+            
+            for (const [city, info] of Object.entries(cities)) {
+                if (lowerQuestion.includes(city.toLowerCase()) && (lowerQuestion.includes('建筑') || lowerQuestion.includes('古代建筑') || lowerQuestion.includes('著名'))) {
+                    return info;
+                }
+            }
+            
+            // 匹配地区
+            const regions = ['湖南', '北京', '江苏', '浙江', '河南', '山西', '陕西', '四川', '安徽', '福建'];
+            for (const region of regions) {
+                if (lowerQuestion.includes(region.toLowerCase()) && (lowerQuestion.includes('建筑') || lowerQuestion.includes('古代建筑'))) {
+                    return aiResponses[region];
+                }
+            }
+            
+            // 匹配建筑类型
+            const buildingTypes = ['寺庙', '佛教建筑', '园林', '园林建筑', '民居', '民居建筑', '宫殿', '宫殿建筑', '城墙', '古城墙'];
+            for (const type of buildingTypes) {
+                if (lowerQuestion.includes(type.toLowerCase())) {
+                    return aiResponses[type];
+                }
+            }
+            
+            // 匹配历史时期
+            const periods = ['唐代建筑', '宋代建筑', '元代建筑', '明代建筑', '清代建筑'];
+            for (const period of periods) {
+                if (lowerQuestion.includes(period.toLowerCase())) {
+                    return aiResponses[period];
+                }
+            }
+            
+            // 匹配建筑技术
+            const technologies = ['斗拱', '榫卯', '木构架', '砖雕', '彩画'];
+            for (const tech of technologies) {
+                if (lowerQuestion.includes(tech.toLowerCase())) {
+                    return aiResponses[tech];
+                }
+            }
+            
+            // 匹配建筑文化
+            const cultures = ['风水', '礼制', '天人合一'];
+            for (const culture of cultures) {
+                if (lowerQuestion.includes(culture.toLowerCase())) {
+                    return aiResponses[culture];
+                }
+            }
+            
+            // 匹配开放式问题
+            if (lowerQuestion.includes('算不算') || lowerQuestion.includes('是不是') || lowerQuestion.includes('属于')) {
+                // 处理老君山相关问题
+                if (lowerQuestion.includes('老君山')) {
+                    return '老君山本身是一座自然山脉，不属于古代建筑。但是老君山上有许多古代建筑，如老君庙、金顶等道教建筑，这些属于古代建筑范畴。老君山位于河南省洛阳市，是道教名山，山上的建筑多为明清时期所建，具有重要的历史和宗教价值。';
+                }
+                // 处理长城相关问题
+                if (lowerQuestion.includes('长城')) {
+                    return '长城当然属于古代建筑。长城是中国古代伟大的防御工程，始建于春秋战国时期，秦统一六国后连接和修缮了战国长城，形成了万里长城的基础。长城是中华民族的象征，被列为世界文化遗产，是中国古代建筑的杰出代表。';
+                }
+                // 处理故宫相关问题
+                if (lowerQuestion.includes('故宫') || lowerQuestion.includes('紫禁城')) {
+                    return '故宫当然属于古代建筑。故宫，又称紫禁城，是中国明清两代的皇家宫殿，位于北京中轴线的中心。它始建于明永乐四年(1406年)，是世界上现存规模最大、保存最为完整的木质结构古建筑之一。故宫是中国古代宫殿建筑的最高成就，被列为世界文化遗产。';
+                }
+                // 处理颐和园相关问题
+                if (lowerQuestion.includes('颐和园')) {
+                    return '颐和园当然属于古代建筑。颐和园是中国现存规模最大、保存最完整的皇家园林，位于北京西郊。它始建于清朝乾隆年间，原名清漪园，后经重建改名颐和园。颐和园融合了中国古典园林的造园艺术，是中国园林艺术的瑰宝，被列为世界文化遗产。';
+                }
+                // 处理天坛相关问题
+                if (lowerQuestion.includes('天坛')) {
+                    return '天坛当然属于古代建筑。天坛是明清两代皇帝祭天、祈求五谷丰登的场所，位于北京城南。它始建于明永乐十八年(1420年)，是中国现存最大的古代祭祀性建筑群。天坛的建筑设计体现了中国古代天人合一的哲学思想，是中国古代建筑艺术的杰出代表，被列为世界文化遗产。';
+                }
+            }
+            
+            // 默认回答
+            return aiResponses['default'];
+        }
+        
+
+        
+        // 切换翻译小部件显示
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>
