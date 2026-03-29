@@ -536,8 +536,12 @@
         
         // 调用翻译 API
         async function callTranslateAPI(text, from, to) {
-            // 使用火山引擎翻译 API（通过后端代理）
-            const response = await fetch('http://localhost:3001/api/translate', {
+            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001' 
+                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
+            
+            const response = await fetch(API_BASE + '/api/translate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

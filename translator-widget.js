@@ -598,21 +598,14 @@
                 {
                     acceptNode: function(node) {
                         // 过滤掉 script、style 等标签内的文本
-                        if (node.parentElement?.closest('script, style, noscript, code, pre, textarea')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        // 过滤掉翻译小部件本身的文本
-                        if (node.parentElement?.closest('#translator-widget')) {
+                        if (node.parentElement?.closest('script, style, noscript')) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         // 过滤空白文本（仅空格/换行）
                         if (node.textContent.trim().length === 0) {
                             return NodeFilter.FILTER_REJECT;
                         }
-                        // 过滤掉过短的文本（少于 2 个字符）
-                        if (node.textContent.trim().length < 2) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
+                        // 不再过滤短文本和翻译小部件，允许翻译所有可见文本
                         return NodeFilter.FILTER_ACCEPT;
                     }
                 }
@@ -623,6 +616,7 @@
                 textNodes.push(node);
             }
             
+            console.log(`🔍 getAllTextNodes: 找到 ${textNodes.length} 个文本节点`);
             return textNodes;
         }
         
@@ -679,15 +673,17 @@
                     const translatedText = await callTranslateAPI(originalText, from, to);
                     
                     console.log(`✅ 翻译结果="${translatedText}"`);
+                    console.log(`🔍 对比：原文="${originalText}", 译文="${translatedText}", 相同=${translatedText === originalText}`);
                     
                     // 更新文本内容
                     if (translatedText && translatedText !== originalText) {
+                        const oldText = node.textContent;
                         node.textContent = translatedText;
                         node._translated = true;   // 标记为已翻译
                         translatedCount++;
-                        console.log(`✨ 已更新文本节点`);
+                        console.log(`✨ 已更新文本节点："${oldText}" -> "${node.textContent}"`);
                     } else {
-                        console.warn(`⚠️ 翻译结果与原文本相同或为空，未更新`);
+                        console.warn(`⚠️ 翻译结果与原文本相同或为空，未更新。原因：${!translatedText ? '结果为空' : (translatedText === originalText ? '译文=原文' : '未知')}`);
                     }
                     
                     // 更新进度
@@ -810,7 +806,18 @@
         async function callTranslateAPI(text, from, to) {
             console.log('📤 发送翻译请求:', { text: text.substring(0, 50), from, to });
             
-            const response = await fetch('http://localhost:3001/api/translate', {
+            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
+            const hostname = window.location.hostname;
+            console.log('🌐 当前 hostname:', hostname);
+            
+            const API_BASE = hostname === 'localhost' 
+                ? 'http://localhost:3001' 
+                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
+            
+            const API_URL = API_BASE + '/api/translate';
+            console.log('🔗 调用 API URL:', API_URL);
+            
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -823,6 +830,7 @@
             });
             
             console.log('📥 API 响应状态:', response.status);
+            console.log('📥 API 响应头:', response.headers.get('content-type'));
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -840,6 +848,9 @@
             } else if (data.success && data.translation) {
                 translatedText = data.translation;
                 console.log('✅ 使用 translation 字段');
+            } else if (data.success && data.result) {
+                translatedText = data.result;
+                console.log('✅ 使用 result 字段');
             } else {
                 console.warn('⚠️ 未识别翻译字段，使用原文本');
                 return text;

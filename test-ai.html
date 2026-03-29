@@ -28,7 +28,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-image: url('创作素材/ai问答全屏背景图.jpg');
+            background-image: url('assets/ai问答全屏背景图.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -788,7 +788,11 @@
         
         // 调用后端图片分析 API（支持多图）
         async function analyzeImageBackend(images, question) {
-            const API_URL = 'http://localhost:3001/api/analyze-image';
+            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001' 
+                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
+            const API_URL = API_BASE + '/api/analyze-image';
             
             console.log('📸 开始调用图片分析 API...');
             console.log('API URL:', API_URL);
@@ -988,7 +992,11 @@
         
         // 调用豆包 API（通过本地后端代理）
         async function callDoubaoAPI(message) {
-            const API_URL = 'http://localhost:3001/api/ask';
+            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001' 
+                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
+            const API_URL = API_BASE + '/api/ask';
             
             console.log('开始调用本地 API...');
             console.log('API URL:', API_URL);
@@ -1029,8 +1037,23 @@
                     const data = await response.json();
                     console.log('API 返回数据:', data);
                     
+                    // 兼容多种返回格式
+                    let content = null;
+                    
+                    // 格式 1: { answer: "..." }
                     if (data.answer) {
-                        const content = data.answer;
+                        content = data.answer;
+                    }
+                    // 格式 2: Doubao API 格式 { choices: [{ message: { content: "..." } }] }
+                    else if (data.choices && data.choices[0] && data.choices[0].message) {
+                        content = data.choices[0].message.content;
+                    }
+                    // 格式 3: { content: "..." }
+                    else if (data.content) {
+                        content = data.content;
+                    }
+                    
+                    if (content) {
                         console.log('AI 回复:', content);
                         return content;
                     } else {

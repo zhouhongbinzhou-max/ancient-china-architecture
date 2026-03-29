@@ -21,3 +21,18 @@ Thumbs.db
 # 环境变量
 .env
 .env.local
+
+# 其他平台配置文件
+.vercelignore
+Procfile
+bootstrap
+scf_bootstrap
+
+# 临时文件和测试文件
+test.js
+ai-responses.js
+image_with_watermark.png
+*.log
+
+# 后端打包文件
+*.zip

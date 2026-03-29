@@ -1,15 +1,15 @@
 {
   "name": "ancient-chinese-architecture-ai",
   "version": "1.0.0",
-  "description": "中国古代建筑成就AI探索平台",
-  "main": "server.js",
+  "description": "中国古代建筑成就 AI 探索平台",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "multer": "^2.1.1",
-    "node-fetch": "^3.3.2"
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.6.12"
   }
 }

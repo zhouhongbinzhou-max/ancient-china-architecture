@@ -199,7 +199,7 @@ Computer_Design/
 ├── package.json                  # 项目依赖配置
 ├── package-lock.json             # 依赖锁定文件
 │
-├── 创作素材/                     # 静态资源目录
+├── assets/                     # 静态资源目录
 │   ├── 首页全屏背景图.jpg
 │   ├── 代表建筑/
 │   │   ├── 代表建筑全屏背景图.jpg
@@ -261,7 +261,7 @@ Computer_Design/
 - `POST /api/ask` - AI 问答接口
 - `POST /api/analyze-image` - 图片分析接口（支持多图）
 - `POST /api/translate` - 智能翻译接口
-- `GET /创作素材/*` - 静态资源访问
+- `GET /assets/*` - 静态资源访问
 
 ## 功能特性详解
 
@@ -333,7 +333,7 @@ box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 
 **实现方式**：
 ```css
-background-image: url('创作素材/xxx.jpg');
+background-image: url('assets/xxx.jpg');
 background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
