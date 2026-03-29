@@ -16,27 +16,11 @@ const TRANSLATE_MODEL_ID = process.env.TRANSLATE_MODEL_ID || "ep-20260327161112-
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// 静态文件服务 - 优先处理，确保所有静态资源正确托管
-app.use(express.static(__dirname, {
-    setHeaders: (res, path) => {
-        if (path.endsWith('.html')) {
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        } else if (path.endsWith('.js')) {
-            res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-        } else if (path.endsWith('.css')) {
-            res.setHeader('Content-Type', 'text/css; charset=utf-8');
-        } else if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg') || path.endsWith('.ico')) {
-            // 图片类型自动检测，但确保缓存
-            res.setHeader('Cache-Control', 'public, max-age=31536000');
-        }
-    }
-}));
-
-// 处理 /release/ 前缀（兼容本地开发）
+// 处理 URL 路径映射（在静态文件服务之前）
 app.use((req, res, next) => {
     let url = req.url;
     
-    // 处理 /release/ 前缀
+    // 处理 /release/ 前缀（兼容本地开发）
     if (url.startsWith('/release')) {
         url = url.replace('/release', '');
         if (url === '' || url === '/') {
@@ -52,6 +36,22 @@ app.use((req, res, next) => {
     
     next();
 });
+
+// 静态文件服务 - 优先处理，确保所有静态资源正确托管
+app.use(express.static(__dirname, {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        } else if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        } else if (path.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        } else if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.gif') || path.endsWith('.svg') || path.endsWith('.ico')) {
+            // 图片类型自动检测，但确保缓存
+            res.setHeader('Cache-Control', 'public, max-age=31536000');
+        }
+    }
+}));
 
 // 子页面路由支持 - 自动映射 /xxx 到 /xxx.html
 const htmlPages = [
