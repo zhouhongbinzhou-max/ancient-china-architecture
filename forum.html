@@ -16,6 +16,10 @@
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             background-color: #f5f5f5;
             color: #333;
+            background-image: url('assets/forum-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         
         /* 导航栏 */
@@ -743,6 +747,51 @@
         </div>
     </nav>
     
+    <!-- 轮播图 -->
+    <div class="carousel">
+        <div class="carousel-slides">
+            <div class="carousel-slide">
+                <img src="assets/carousel1.jpg" alt="中国古代建筑">
+                <div class="carousel-slide-content">
+                    <h2>中国古代建筑文化</h2>
+                    <h3 class="carousel-slide-content-en">Ancient Chinese Architecture Culture</h3>
+                    <p>传承千年的建筑智慧，展现东方文化的独特魅力</p>
+                    <p class="carousel-slide-content-en">Inheriting thousands of years of architectural wisdom, showcasing the unique charm of Eastern culture</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel2.jpg" alt="紫禁城">
+                <div class="carousel-slide-content">
+                    <h2>紫禁城</h2>
+                    <h3 class="carousel-slide-content-en">Forbidden City</h3>
+                    <p>世界上现存规模最大、保存最为完整的木质结构古建筑之一</p>
+                    <p class="carousel-slide-content-en">One of the largest and best-preserved wooden structures in the world</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel3.jpg" alt="长城">
+                <div class="carousel-slide-content">
+                    <h2>长城</h2>
+                    <h3 class="carousel-slide-content-en">Great Wall</h3>
+                    <p>中国古代伟大的防御工程，也是世界文化遗产</p>
+                    <p class="carousel-slide-content-en">Ancient China's great defensive project and a world cultural heritage</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel4.jpg" alt="天坛">
+                <div class="carousel-slide-content">
+                    <h2>天坛</h2>
+                    <h3 class="carousel-slide-content-en">Temple of Heaven</h3>
+                    <p>明清两代皇帝祭天、祈求五谷丰登的场所</p>
+                    <p class="carousel-slide-content-en">Where emperors of the Ming and Qing dynasties worshipped heaven</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-arrow prev" onclick="plusSlides(-1)">&#10094;</button>
+        <button class="carousel-arrow next" onclick="plusSlides(1)">&#10095;</button>
+        <div class="carousel-dots"></div>
+    </div>
+    
     <div class="container">
         <div class="section-title">
             <h2 data-lang-key="global-forum-title">全球建筑文化交流论坛</h2>
@@ -1192,51 +1241,6 @@
             }
         }
     </script>
-    <!-- 轮播图 -->
-    <div class="carousel">
-        <div class="carousel-slides">
-            <div class="carousel-slide">
-                <img src="assets/carousel1.jpg" alt="中国古代建筑">
-                <div class="carousel-slide-content">
-                    <h2>中国古代建筑文化</h2>
-                    <h3 class="carousel-slide-content-en">Ancient Chinese Architecture Culture</h3>
-                    <p>传承千年的建筑智慧，展现东方文化的独特魅力</p>
-                    <p class="carousel-slide-content-en">Inheriting thousands of years of architectural wisdom, showcasing the unique charm of Eastern culture</p>
-                </div>
-            </div>
-            <div class="carousel-slide">
-                <img src="assets/carousel2.jpg" alt="紫禁城">
-                <div class="carousel-slide-content">
-                    <h2>紫禁城</h2>
-                    <h3 class="carousel-slide-content-en">Forbidden City</h3>
-                    <p>世界上现存规模最大、保存最为完整的木质结构古建筑之一</p>
-                    <p class="carousel-slide-content-en">One of the largest and best-preserved wooden structures in the world</p>
-                </div>
-            </div>
-            <div class="carousel-slide">
-                <img src="assets/carousel3.jpg" alt="长城">
-                <div class="carousel-slide-content">
-                    <h2>长城</h2>
-                    <h3 class="carousel-slide-content-en">Great Wall</h3>
-                    <p>中国古代伟大的防御工程，也是世界文化遗产</p>
-                    <p class="carousel-slide-content-en">Ancient China's great defensive project and a world cultural heritage</p>
-                </div>
-            </div>
-            <div class="carousel-slide">
-                <img src="assets/carousel4.jpg" alt="天坛">
-                <div class="carousel-slide-content">
-                    <h2>天坛</h2>
-                    <h3 class="carousel-slide-content-en">Temple of Heaven</h3>
-                    <p>明清两代皇帝祭天、祈求五谷丰登的场所</p>
-                    <p class="carousel-slide-content-en">Where emperors of the Ming and Qing dynasties worshipped heaven</p>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-arrow prev" onclick="plusSlides(-1)">&#10094;</button>
-        <button class="carousel-arrow next" onclick="plusSlides(1)">&#10095;</button>
-        <div class="carousel-dots"></div>
-    </div>
-    
     <script>
         // 轮播图功能
         let slideIndex = 1;
