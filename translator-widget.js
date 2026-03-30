@@ -653,12 +653,16 @@
                 return hasChinese ? 'zh' : 'en';
             }
             
-            // 过滤需要翻译的节点（长度大于 2 个字符，避免翻译太短的文本，且语言匹配源语言）
+            // 过滤需要翻译的节点（长度大于 1 个字符，确保所有中文都被翻译，且语言匹配源语言）
             const nodesToTranslate = textNodes.filter(node => {
                 const text = node.textContent.trim();
                 const nodeLang = detectLanguage(text);
-                // 长度改为 2 个字符，确保更多中文被翻译
-                return node._translated !== true && text.length > 2 && nodeLang === from;
+                // 长度改为 1 个字符，确保所有中文都被翻译
+                const shouldTranslate = node._translated !== true && text.length >= 1 && nodeLang === from;
+                if (shouldTranslate) {
+                    console.log(`🔍 检测到需要翻译的节点: "${text}" (语言: ${nodeLang})`);
+                }
+                return shouldTranslate;
             });
             
             console.log(`🎯 过滤后需要翻译的节点：${nodesToTranslate.length} 个`);
