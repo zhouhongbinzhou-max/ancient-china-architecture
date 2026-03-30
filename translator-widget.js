@@ -7,7 +7,6 @@
         widget.id = 'translator-widget';
         widget.innerHTML = `
             <div class="translator-toggle" id="translatorToggle">
-                <img src="assets/translation-logo.jpg" class="translator-icon" alt="翻译">
             </div>
             <div class="translator-panel" id="translatorPanel">
                 <div class="translator-panel-header">
@@ -76,7 +75,9 @@
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background-image: url('assets/translation-logo.jpg');
+                background-size: cover;
+                background-position: center;
                 box-shadow: 0 4px 20px rgba(102,126,234,0.4);
                 cursor: grab;
                 display: flex;
@@ -95,15 +96,7 @@
                 box-shadow: 0 6px 25px rgba(102,126,234,0.5);
             }
             
-            #translator-widget .translator-icon {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                object-fit: cover;
-                pointer-events: none;
-                margin: 0;
-                padding: 0;
-            }
+
             
             @keyframes pulse {
                 0%, 100% {
