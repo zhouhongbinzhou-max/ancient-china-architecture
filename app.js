@@ -204,61 +204,73 @@ app.post('/api/translate', async (req, res) => {
             const fromLang = langNames[from] || from;
             const toLang = langNames[to] || to;
             
-            // 批量处理翻译
-            const results = await Promise.all(
-                texts.map(async (text, index) => {
-                    try {
-                        const messages = [
-                            {
-                                role: "system",
-                                content: `你是一个专业的翻译助手。请将以下文本从${fromLang}翻译成${toLang}。要求：
+            // 批量处理翻译，限制并发数
+            const maxConcurrent = 10; // 最大并发数
+            const results = [];
+            
+            // 分批处理
+            for (let i = 0; i < texts.length; i += maxConcurrent) {
+                const batch = texts.slice(i, i + maxConcurrent);
+                console.log(`📦 处理批量翻译批次: ${i/maxConcurrent + 1}/${Math.ceil(texts.length/maxConcurrent)}`);
+                
+                // 并行处理当前批次
+                const batchResults = await Promise.all(
+                    batch.map(async (text, index) => {
+                        try {
+                            const messages = [
+                                {
+                                    role: "system",
+                                    content: `你是一个专业的翻译助手。请将以下文本从${fromLang}翻译成${toLang}。要求：
 1. 只输出翻译结果，不要输出任何解释、说明或其他内容
 2. 保持原文的格式和标点符号
 3. 确保翻译准确、通顺
 4. 如果是短词或短语，直接给出最准确的翻译`
-                            },
-                            {
-                                role: "user",
-                                content: text
+                                },
+                                {
+                                    role: "user",
+                                    content: text
+                                }
+                            ];
+
+                            const postData = JSON.stringify({
+                                model: ENDPOINT_ID,
+                                messages: messages,
+                                temperature: 0.1,
+                                max_tokens: 1000
+                            });
+
+                            const result = await callVolcengineAPI(postData, API_KEY, '/api/v3/chat/completions');
+                            
+                            if (result.error) {
+                                console.error('❌ 翻译 API 错误:', result.error);
+                                return text; // 出错时返回原文
                             }
-                        ];
-
-                        const postData = JSON.stringify({
-                            model: ENDPOINT_ID,
-                            messages: messages,
-                            temperature: 0.1,
-                            max_tokens: 1000
-                        });
-
-                        const result = await callVolcengineAPI(postData, API_KEY, '/api/v3/chat/completions');
-                        
-                        if (result.error) {
-                            console.error('❌ 翻译 API 错误:', result.error);
+                            
+                            let translatedText = null;
+                            if (result.choices && result.choices[0] && result.choices[0].message) {
+                                translatedText = result.choices[0].message.content;
+                            }
+                            
+                            if (translatedText) {
+                                // 处理多个释义的情况，只保留第一个
+                                if (translatedText.includes(';')) {
+                                    translatedText = translatedText.split(';')[0].trim();
+                                }
+                                if (translatedText.includes('、')) {
+                                    translatedText = translatedText.split('、')[0].trim();
+                                }
+                            }
+                            
+                            return translatedText || text;
+                        } catch (error) {
+                            console.error('❌ 单个文本翻译错误:', error);
                             return text; // 出错时返回原文
                         }
-                        
-                        let translatedText = null;
-                        if (result.choices && result.choices[0] && result.choices[0].message) {
-                            translatedText = result.choices[0].message.content;
-                        }
-                        
-                        if (translatedText) {
-                            // 处理多个释义的情况，只保留第一个
-                            if (translatedText.includes(';')) {
-                                translatedText = translatedText.split(';')[0].trim();
-                            }
-                            if (translatedText.includes('、')) {
-                                translatedText = translatedText.split('、')[0].trim();
-                            }
-                        }
-                        
-                        return translatedText || text;
-                    } catch (error) {
-                        console.error('❌ 单个文本翻译错误:', error);
-                        return text; // 出错时返回原文
-                    }
-                })
-            );
+                    })
+                );
+                
+                results.push(...batchResults);
+            }
             
             res.json({
                 success: true,
