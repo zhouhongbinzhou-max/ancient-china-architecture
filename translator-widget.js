@@ -7,7 +7,7 @@
         widget.id = 'translator-widget';
         widget.innerHTML = `
             <div class="translator-toggle" id="translatorToggle">
-                <span class="translator-icon">🌐</span>
+                <img src="assets/translation-logo.jpg" class="translator-icon" alt="翻译">
             </div>
             <div class="translator-panel" id="translatorPanel">
                 <div class="translator-panel-header">
@@ -96,7 +96,10 @@
             }
             
             #translator-widget .translator-icon {
-                font-size: 28px;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;
                 pointer-events: none;
             }
             
@@ -650,7 +653,14 @@
             function detectLanguage(text) {
                 // 更准确的语言检测：包含中文字符则认为是中文
                 const hasChinese = /[\u4e00-\u9fa5]/.test(text);
-                return hasChinese ? 'zh' : 'en';
+                if (hasChinese) return 'zh';
+                
+                // 检测俄语字符
+                const hasCyrillic = /[\u0400-\u04FF]/.test(text);
+                if (hasCyrillic) return 'ru';
+                
+                // 默认为英文
+                return 'en';
             }
             
             // 过滤需要翻译的节点（长度大于 1 个字符，确保所有中文都被翻译，且语言匹配源语言）

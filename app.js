@@ -237,6 +237,20 @@ app.post('/api/translate', async (req, res) => {
             console.warn('⚠️ 翻译成功但无结果');
         }
         
+        // 处理多个释义的情况，只保留第一个
+        if (translatedText) {
+            // 处理分号分隔的多个释义
+            if (translatedText.includes(';')) {
+                translatedText = translatedText.split(';')[0].trim();
+            }
+            // 处理顿号分隔的多个释义
+            if (translatedText.includes('、')) {
+                translatedText = translatedText.split('、')[0].trim();
+            }
+        }
+        
+        console.log('✅ 最终翻译结果:', translatedText);
+        
         // 返回兼容格式
         res.json({
             translatedText: translatedText || q,

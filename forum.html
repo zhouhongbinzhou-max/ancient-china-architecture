@@ -507,6 +507,112 @@
             font-size: 1.2rem;
         }
         
+        /* 轮播图 */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .carousel-slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 60px 50px 40px;
+            color: #fff;
+        }
+        .carousel-slide-content h2 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 700;
+        }
+        .carousel-slide-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            margin-bottom: 10px;
+        }
+        .carousel-slide-content-en {
+            font-family: Arial, sans-serif;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .carousel-slide-content h3.carousel-slide-content-en {
+            font-size: 1.5rem;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .carousel-slide-content p.carousel-slide-content-en {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            right: 50px;
+            display: flex;
+            gap: 10px;
+        }
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .carousel-dot.active {
+            background: #d4af37;
+            transform: scale(1.2);
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            z-index: 10;
+        }
+        .carousel-arrow:hover {
+            background: #d4af37;
+        }
+        .carousel-arrow.prev {
+            left: 20px;
+        }
+        .carousel-arrow.next {
+            right: 20px;
+        }
+        
         /* 响应式 */
         @media (max-width: 1024px) {
             .forum-container {
@@ -546,6 +652,12 @@
             .search-button {
                 font-size: 0.85rem;
                 padding: 6px 12px;
+            }
+            .carousel {
+                height: 350px;
+            }
+            .carousel-slide-content h2 {
+                font-size: 1.5rem;
             }
             .container {
                 padding: 160px 20px 40px;
@@ -1080,7 +1192,115 @@
             }
         }
     </script>
+    <!-- 轮播图 -->
+    <div class="carousel">
+        <div class="carousel-slides">
+            <div class="carousel-slide">
+                <img src="assets/carousel1.jpg" alt="中国古代建筑">
+                <div class="carousel-slide-content">
+                    <h2>中国古代建筑文化</h2>
+                    <h3 class="carousel-slide-content-en">Ancient Chinese Architecture Culture</h3>
+                    <p>传承千年的建筑智慧，展现东方文化的独特魅力</p>
+                    <p class="carousel-slide-content-en">Inheriting thousands of years of architectural wisdom, showcasing the unique charm of Eastern culture</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel2.jpg" alt="紫禁城">
+                <div class="carousel-slide-content">
+                    <h2>紫禁城</h2>
+                    <h3 class="carousel-slide-content-en">Forbidden City</h3>
+                    <p>世界上现存规模最大、保存最为完整的木质结构古建筑之一</p>
+                    <p class="carousel-slide-content-en">One of the largest and best-preserved wooden structures in the world</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel3.jpg" alt="长城">
+                <div class="carousel-slide-content">
+                    <h2>长城</h2>
+                    <h3 class="carousel-slide-content-en">Great Wall</h3>
+                    <p>中国古代伟大的防御工程，也是世界文化遗产</p>
+                    <p class="carousel-slide-content-en">Ancient China's great defensive project and a world cultural heritage</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="assets/carousel4.jpg" alt="天坛">
+                <div class="carousel-slide-content">
+                    <h2>天坛</h2>
+                    <h3 class="carousel-slide-content-en">Temple of Heaven</h3>
+                    <p>明清两代皇帝祭天、祈求五谷丰登的场所</p>
+                    <p class="carousel-slide-content-en">Where emperors of the Ming and Qing dynasties worshipped heaven</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-arrow prev" onclick="plusSlides(-1)">&#10094;</button>
+        <button class="carousel-arrow next" onclick="plusSlides(1)">&#10095;</button>
+        <div class="carousel-dots"></div>
+    </div>
+    
+    <script>
+        // 轮播图功能
+        let slideIndex = 1;
+        let slideTimer;
+        
+        function showSlides(n) {
+            const slides = document.getElementsByClassName("carousel-slide");
+            const dots = document.getElementsByClassName("carousel-dot");
+            
+            if (n > slides.length) {
+                slideIndex = 1;
+            }
+            if (n < 1) {
+                slideIndex = slides.length;
+            }
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+        }
+        
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+            resetSlideTimer();
+        }
+        
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+            resetSlideTimer();
+        }
+        
+        function resetSlideTimer() {
+            clearInterval(slideTimer);
+            slideTimer = setInterval(() => {
+                plusSlides(1);
+            }, 5000);
+        }
+        
+        // 初始化轮播图
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.getElementsByClassName("carousel-slide");
+            const dotsContainer = document.querySelector(".carousel-dots");
+            
+            // 创建轮播图指示器
+            for (let i = 0; i < slides.length; i++) {
+                const dot = document.createElement("span");
+                dot.className = "carousel-dot";
+                dot.setAttribute("onclick", `currentSlide(${i+1})`);
+                dotsContainer.appendChild(dot);
+            }
+            
+            showSlides(slideIndex);
+            slideTimer = setInterval(() => {
+                plusSlides(1);
+            }, 5000);
+        });
+    </script>
     <!-- 智能翻译小部件 -->
     <script src="translator-widget.js"></script>
-</body>
+    </body>
 </html>
