@@ -646,10 +646,18 @@
                 return;
             }
             
-            // 过滤需要翻译的节点（长度大于 5 个字符，避免翻译太短的文本）
+            // 检测文本语言
+            function detectLanguage(text) {
+                // 简单的语言检测：包含中文字符则认为是中文
+                const hasChinese = /[\u4e00-\u9fa5]/.test(text);
+                return hasChinese ? 'zh' : 'en';
+            }
+            
+            // 过滤需要翻译的节点（长度大于 5 个字符，避免翻译太短的文本，且语言匹配源语言）
             const nodesToTranslate = textNodes.filter(node => {
                 const text = node.textContent.trim();
-                return node._translated !== true && text.length > 5;
+                const nodeLang = detectLanguage(text);
+                return node._translated !== true && text.length > 5 && nodeLang === from;
             });
             
             console.log(`🎯 过滤后需要翻译的节点：${nodesToTranslate.length} 个`);
