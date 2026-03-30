@@ -191,14 +191,14 @@ app.post('/api/translate', async (req, res) => {
         }
 
         console.log('📝 收到翻译请求:', q.substring(0, 50));
-        console.log('🔑 使用翻译 API Key:', TRANSLATE_API_KEY.substring(0, 8) + '...');
-        console.log('🎯 使用翻译接入点:', TRANSLATE_MODEL_ID);
+        console.log('🔑 使用 API Key:', API_KEY.substring(0, 8) + '...');
+        console.log('🎯 使用接入点:', ENDPOINT_ID);
 
-        // 使用 Chat API 格式，系统提示词指定翻译任务
+        // 使用与 AI 问答相同的模型，通过系统提示词指定翻译任务
         const messages = [
             {
                 role: "system",
-                content: `You are a professional translator. Translate text from ${from} to ${to}. Only output the translation, nothing else.`
+                content: `你是一个专业的翻译助手。请将以下文本从 ${from} 翻译成 ${to}。只输出翻译结果，不要输出任何其他内容。`
             },
             {
                 role: "user",
@@ -207,13 +207,13 @@ app.post('/api/translate', async (req, res) => {
         ];
 
         const postData = JSON.stringify({
-            model: TRANSLATE_MODEL_ID,
+            model: ENDPOINT_ID,  // 使用与问答相同的模型
             messages: messages,
             temperature: 0.1,
             max_tokens: 1000
         });
 
-        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions');
+        const result = await callVolcengineAPI(postData, API_KEY, '/api/v3/chat/completions');
         
         console.log('📦 翻译 API 响应:', JSON.stringify(result).substring(0, 200));
         
