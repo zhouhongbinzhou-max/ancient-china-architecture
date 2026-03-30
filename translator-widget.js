@@ -680,16 +680,15 @@
             let translatedCount = 0;
             const totalNodes = nodesToTranslate.length;
             
-            // 批处理翻译（每 20 个节点一批，提高并行度）
-            const batchSize = 20;
+            // 批处理翻译（每 10 个节点一批，避免请求过大）
+            const batchSize = 10;
             
             for (let i = 0; i < totalNodes; i += batchSize) {
                 const batch = nodesToTranslate.slice(i, i + batchSize);
                 console.log(`📦 处理批次 [${Math.floor(i/batchSize) + 1}/${Math.ceil(totalNodes/batchSize)}]，包含 ${batch.length} 个节点`);
                 
-                // 并行处理批次中的所有节点
-                let batchCompleted = 0;
-                const batchPromises = batch.map(async (node) => {
+                // 串行处理批次中的所有节点，避免并发过高
+                for (const node of batch) {
                     const originalText = node.textContent.trim();
                     
                     try {
@@ -714,35 +713,24 @@
                         if (translatedText && translatedText !== originalText && translatedText.length > 0) {
                             node.textContent = translatedText;
                             node._translated = true;
-                            return true;
+                            translatedCount++;
                         } else {
                             console.warn(`⚠️ 翻译结果异常或与原文相同: "${translatedText || '空'}"`);
-                            return false;
                         }
                     } catch (error) {
                         console.error('翻译失败:', originalText.substring(0, 50), error);
-                        return false;
-                    } finally {
-                        // 每个节点完成后更新进度
-                        batchCompleted++;
-                        const currentProgress = translatedCount + batchCompleted;
-                        const percent = Math.round((currentProgress / totalNodes) * 100);
-                        // 使用 requestAnimationFrame 确保平滑更新
-                        requestAnimationFrame(() => {
-                            progressFill.style.width = percent + '%';
-                            progressText.textContent = percent + '%';
-                        });
                     }
-                });
-                
-                // 等待批次完成
-                const results = await Promise.all(batchPromises);
-                const batchSuccessCount = results.filter(Boolean).length;
-                translatedCount += batchSuccessCount;
-                
-                // 每批次之间短暂延迟，避免请求过快
-                if (i + batchSize < totalNodes) {
-                    await new Promise(resolve => setTimeout(resolve, 50)); // 减少延迟到 50ms
+                    
+                    // 每个节点完成后更新进度
+                    const percent = Math.round((translatedCount / totalNodes) * 100);
+                    // 使用 requestAnimationFrame 确保平滑更新
+                    requestAnimationFrame(() => {
+                        progressFill.style.width = percent + '%';
+                        progressText.textContent = percent + '%';
+                    });
+                    
+                    // 每个节点之间短暂延迟，避免请求过快
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
             }
             

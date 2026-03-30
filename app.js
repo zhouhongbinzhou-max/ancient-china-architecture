@@ -195,10 +195,28 @@ app.post('/api/translate', async (req, res) => {
         console.log('🎯 使用接入点:', ENDPOINT_ID);
 
         // 使用与 AI 问答相同的模型，通过系统提示词指定翻译任务
+        // 语言名称映射
+        const langNames = {
+            'zh': '中文',
+            'en': '英语',
+            'ja': '日语',
+            'ko': '韩语',
+            'fr': '法语',
+            'es': '西班牙语',
+            'de': '德语',
+            'ru': '俄语'
+        };
+        const fromLang = langNames[from] || from;
+        const toLang = langNames[to] || to;
+        
         const messages = [
             {
                 role: "system",
-                content: `你是一个专业的翻译助手。请将以下文本从 ${from} 翻译成 ${to}。只输出翻译结果，不要输出任何其他内容。`
+                content: `你是一个专业的翻译助手。请将以下文本从${fromLang}翻译成${toLang}。要求：
+1. 只输出翻译结果，不要输出任何解释、说明或其他内容
+2. 保持原文的格式和标点符号
+3. 确保翻译准确、通顺
+4. 如果是短词或短语，直接给出最准确的翻译`
             },
             {
                 role: "user",
