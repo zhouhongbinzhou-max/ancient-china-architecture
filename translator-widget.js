@@ -680,56 +680,111 @@
             let translatedCount = 0;
             const totalNodes = nodesToTranslate.length;
             
-            // 批处理翻译（每 10 个节点一批，避免请求过大）
-            const batchSize = 10;
+            // 批量翻译优化：将多个文本合并为一个请求
+            const batchSize = 50; // 每批处理50个文本
+            const batches = [];
             
             for (let i = 0; i < totalNodes; i += batchSize) {
-                const batch = nodesToTranslate.slice(i, i + batchSize);
-                console.log(`📦 处理批次 [${Math.floor(i/batchSize) + 1}/${Math.ceil(totalNodes/batchSize)}]，包含 ${batch.length} 个节点`);
+                batches.push(nodesToTranslate.slice(i, i + batchSize));
+            }
+            
+            console.log(`📦 总共 ${batches.length} 个批次，开始批量处理`);
+            
+            // 批量处理所有批次
+            for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+                const batch = batches[batchIndex];
+                console.log(`📦 处理批次 ${batchIndex + 1}/${batches.length}，包含 ${batch.length} 个节点`);
                 
-                // 串行处理批次中的所有节点，避免并发过高
-                for (const node of batch) {
+                // 分离需要翻译的节点和已经缓存的节点
+                const nodesWithCache = [];
+                const nodesToAPI = [];
+                
+                batch.forEach(node => {
                     const originalText = node.textContent.trim();
+                    const cacheKey = `translate_${from}_${to}_${originalText}`;
+                    const cachedResult = localStorage.getItem(cacheKey);
                     
-                    try {
-                        // 检查缓存
-                        const cacheKey = `translate_${from}_${to}_${originalText}`;
-                        const cachedResult = localStorage.getItem(cacheKey);
-                        
-                        let translatedText;
-                        if (cachedResult) {
-                            console.log(`💾 从缓存获取翻译结果: "${originalText.substring(0, 30)}"`);
-                            translatedText = cachedResult;
-                        } else {
-                            // 调用翻译 API
-                            translatedText = await callTranslateAPI(originalText, from, to);
-                            
-                            // 缓存翻译结果（有效期 24 小时）
-                            localStorage.setItem(cacheKey, translatedText);
-                            console.log(`✅ 翻译并缓存结果: "${originalText.substring(0, 30)}"`);
-                        }
-                        
-                        // 验证翻译结果
-                        if (translatedText && translatedText !== originalText && translatedText.length > 0) {
-                            node.textContent = translatedText;
-                            node._translated = true;
-                            translatedCount++;
-                        } else {
-                            console.warn(`⚠️ 翻译结果异常或与原文相同: "${translatedText || '空'}"`);
-                        }
-                    } catch (error) {
-                        console.error('翻译失败:', originalText.substring(0, 50), error);
+                    if (cachedResult) {
+                        // 从缓存获取
+                        nodesWithCache.push({ node, originalText, translatedText: cachedResult });
+                    } else {
+                        // 需要API翻译
+                        nodesToAPI.push({ node, originalText });
                     }
+                });
+                
+                // 处理缓存的节点
+                nodesWithCache.forEach(({ node, originalText, translatedText }) => {
+                    console.log(`💾 从缓存获取翻译结果: "${originalText.substring(0, 30)}"`);
                     
-                    // 每个节点完成后更新进度
-                    const percent = Math.round((translatedCount / totalNodes) * 100);
-                    // 使用 requestAnimationFrame 确保平滑更新
-                    requestAnimationFrame(() => {
-                        progressFill.style.width = percent + '%';
-                        progressText.textContent = percent + '%';
-                    });
-                    
-                    // 每个节点之间短暂延迟，避免请求过快
+                    if (translatedText && translatedText !== originalText && translatedText.length > 0) {
+                        node.textContent = translatedText;
+                        node._translated = true;
+                        translatedCount++;
+                    } else {
+                        console.warn(`⚠️ 缓存翻译结果异常: "${translatedText || '空'}"`);
+                    }
+                });
+                
+                // 处理需要API翻译的节点
+                if (nodesToAPI.length > 0) {
+                    try {
+                        // 提取文本数组
+                        const textsToTranslate = nodesToAPI.map(item => item.originalText);
+                        
+                        // 调用批量翻译API
+                        const translatedTexts = await callBatchTranslateAPI(textsToTranslate, from, to);
+                        
+                        // 处理翻译结果
+                        nodesToAPI.forEach(({ node, originalText }, index) => {
+                            const translatedText = translatedTexts[index];
+                            
+                            if (translatedText && translatedText !== originalText && translatedText.length > 0) {
+                                node.textContent = translatedText;
+                                node._translated = true;
+                                translatedCount++;
+                                
+                                // 缓存翻译结果
+                                const cacheKey = `translate_${from}_${to}_${originalText}`;
+                                localStorage.setItem(cacheKey, translatedText);
+                                console.log(`✅ 翻译并缓存结果: "${originalText.substring(0, 30)}"`);
+                            } else {
+                                console.warn(`⚠️ 翻译结果异常或与原文相同: "${translatedText || '空'}"`);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('批量翻译失败:', error);
+                        
+                        // 失败时回退到单个翻译
+                        await Promise.all(nodesToAPI.map(async ({ node, originalText }) => {
+                            try {
+                                const translatedText = await callTranslateAPI(originalText, from, to);
+                                
+                                if (translatedText && translatedText !== originalText && translatedText.length > 0) {
+                                    node.textContent = translatedText;
+                                    node._translated = true;
+                                    translatedCount++;
+                                    
+                                    // 缓存翻译结果
+                                    const cacheKey = `translate_${from}_${to}_${originalText}`;
+                                    localStorage.setItem(cacheKey, translatedText);
+                                }
+                            } catch (error) {
+                                console.error('单个翻译失败:', originalText.substring(0, 50), error);
+                            }
+                        }));
+                    }
+                }
+                
+                // 更新进度
+                const percent = Math.round((translatedCount / totalNodes) * 100);
+                requestAnimationFrame(() => {
+                    progressFill.style.width = percent + '%';
+                    progressText.textContent = percent + '%';
+                });
+                
+                // 批次间短暂延迟，避免API请求过于密集
+                if (batchIndex < batches.length - 1) {
                     await new Promise(resolve => setTimeout(resolve, 100));
                 }
             }
@@ -884,6 +939,46 @@
             
             console.log('✅ 最终翻译文本:', translatedText);
             return translatedText;
+        }
+        
+        // 批量调用翻译 API
+        async function callBatchTranslateAPI(texts, from, to) {
+            console.log('📤 发送批量翻译请求:', { count: texts.length, from, to });
+            
+            const API_URL = '/api/translate';
+            console.log('🔗 调用 API URL:', API_URL);
+            
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    texts: texts,
+                    from: from,
+                    to: to
+                })
+            });
+            
+            console.log('📥 API 响应状态:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ API 错误:', errorText);
+                throw new Error('翻译 API 调用失败：' + response.status);
+            }
+            
+            const data = await response.json();
+            console.log('📦 API 返回完整数据:', data);
+            
+            if (data.success && data.results && Array.isArray(data.results)) {
+                console.log('✅ 批量翻译成功，返回', data.results.length, '个结果');
+                return data.results;
+            } else {
+                console.warn('⚠️ 批量翻译返回格式错误');
+                // 失败时返回原文
+                return texts;
+            }
         }
         
         // 监听动态内容变化，自动翻译新添加的内容

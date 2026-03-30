@@ -185,7 +185,89 @@ app.post('/api/analyze-image', async (req, res) => {
 // API 路由：翻译
 app.post('/api/translate', async (req, res) => {
     try {
-        const { q, from, to } = req.body;
+        const { q, from, to, texts } = req.body;
+        
+        // 支持批量翻译
+        if (texts && Array.isArray(texts)) {
+            console.log('📝 收到批量翻译请求:', texts.length, '个文本');
+            
+            const langNames = {
+                'zh': '中文',
+                'en': '英语',
+                'ja': '日语',
+                'ko': '韩语',
+                'fr': '法语',
+                'es': '西班牙语',
+                'de': '德语',
+                'ru': '俄语'
+            };
+            const fromLang = langNames[from] || from;
+            const toLang = langNames[to] || to;
+            
+            // 批量处理翻译
+            const results = await Promise.all(
+                texts.map(async (text, index) => {
+                    try {
+                        const messages = [
+                            {
+                                role: "system",
+                                content: `你是一个专业的翻译助手。请将以下文本从${fromLang}翻译成${toLang}。要求：
+1. 只输出翻译结果，不要输出任何解释、说明或其他内容
+2. 保持原文的格式和标点符号
+3. 确保翻译准确、通顺
+4. 如果是短词或短语，直接给出最准确的翻译`
+                            },
+                            {
+                                role: "user",
+                                content: text
+                            }
+                        ];
+
+                        const postData = JSON.stringify({
+                            model: ENDPOINT_ID,
+                            messages: messages,
+                            temperature: 0.1,
+                            max_tokens: 1000
+                        });
+
+                        const result = await callVolcengineAPI(postData, API_KEY, '/api/v3/chat/completions');
+                        
+                        if (result.error) {
+                            console.error('❌ 翻译 API 错误:', result.error);
+                            return text; // 出错时返回原文
+                        }
+                        
+                        let translatedText = null;
+                        if (result.choices && result.choices[0] && result.choices[0].message) {
+                            translatedText = result.choices[0].message.content;
+                        }
+                        
+                        if (translatedText) {
+                            // 处理多个释义的情况，只保留第一个
+                            if (translatedText.includes(';')) {
+                                translatedText = translatedText.split(';')[0].trim();
+                            }
+                            if (translatedText.includes('、')) {
+                                translatedText = translatedText.split('、')[0].trim();
+                            }
+                        }
+                        
+                        return translatedText || text;
+                    } catch (error) {
+                        console.error('❌ 单个文本翻译错误:', error);
+                        return text; // 出错时返回原文
+                    }
+                })
+            );
+            
+            res.json({
+                success: true,
+                results: results
+            });
+            return;
+        }
+        
+        // 单个文本翻译
         if (!q) {
             return res.status(400).json({ error: '请提供要翻译的文本' });
         }
@@ -194,7 +276,6 @@ app.post('/api/translate', async (req, res) => {
         console.log('🔑 使用 API Key:', API_KEY.substring(0, 8) + '...');
         console.log('🎯 使用接入点:', ENDPOINT_ID);
 
-        // 使用与 AI 问答相同的模型，通过系统提示词指定翻译任务
         // 语言名称映射
         const langNames = {
             'zh': '中文',
