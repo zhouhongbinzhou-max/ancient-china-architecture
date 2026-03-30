@@ -78,7 +78,7 @@
                 background-image: url('assets/translation-logo.jpg');
                 background-size: cover;
                 background-position: center;
-                box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+                box-shadow: 0 4px 20px rgba(139,69,19,0.4);
                 cursor: grab;
                 display: flex;
                 align-items: center;
@@ -93,17 +93,17 @@
             
             #translator-widget .translator-toggle:hover {
                 transform: scale(1.1);
-                box-shadow: 0 6px 25px rgba(102,126,234,0.5);
+                box-shadow: 0 6px 25px rgba(139,69,19,0.5);
             }
             
 
             
             @keyframes pulse {
                 0%, 100% {
-                    box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+                    box-shadow: 0 4px 20px rgba(139,69,19,0.4);
                 }
                 50% {
-                    box-shadow: 0 4px 30px rgba(102,126,234,0.6);
+                    box-shadow: 0 4px 30px rgba(139,69,19,0.6);
                 }
             }
             
@@ -130,7 +130,7 @@
             }
             
             #translator-widget .translator-panel-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
                 color: #fff;
                 padding: 15px 20px;
                 display: flex;
@@ -199,14 +199,14 @@
             }
             
             #translator-widget .translator-option select:focus {
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+                border-color: #8B4513;
+                box-shadow: 0 0 0 3px rgba(139,69,19,0.1);
             }
             
             #translator-widget .translator-btn {
                 width: 100%;
                 padding: 12px;
-                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
                 border: none;
                 border-radius: 8px;
                 color: #fff;
@@ -219,7 +219,7 @@
             
             #translator-widget .translator-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(245,87,108,0.4);
+                box-shadow: 0 5px 15px rgba(218,165,32,0.4);
             }
             
             #translator-widget .translator-btn:disabled {
@@ -264,7 +264,7 @@
             
             #translator-widget .progress-fill {
                 height: 100%;
-                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(90deg, #DAA520 0%, #8B4513 100%);
                 width: 0%;
                 transition: width 0.3s ease;
                 border-radius: 3px;
