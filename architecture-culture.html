@@ -49,22 +49,25 @@
             gap: 12px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            flex-shrink: 0;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-brand img {
             width: 40px;
             height: 40px;
             border-radius: 4px;
+            flex-shrink: 0;
         }
         .navbar-brand span {
             color: #DAA520;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .english-brand {
-            font-family: 'Times New Roman', serif;
-            font-size: 1rem;
-            color: #F5DEB3;
-            margin: 0 10px;
-            font-style: italic;
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
+            margin-left: 12px;
+            opacity: 0.9;
         }
         .language-switcher {
             position: relative;
