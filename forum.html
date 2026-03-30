@@ -21,7 +21,7 @@
         /* 导航栏 */
         .navbar {
             background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
-            padding: 15px 50px;
+            padding: 12px 40px;
             position: fixed;
             width: 100%;
             top: 0;
@@ -34,45 +34,54 @@
         }
         .navbar-brand {
             color: #DAA520;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            flex-shrink: 1;
+            min-width: 0;
         }
-        .chinese-icon {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #DAA520;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
         .navbar-brand span {
             color: #DAA520;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .english-brand {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-family: Arial, sans-serif;
-            margin-left: 15px;
+            margin-left: 12px;
             opacity: 0.9;
         }
         .language-switcher {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+            position: relative;
+        }
+        .lang-selector {
+            position: relative;
+            display: inline-block;
         }
         .lang-btn {
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: rgba(255,255,255,0.1);
             border: 1px solid #8B4513;
             border-radius: 4px;
             color: #DAA520;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
         }
         .lang-btn:hover {
             background: rgba(218,165,32,0.2);
@@ -82,24 +91,59 @@
             background: #8B4513;
             color: #F5DEB3;
         }
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 6px 0;
+            min-width: 110px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+        .lang-selector:hover .lang-dropdown {
+            display: block;
+        }
+        .lang-option {
+            padding: 6px 14px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+        .lang-option:hover {
+            background: rgba(139,69,19,0.3);
+            color: #F5DEB3;
+        }
         .navbar-menu {
             display: flex;
-            gap: 30px;
+            gap: 15px;
             list-style: none;
             align-items: center;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 5px 10px;
+            padding: 6px 8px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
             line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -166,7 +210,11 @@
         .navbar-content {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 20px;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            flex: 1;
+            min-width: 0;
         }
         
         .navbar-search {
@@ -513,6 +561,7 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <a href="index.html" class="navbar-brand">
+            <img src="assets/logo.png" alt="中国古代建筑文化平台" style="width: 40px; height: 40px; margin-right: 10px;">
             <span class="chinese-icon">亭</span>
             <span>中国古代建筑</span>
             <span class="english-brand">Cross-Border Exchange Platform</span>

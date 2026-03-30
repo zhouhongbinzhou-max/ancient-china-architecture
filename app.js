@@ -57,7 +57,7 @@ app.use(express.static(__dirname, {
 const htmlPages = [
     'translator', 'test-ai', 'about', 'contact', 'join', 'privacy', 'terms',
     'sitemap', 'travel-guide', 'international-exchange', 'cultural-cities',
-    'data-visualization', 'famous-buildings', 'architecture-style', 
+    'famous-buildings', 'architecture-style', 
     'architecture-technique', 'architecture-culture', 'forum'
 ];
 

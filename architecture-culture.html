@@ -128,24 +128,29 @@
         }
         .navbar-menu {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             list-style: none;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 6px 12px;
+            padding: 6px 8px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
             line-height: 1.5;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
