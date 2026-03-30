@@ -977,19 +977,18 @@
     </footer>
     
     <script>
-        // 轮播图功能 - 实现丝滑的循环轮播
-        let currentSlide = 1; // 从1开始，因为我们会在开头添加克隆的最后一张
+        // 轮播图功能 - 修复无限循环和跳跃问题
+        let currentSlide = 1;
         let slides = document.querySelectorAll('.carousel-slide');
         const dots = document.getElementById('carouselDots');
         const carouselSlides = document.getElementById('carouselSlides');
+        let isTransitioning = false; // 防止快速切换
         
         // 初始化轮播图，添加克隆幻灯片用于无缝循环
         function initCarousel() {
-            // 确保slides已经正确获取
             slides = document.querySelectorAll('.carousel-slide');
             if (slides.length === 0) return;
             
-            // 清除现有的克隆幻灯片（如果有）
             const originalSlides = Array.from(slides).slice();
             
             // 克隆第一张和最后一张幻灯片
@@ -1001,17 +1000,23 @@
             // 将克隆的第一张添加到结尾
             carouselSlides.appendChild(firstSlide);
             
-            // 更新slides变量
+            // 更新 slides 变量
             slides = document.querySelectorAll('.carousel-slide');
             
-            // 重置currentSlide
+            // 重置 currentSlide
             currentSlide = 1;
             
             // 创建轮播指示器
             createDots();
             
-            // 设置初始位置
+            // 设置初始位置（不显示动画）
+            carouselSlides.style.transition = 'none';
             updateSlidePosition();
+            
+            // 强制重绘后启用动画
+            setTimeout(() => {
+                carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+            }, 50);
         }
         
         // 创建轮播指示器
@@ -1040,8 +1045,6 @@
         function updateSlidePosition() {
             const slideWidth = slides[0].offsetWidth;
             carouselSlides.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
-            // 关闭过渡效果，用于无缝切换
-            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
         }
         
         // 更新指示器状态
@@ -1060,76 +1063,66 @@
         
         // 下一张幻灯片
         function nextSlide() {
-            const slideWidth = slides[0].offsetWidth;
+            if (isTransitioning) return; // 防止快速切换
+            isTransitioning = true;
             
-            // 如果当前在最后一张，继续向右滑动到第一张（平滑过渡）
             if (currentSlide === slides.length - 2) {
-                // 切换到克隆的第一张
+                // 当前在最后一张，切换到克隆的第一张
                 currentSlide++;
                 updateSlidePosition();
                 
-                // 监听过渡结束事件
-                const onTransitionEnd = () => {
-                    // 移除监听器
-                    carouselSlides.removeEventListener('transitionend', onTransitionEnd);
-                    
-                    // 关闭过渡效果，瞬间跳回真实的第一张
+                // 等待过渡完成后瞬间跳回真实的第一张
+                setTimeout(() => {
                     carouselSlides.style.transition = 'none';
                     currentSlide = 1;
                     updateSlidePosition();
                     
-                    // 下一帧重新开启过渡效果
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
-                        });
-                    });
-                };
-                
-                // 添加过渡结束监听
-                carouselSlides.addEventListener('transitionend', onTransitionEnd);
+                    // 强制重绘后重新启用动画
+                    setTimeout(() => {
+                        carouselSlides.offsetHeight; // 强制重绘
+                        carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+                        isTransitioning = false;
+                    }, 50);
+                }, 500); // 与 CSS transition 时间一致
             } else {
-                // 普通情况，直接下一张
                 currentSlide++;
                 updateSlidePosition();
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 500);
             }
             updateDots();
         }
         
         // 上一张幻灯片
         function prevSlide() {
-            const slideWidth = slides[0].offsetWidth;
+            if (isTransitioning) return; // 防止快速切换
+            isTransitioning = true;
             
-            // 如果当前在第一张，继续向左滑动到最后一张（平滑过渡）
             if (currentSlide === 1) {
-                // 切换到克隆的最后一张
+                // 当前在第一张，切换到克隆的最后一张
                 currentSlide--;
                 updateSlidePosition();
                 
-                // 监听过渡结束事件
-                const onTransitionEnd = () => {
-                    // 移除监听器
-                    carouselSlides.removeEventListener('transitionend', onTransitionEnd);
-                    
-                    // 关闭过渡效果，瞬间跳回真实的最后一张
+                // 等待过渡完成后瞬间跳回真实的最后一张
+                setTimeout(() => {
                     carouselSlides.style.transition = 'none';
                     currentSlide = slides.length - 2;
                     updateSlidePosition();
                     
-                    // 下一帧重新开启过渡效果
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            carouselSlides.style.transition = 'transform 0.5s ease-in-out';
-                        });
-                    });
-                };
-                
-                // 添加过渡结束监听
-                carouselSlides.addEventListener('transitionend', onTransitionEnd);
+                    // 强制重绘后重新启用动画
+                    setTimeout(() => {
+                        carouselSlides.offsetHeight; // 强制重绘
+                        carouselSlides.style.transition = 'transform 0.5s ease-in-out';
+                        isTransitioning = false;
+                    }, 50);
+                }, 500); // 与 CSS transition 时间一致
             } else {
-                // 普通情况，直接上一张
                 currentSlide--;
                 updateSlidePosition();
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 500);
             }
             updateDots();
         }
