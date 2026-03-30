@@ -646,58 +646,79 @@
                 return;
             }
             
-            // 显示前 10 个节点用于调试
-            textNodes.slice(0, 10).forEach((node, i) => {
-                console.log(`${i+1}. "${node.textContent.trim().substring(0, 50)}"`);
+            // 过滤需要翻译的节点（长度大于 5 个字符，避免翻译太短的文本）
+            const nodesToTranslate = textNodes.filter(node => {
+                const text = node.textContent.trim();
+                return node._translated !== true && text.length > 5;
             });
             
-            let translatedCount = 0;
-            const totalNodes = textNodes.length;
+            console.log(`🎯 过滤后需要翻译的节点：${nodesToTranslate.length} 个`);
             
-            // 逐个翻译文本节点
-            for (let i = 0; i < totalNodes; i++) {
-                const node = textNodes[i];
+            if (nodesToTranslate.length === 0) {
+                alert('没有需要翻译的新文本');
+                return;
+            }
+            
+            let translatedCount = 0;
+            const totalNodes = nodesToTranslate.length;
+            
+            // 批处理翻译（每 10 个节点一批）
+            const batchSize = 10;
+            
+            for (let i = 0; i < totalNodes; i += batchSize) {
+                const batch = nodesToTranslate.slice(i, i + batchSize);
+                console.log(`📦 处理批次 [${Math.floor(i/batchSize) + 1}/${Math.ceil(totalNodes/batchSize)}]，包含 ${batch.length} 个节点`);
                 
-                // 跳过已翻译的节点（使用自定义属性）
-                if (node._translated === true) {
-                    translatedCount++;
-                    continue;
-                }
-                
-                const originalText = node.textContent.trim();
-                
-                try {
-                    console.log(`🔤 翻译 [${i+1}/${totalNodes}]: 原文="${originalText}"`);
+                // 并行处理批次中的所有节点
+                const batchPromises = batch.map(async (node) => {
+                    const originalText = node.textContent.trim();
                     
-                    // 调用翻译 API
-                    const translatedText = await callTranslateAPI(originalText, from, to);
-                    
-                    console.log(`✅ 翻译结果="${translatedText}"`);
-                    console.log(`🔍 对比：原文="${originalText}", 译文="${translatedText}", 相同=${translatedText === originalText}`);
-                    
-                    // 更新文本内容
-                    if (translatedText && translatedText !== originalText) {
-                        const oldText = node.textContent;
-                        node.textContent = translatedText;
-                        node._translated = true;   // 标记为已翻译
-                        translatedCount++;
-                        console.log(`✨ 已更新文本节点："${oldText}" -> "${node.textContent}"`);
-                    } else {
-                        console.warn(`⚠️ 翻译结果与原文本相同或为空，未更新。原因：${!translatedText ? '结果为空' : (translatedText === originalText ? '译文=原文' : '未知')}`);
+                    try {
+                        // 检查缓存
+                        const cacheKey = `translate_${from}_${to}_${originalText}`;
+                        const cachedResult = localStorage.getItem(cacheKey);
+                        
+                        let translatedText;
+                        if (cachedResult) {
+                            console.log(`💾 从缓存获取翻译结果: "${originalText.substring(0, 30)}"`);
+                            translatedText = cachedResult;
+                        } else {
+                            // 调用翻译 API
+                            translatedText = await callTranslateAPI(originalText, from, to);
+                            
+                            // 缓存翻译结果（有效期 24 小时）
+                            localStorage.setItem(cacheKey, translatedText);
+                            console.log(`✅ 翻译并缓存结果: "${originalText.substring(0, 30)}"`);
+                        }
+                        
+                        // 验证翻译结果
+                        if (translatedText && translatedText !== originalText && !translatedText.includes(';') && !translatedText.includes('appraise') && !translatedText.includes('authenticate')) {
+                            node.textContent = translatedText;
+                            node._translated = true;
+                            return true;
+                        } else {
+                            console.warn(`⚠️ 翻译结果异常或与原文相同: "${translatedText || '空'}"`);
+                            return false;
+                        }
+                    } catch (error) {
+                        console.error('翻译失败:', originalText.substring(0, 50), error);
+                        return false;
                     }
-                    
-                    // 更新进度
-                    const percent = Math.round((translatedCount / totalNodes) * 100);
-                    progressFill.style.width = percent + '%';
-                    progressText.textContent = percent + '%';
-                    
-                    // 每翻译 5 个元素稍微延迟一下，避免请求过快
-                    if (i % 5 === 0 && i > 0) {
-                        await new Promise(resolve => setTimeout(resolve, 200));  // 增加延迟到 200ms
-                    }
-                } catch (error) {
-                    console.error('翻译失败:', originalText, error);
-                    // 翻译失败不影响其他节点
+                });
+                
+                // 等待批次完成
+                const results = await Promise.all(batchPromises);
+                const batchSuccessCount = results.filter(Boolean).length;
+                translatedCount += batchSuccessCount;
+                
+                // 更新进度
+                const percent = Math.round((translatedCount / totalNodes) * 100);
+                progressFill.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+                
+                // 每批次之间短暂延迟，避免请求过快
+                if (i + batchSize < totalNodes) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
             }
             
