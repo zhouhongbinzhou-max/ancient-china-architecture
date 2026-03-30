@@ -536,29 +536,59 @@
         
         // 调用翻译 API
         async function callTranslateAPI(text, from, to) {
-            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
-            const API_BASE = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3001' 
-                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
+            // 使用相对路径，前端和后端在同一域名下
+            const API_URL = '/api/translate';
             
-            const response = await fetch(API_BASE + '/api/translate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    q: text,
-                    from: from,
-                    to: to
-                })
-            });
+            console.log('🌐 开始调用翻译 API...');
+            console.log('📍 API URL:', API_URL);
+            console.log('📝 待翻译文本:', text.substring(0, 100));
+            console.log('🔤 从:', from, '到:', to);
             
-            if (!response.ok) {
-                throw new Error('翻译 API 调用失败');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        q: text,
+                        from: from,
+                        to: to
+                    })
+                });
+                
+                console.log('📥 API 响应状态:', response.status);
+                console.log('📥 API 响应头 Content-Type:', response.headers.get('content-type'));
+                
+                const responseText = await response.text();
+                console.log('📥 API 原始响应 (前 500 字符):', responseText.substring(0, 500));
+                
+                if (!response.ok) {
+                    let errorData = {};
+                    try {
+                        errorData = JSON.parse(responseText);
+                    } catch (e) {
+                        console.error('无法解析错误响应');
+                    }
+                    console.error('❌ API 错误响应:', errorData);
+                    throw new Error('翻译失败：' + (errorData.error || response.statusText));
+                }
+                
+                const data = JSON.parse(responseText);
+                console.log('📦 API 返回数据:', data);
+                
+                if (data.translatedText) {
+                    console.log('✅ 翻译成功:', data.translatedText.substring(0, 100));
+                    return data.translatedText;
+                } else {
+                    console.error('❌ API 返回数据格式错误:', data);
+                    throw new Error('翻译失败：返回数据格式错误');
+                }
+            } catch (error) {
+                console.error('❌ 翻译 API 调用异常:', error);
+                console.error('错误堆栈:', error.stack);
+                throw error;
             }
-            
-            const data = await response.json();
-            return data.translatedText || text;
         }
         
         // 在新标签页打开
