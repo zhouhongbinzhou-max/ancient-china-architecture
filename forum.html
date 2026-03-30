@@ -978,7 +978,15 @@
             }
         };
         
-                    });
+        // 切换语言函数
+        function changeLanguage(lang) {
+            const elements = document.querySelectorAll('[data-lang-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
             
             // 更新语言按钮状态
             document.querySelectorAll('.lang-btn').forEach(btn => {
