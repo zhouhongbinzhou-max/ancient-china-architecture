@@ -96,11 +96,13 @@
             }
             
             #translator-widget .translator-icon {
-                width: 30px;
-                height: 30px;
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
                 object-fit: cover;
                 pointer-events: none;
+                margin: 0;
+                padding: 0;
             }
             
             @keyframes pulse {
@@ -716,7 +718,7 @@
                         }
                         
                         // 验证翻译结果
-                        if (translatedText && translatedText !== originalText && !translatedText.includes(';') && !translatedText.includes('appraise') && !translatedText.includes('authenticate')) {
+                        if (translatedText && translatedText !== originalText && translatedText.length > 0) {
                             node.textContent = translatedText;
                             node._translated = true;
                             return true;
