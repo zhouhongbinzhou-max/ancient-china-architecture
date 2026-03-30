@@ -648,16 +648,17 @@
             
             // 检测文本语言
             function detectLanguage(text) {
-                // 简单的语言检测：包含中文字符则认为是中文
+                // 更准确的语言检测：包含中文字符则认为是中文
                 const hasChinese = /[\u4e00-\u9fa5]/.test(text);
                 return hasChinese ? 'zh' : 'en';
             }
             
-            // 过滤需要翻译的节点（长度大于 5 个字符，避免翻译太短的文本，且语言匹配源语言）
+            // 过滤需要翻译的节点（长度大于 2 个字符，避免翻译太短的文本，且语言匹配源语言）
             const nodesToTranslate = textNodes.filter(node => {
                 const text = node.textContent.trim();
                 const nodeLang = detectLanguage(text);
-                return node._translated !== true && text.length > 5 && nodeLang === from;
+                // 长度改为 2 个字符，确保更多中文被翻译
+                return node._translated !== true && text.length > 2 && nodeLang === from;
             });
             
             console.log(`🎯 过滤后需要翻译的节点：${nodesToTranslate.length} 个`);
@@ -670,8 +671,8 @@
             let translatedCount = 0;
             const totalNodes = nodesToTranslate.length;
             
-            // 批处理翻译（每 10 个节点一批）
-            const batchSize = 10;
+            // 批处理翻译（每 20 个节点一批，提高并行度）
+            const batchSize = 20;
             
             for (let i = 0; i < totalNodes; i += batchSize) {
                 const batch = nodesToTranslate.slice(i, i + batchSize);
@@ -726,7 +727,7 @@
                 
                 // 每批次之间短暂延迟，避免请求过快
                 if (i + batchSize < totalNodes) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
+                    await new Promise(resolve => setTimeout(resolve, 50)); // 减少延迟到 50ms
                 }
             }
             
