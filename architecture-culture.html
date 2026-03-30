@@ -28,7 +28,7 @@
         /* 导航栏 */
         .navbar {
             background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
-            padding: 15px 50px;
+            padding: 12px 40px;
             position: fixed;
             width: 100%;
             top: 0;
@@ -215,8 +215,10 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: flex-end;
+            flex: 1;
+            min-width: 0;
         }
         
         .navbar-search {

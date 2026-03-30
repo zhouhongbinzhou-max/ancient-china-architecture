@@ -50,15 +50,19 @@
             gap: 12px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            flex-shrink: 0;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-brand img {
             width: 40px;
             height: 40px;
             border-radius: 4px;
+            flex-shrink: 0;
         }
         .navbar-brand span {
             color: #DAA520;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .english-brand {
             font-size: 0.9rem;
@@ -125,24 +129,29 @@
         }
         .navbar-menu {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             list-style: none;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 6px 12px;
+            padding: 6px 8px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
             line-height: 1.5;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -212,8 +221,10 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: flex-end;
+            flex: 1;
+            min-width: 0;
         }
         
         .navbar-search {
