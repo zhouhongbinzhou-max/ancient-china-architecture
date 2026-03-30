@@ -806,15 +806,8 @@
         async function callTranslateAPI(text, from, to) {
             console.log('📤 发送翻译请求:', { text: text.substring(0, 50), from, to });
             
-            // 腾讯云部署时使用函数 URL，本地开发使用 localhost
-            const hostname = window.location.hostname;
-            console.log('🌐 当前 hostname:', hostname);
-            
-            const API_BASE = hostname === 'localhost' 
-                ? 'http://localhost:3001' 
-                : 'https://1416972799-jvl67ua8j5.ap-guangzhou.tencentscf.com';
-            
-            const API_URL = API_BASE + '/api/translate';
+            // 使用相对路径，前端和后端部署在 Render 同一域名下
+            const API_URL = '/api/translate';
             console.log('🔗 调用 API URL:', API_URL);
             
             const response = await fetch(API_URL, {
