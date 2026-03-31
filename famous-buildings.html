@@ -81,6 +81,8 @@
             align-items: center;
             border-bottom: 3px solid #8B4513;
             box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            overflow: hidden;
         }
         .navbar-brand {
             color: #DAA520;
@@ -94,20 +96,34 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             flex-shrink: 1;
             min-width: 0;
+            white-space: nowrap;
+        }
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
         .navbar-brand span {
             color: #DAA520;
             flex-shrink: 1;
             min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .english-brand {
             font-size: 0.9rem;
             font-family: Arial, sans-serif;
             margin-left: 12px;
             opacity: 0.9;
+            flex-shrink: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .language-switcher {
             position: relative;
+            flex-shrink: 0;
         }
         .lang-selector {
             position: relative;
@@ -171,6 +187,13 @@
             flex-wrap: nowrap;
             white-space: nowrap;
             min-width: 0;
+            flex: 1;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .navbar-menu li {
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
@@ -187,7 +210,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 120px;
+            max-width: 100px;
+            flex-shrink: 1;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -265,6 +289,7 @@
             justify-content: flex-end;
             flex: 1;
             min-width: 0;
+            overflow: hidden;
         }
         
         .navbar-search {
@@ -284,6 +309,7 @@
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             width: 150px;
+            flex-shrink: 0;
         }
         
         .search-input:focus {
@@ -303,6 +329,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            flex-shrink: 0;
         }
         
         .search-button:hover {
@@ -598,7 +625,6 @@
         <a href="index.html" class="navbar-brand">
             <img src="assets/logo.png" alt="中国古代建筑文化平台" style="width: 40px; height: 40px; margin-right: 10px;">
             <span>中国古代建筑</span>
-            <span class="english-brand">Cross-Border Exchange Platform</span>
             <span>文化跨境交流平台</span>
         </a>
         <div class="navbar-content">
