@@ -1091,4 +1091,12 @@
             }
         }
     }
+    
+    // 全局函数，用于从导航栏调用
+    window.toggleTranslator = function() {
+        const panel = document.getElementById('translatorPanel');
+        if (panel) {
+            panel.classList.toggle('active');
+        }
+    };
 })();
