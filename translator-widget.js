@@ -823,6 +823,9 @@
             setTimeout(() => {
                 const successRate = Math.round((translatedCount / totalNodes) * 100);
                 alert(`翻译完成！页面已更新，请查看效果。\n\n共翻译 ${translatedCount}/${totalNodes} 个文本节点\n成功率：${successRate}%\n\n提示：部分复杂布局的文本可能需要手动调整。`);
+                
+                // 保存翻译状态，用于页面切换后自动翻译
+                localStorage.setItem('translator_last_translation_time', Date.now());
             }, 100);
         }
         
@@ -1045,8 +1048,47 @@
     
     // 页面加载完成后创建小部件
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createTranslatorWidget);
+        document.addEventListener('DOMContentLoaded', function() {
+            createTranslatorWidget();
+            // 页面加载完成后检查是否需要自动翻译
+            checkAndAutoTranslate();
+        });
     } else {
         createTranslatorWidget();
+        // 页面加载完成后检查是否需要自动翻译
+        checkAndAutoTranslate();
+    }
+    
+    // 检查是否需要自动翻译
+    function checkAndAutoTranslate() {
+        const lastTranslationTime = localStorage.getItem('translator_last_translation_time');
+        const lastFrom = localStorage.getItem('translator_last_from');
+        const lastTo = localStorage.getItem('translator_last_to');
+        
+        // 如果有翻译记录且时间在24小时内，自动执行翻译
+        if (lastTranslationTime && lastFrom && lastTo) {
+            const timeDiff = Date.now() - parseInt(lastTranslationTime);
+            const oneDay = 24 * 60 * 60 * 1000;
+            
+            if (timeDiff < oneDay) {
+                console.log('🔄 检测到历史翻译记录，自动执行翻译');
+                // 等待DOM完全加载
+                setTimeout(() => {
+                    // 模拟点击翻译按钮
+                    const translateBtn = document.getElementById('translateBtn');
+                    if (translateBtn) {
+                        // 设置语言选择
+                        const sourceLang = document.getElementById('sourceLang');
+                        const targetLang = document.getElementById('targetLang');
+                        if (sourceLang && targetLang) {
+                            sourceLang.value = lastFrom;
+                            targetLang.value = lastTo;
+                            // 触发翻译
+                            translateBtn.click();
+                        }
+                    }
+                }, 500);
+            }
+        }
     }
 })();
