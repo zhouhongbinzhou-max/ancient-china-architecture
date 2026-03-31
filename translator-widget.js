@@ -603,7 +603,14 @@
                         if (node.textContent.trim().length === 0) {
                             return NodeFilter.FILTER_REJECT;
                         }
-                        // 不再过滤短文本和翻译小部件，允许翻译所有可见文本
+                        // 过滤导航栏文本，避免翻译后破坏布局
+                        if (node.parentElement?.closest('.navbar')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        // 过滤翻译小部件本身的文本
+                        if (node.parentElement?.closest('#translator-widget')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
                         return NodeFilter.FILTER_ACCEPT;
                     }
                 }
