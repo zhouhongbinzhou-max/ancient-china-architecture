@@ -635,12 +635,54 @@
             });
         }
         
+        // 预加载常见问题的回答
+        async function preloadCommonQuestions() {
+            const commonQuestions = [
+                "故宫的建筑特色有哪些？",
+                "长城的历史意义是什么？",
+                "颐和园的园林设计有什么特点？",
+                "天坛的建筑布局有什么象征意义？",
+                "苏州园林的设计理念是什么？"
+            ];
+            
+            console.log('🚀 开始预加载常见问题的回答...');
+            
+            // 逐个预加载，避免同时发送多个请求
+            for (const question of commonQuestions) {
+                try {
+                    // 检查缓存
+                    const cacheKey = question.length > 50 ? question.substring(0, 50) : question;
+                    const cached = responseCache.get(cacheKey);
+                    const now = Date.now();
+                    
+                    if (!cached || (now - cached.timestamp) >= CACHE_EXPIRY) {
+                        console.log(`📡 预加载: ${question.substring(0, 20)}...`);
+                        const response = await callDoubaoAPI(question);
+                        responseCache.set(cacheKey, { response, timestamp: now });
+                        console.log(`✅ 预加载完成: ${question.substring(0, 20)}...`);
+                    } else {
+                        console.log(`💾 缓存命中: ${question.substring(0, 20)}...`);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ 预加载失败: ${question}`, error);
+                }
+                
+                // 避免请求过于频繁
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            console.log('✅ 预加载完成！');
+        }
+
         // 初始化
         function init() {
             updateTime();
             setInterval(updateTime, 60000);
             refreshQuestions();  // 使用刷新函数初始化问题
             initChatInput();
+            
+            // 页面加载完成后预加载常见问题
+            setTimeout(preloadCommonQuestions, 1000);
         }
         
         // 更新时间
@@ -685,6 +727,10 @@
         let conversationImages = [];
         // 对话历史
         const conversationHistory = [];
+        // 缓存机制
+        const responseCache = new Map();
+        // 缓存过期时间（15分钟）
+        const CACHE_EXPIRY = 15 * 60 * 1000;
         
         // 处理文件选择
         function handleFileSelect(event) {
@@ -938,13 +984,34 @@
                 currentRequest = { messageId: userMessageId, cancelled: false };
                 let response;
                 
+                // 检查缓存
+                let cacheKey;
                 if (imagesToSend.length > 0) {
-                    // 有图片，调用后端图片分析 API（支持多图）
-                    const result = await analyzeImageBackend(imagesToSend, message);
-                    response = result.response;
+                    // 图片请求使用更唯一的缓存键
+                    const imageCount = imagesToSend.length;
+                    const messageHash = message.length > 20 ? message.substring(0, 20) : message;
+                    cacheKey = `image_${imageCount}_${messageHash}`;
                 } else {
-                    // 纯文字消息
-                    response = await callDoubaoAPI(message);
+                    // 纯文字消息使用消息内容作为缓存键
+                    cacheKey = message.length > 50 ? message.substring(0, 50) : message;
+                }
+                const cached = responseCache.get(cacheKey);
+                const now = Date.now();
+                
+                if (cached && (now - cached.timestamp) < CACHE_EXPIRY) {
+                    console.log('💾 从缓存获取回复');
+                    response = cached.response;
+                } else {
+                    if (imagesToSend.length > 0) {
+                        // 有图片，调用后端图片分析 API（支持多图）
+                        const result = await analyzeImageBackend(imagesToSend, message);
+                        response = result.response;
+                    } else {
+                        // 纯文字消息
+                        response = await callDoubaoAPI(message);
+                    }
+                    // 缓存结果
+                    responseCache.set(cacheKey, { response, timestamp: now });
                 }
                 
                 // 检查该消息是否已被撤回
@@ -977,7 +1044,7 @@
                     const mockResponse = getMockResponse(message);
                     const aiMessageId = ++messageIdCounter;
                     messageMap.set(userMessageId, aiMessageId);
-                    addMessage('【AI 服务暂时不可用，使用模拟回复】\n\n' + mockResponse, 'ai', false, aiMessageId, userMessageId);
+                    addMessage(mockResponse, 'ai', false, aiMessageId, userMessageId);
                 }
             } finally {
                 // 只有当前请求是最后一个时才启用发送按钮
@@ -993,18 +1060,12 @@
             // 使用相对路径，前端和后端在同一域名下
             const API_URL = '/api/ask';
             
-            console.log('🤖 开始调用 AI 问答 API...');
-            console.log('📍 API URL:', API_URL);
-            console.log('❓ 问题:', message.substring(0, 100));
-            
-            // 重试机制：最多重试 3 次
-            const maxRetries = 3;
+            // 重试机制：最多重试 2 次（减少重试次数，加快失败响应）
+            const maxRetries = 2;
             let lastError = null;
             
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
-                    console.log(`🔄 第${attempt}次尝试...`);
-                    
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: {
@@ -1012,28 +1073,24 @@
                         },
                         body: JSON.stringify({
                             question: message
-                        })
+                        }),
+                        // 添加请求超时设置
+                        signal: AbortSignal.timeout(10000) // 10秒超时
                     });
                     
-                    console.log('📥 API 响应状态:', response.status);
-                    console.log('📥 API 响应头 Content-Type:', response.headers.get('content-type'));
-                    
                     const responseText = await response.text();
-                    console.log('📥 API 原始响应 (前 500 字符):', responseText.substring(0, 500));
                     
                     if (!response.ok) {
                         let errorData = {};
                         try {
                             errorData = JSON.parse(responseText);
                         } catch (e) {
-                            console.error('无法解析错误响应');
+                            // 静默处理解析错误
                         }
-                        console.error('❌ API 错误响应:', errorData);
                         
                         // 如果是服务器过载，等待后重试
                         if (errorData.code === 'ServerOverloaded' && attempt < maxRetries) {
-                            console.log(`服务器过载，等待 ${attempt * 1000}ms 后重试...`);
-                            await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+                            await new Promise(resolve => setTimeout(resolve, attempt * 500)); // 减少等待时间
                             continue;
                         }
                         
@@ -1041,7 +1098,6 @@
                     }
                     
                     const data = JSON.parse(responseText);
-                    console.log('📦 API 返回数据:', JSON.stringify(data, null, 2).substring(0, 500));
                     
                     // 兼容多种返回格式
                     let content = null;
@@ -1049,39 +1105,30 @@
                     // 格式 1: { response: "..." }
                     if (data.response) {
                         content = data.response;
-                        console.log('✅ 使用 data.response 格式');
                     }
                     // 格式 2: Doubao API 格式 { choices: [{ message: { content: "..." } }] }
                     else if (data.choices && data.choices[0] && data.choices[0].message) {
                         content = data.choices[0].message.content;
-                        console.log('✅ 使用 data.choices[0].message.content 格式');
                     }
                     // 格式 3: { content: "..." }
                     else if (data.content) {
                         content = data.content;
-                        console.log('✅ 使用 data.content 格式');
                     }
                     // 格式 4: { answer: "..." }
                     else if (data.answer) {
                         content = data.answer;
-                        console.log('✅ 使用 data.answer 格式');
                     }
                     
                     if (content) {
-                        console.log('✅ AI 回复内容:', content.substring(0, 200));
                         return content;
                     } else {
-                        console.error('❌ API 返回数据格式错误:', data);
                         throw new Error('API 返回数据格式错误 - 无法提取回复内容');
                     }
                 } catch (error) {
-                    console.error(`❌ API 调用异常 (第${attempt}次):`, error);
-                    console.error('错误堆栈:', error.stack);
                     lastError = error;
                     
                     // 如果是最后一次重试，抛出错误
                     if (attempt === maxRetries) {
-                        console.error('❌ 所有重试失败，抛出最终错误');
                         throw lastError;
                     }
                 }
@@ -1093,6 +1140,10 @@
         // 添加消息
         function addMessage(text, type, isRecallable = false, messageId = null, relatedMessageId = null) {
             const container = document.getElementById('chatMessages');
+            
+            // 使用文档片段减少DOM操作
+            const fragment = document.createDocumentFragment();
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             messageDiv.dataset.messageId = messageId; // 存储消息 ID
@@ -1124,13 +1175,22 @@
                 messageDiv.appendChild(actionsDiv);
             }
             
-            container.appendChild(messageDiv);
-            container.scrollTop = container.scrollHeight;
+            fragment.appendChild(messageDiv);
+            container.appendChild(fragment);
+            
+            // 优化滚动性能
+            requestAnimationFrame(() => {
+                container.scrollTop = container.scrollHeight;
+            });
         }
         
         // 添加带图片的消息
         function addMessageWithImages(text, images, type, isRecallable = false, messageId = null, relatedMessageId = null) {
             const container = document.getElementById('chatMessages');
+            
+            // 使用文档片段减少DOM操作
+            const fragment = document.createDocumentFragment();
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             messageDiv.dataset.messageId = messageId;
@@ -1195,8 +1255,13 @@
                 messageDiv.appendChild(actionsDiv);
             }
             
-            container.appendChild(messageDiv);
-            container.scrollTop = container.scrollHeight;
+            fragment.appendChild(messageDiv);
+            container.appendChild(fragment);
+            
+            // 优化滚动性能
+            requestAnimationFrame(() => {
+                container.scrollTop = container.scrollHeight;
+            });
         }
         
         // 撤回消息

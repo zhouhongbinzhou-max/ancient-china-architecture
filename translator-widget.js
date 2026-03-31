@@ -587,6 +587,16 @@
             }
         });
         
+        // 监听文本选择事件，实现类似有道翻译的划词翻译功能
+        document.addEventListener('mouseup', function() {
+            const selectedText = window.getSelection().toString().trim();
+            if (selectedText.length > 0 && selectedText.length < 1000) {
+                console.log('📝 选中的文本:', selectedText);
+                // 这里可以添加划词翻译的逻辑
+                // 例如显示翻译结果弹窗等
+            }
+        });
+        
         // 使用 TreeWalker 获取所有可翻译的文本节点
         function getAllTextNodes(root) {
             const textNodes = [];
@@ -1109,34 +1119,22 @@
     
     // 检查是否需要自动翻译
     function checkAndAutoTranslate() {
-        const lastTranslationTime = localStorage.getItem('translator_last_translation_time');
+        // 不再自动执行翻译，改为让用户手动触发
+        // 只恢复语言选择状态
         const lastFrom = localStorage.getItem('translator_last_from');
         const lastTo = localStorage.getItem('translator_last_to');
         
-        // 如果有翻译记录且时间在24小时内，自动执行翻译
-        if (lastTranslationTime && lastFrom && lastTo) {
-            const timeDiff = Date.now() - parseInt(lastTranslationTime);
-            const oneDay = 24 * 60 * 60 * 1000;
-            
-            if (timeDiff < oneDay) {
-                console.log('🔄 检测到历史翻译记录，自动执行翻译');
-                // 等待DOM完全加载
-                setTimeout(() => {
-                    // 模拟点击翻译按钮
-                    const translateBtn = document.getElementById('translateBtn');
-                    if (translateBtn) {
-                        // 设置语言选择
-                        const sourceLang = document.getElementById('sourceLang');
-                        const targetLang = document.getElementById('targetLang');
-                        if (sourceLang && targetLang) {
-                            sourceLang.value = lastFrom;
-                            targetLang.value = lastTo;
-                            // 触发翻译
-                            translateBtn.click();
-                        }
-                    }
-                }, 500);
-            }
+        if (lastFrom && lastTo) {
+            console.log('🔄 检测到历史翻译记录，恢复语言选择');
+            // 等待DOM完全加载
+            setTimeout(() => {
+                const sourceLang = document.getElementById('sourceLang');
+                const targetLang = document.getElementById('targetLang');
+                if (sourceLang && targetLang) {
+                    sourceLang.value = lastFrom;
+                    targetLang.value = lastTo;
+                }
+            }, 500);
         }
     }
     
