@@ -930,6 +930,57 @@
             return texts;
         }
         
+        // 优化翻译结果，使其更简洁
+        function optimizeTranslation(text, targetLang) {
+            // 常见的冗长翻译替换
+            const replacements = {
+                'Chinese Ancient Architecture': 'Ancient Chinese Architecture',
+                'Chinese Classical Architecture': 'Ancient Chinese Architecture',
+                'China\'s Ancient Architecture': 'Ancient Chinese Architecture',
+                'Home Page': 'Home',
+                'Building Appreciation': 'Architecture',
+                'AI Question and Answer': 'AI Q&A',
+                'Cultural Topics': 'Culture',
+                'International Exchange': 'Exchange',
+                'About Us': 'About',
+                'Cultural Cities': 'Cities',
+                'Famous Buildings': 'Famous Sites',
+                'Intelligent Question and Answer System': 'AI Q&A System',
+                'Ask Doubao about Classical Architecture': 'Ask Doubao',
+                'Architectural Culture': 'Architecture Culture',
+                'Architectural Techniques': 'Techniques',
+                'Architectural Styles': 'Styles',
+                'Cross-Border Impact of Architectural Culture': 'Cross-Border Impact',
+                'International Master\'s Perspectives': 'Master Views',
+                'Cross-Border Exchange Cases': 'Exchange Cases',
+                'Platform Introduction': 'Platform',
+                'Contact Us': 'Contact',
+                'Join Us': 'Join',
+                'Search Chinese Ancient Architecture Knowledge...': 'Search...',
+                'Search': 'Search',
+                'Use Terms': 'Terms',
+                'Privacy Policy': 'Privacy',
+                'Site Map': 'Sitemap',
+                'Architecture Forum': 'Forum'
+            };
+            
+            let optimizedText = text;
+            for (const [long, short] of Object.entries(replacements)) {
+                optimizedText = optimizedText.replace(new RegExp(long, 'gi'), short);
+            }
+            
+            // 移除多余的冠词和虚词
+            if (targetLang === 'en') {
+                optimizedText = optimizedText
+                    .replace(/\bthe\s+/gi, '')
+                    .replace(/\ba\s+/gi, '')
+                    .replace(/\ban\s+/gi, '')
+                    .trim();
+            }
+            
+            return optimizedText;
+        }
+        
         // 调用翻译 API
         async function callTranslateAPI(text, from, to) {
             console.log('📤 发送翻译请求:', { text: text.substring(0, 50), from, to });
@@ -977,8 +1028,10 @@
                 return text;
             }
             
-            console.log('✅ 最终翻译文本:', translatedText);
-            return translatedText;
+            // 优化翻译结果
+            const optimizedText = optimizeTranslation(translatedText, to);
+            console.log('✅ 最终翻译文本:', optimizedText);
+            return optimizedText;
         }
         
         // 批量调用翻译 API
@@ -1013,7 +1066,9 @@
             
             if (data.success && data.results && Array.isArray(data.results)) {
                 console.log('✅ 批量翻译成功，返回', data.results.length, '个结果');
-                return data.results;
+                // 优化批量翻译结果
+                const optimizedResults = data.results.map(result => optimizeTranslation(result, to));
+                return optimizedResults;
             } else {
                 console.warn('⚠️ 批量翻译返回格式错误');
                 // 失败时返回原文

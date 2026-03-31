@@ -39,6 +39,7 @@
             border-bottom: 3px solid #8B4513;
             box-shadow: 0 2px 15px rgba(0,0,0,0.5);
             box-sizing: border-box;
+            overflow: hidden;
         }
         .navbar-brand {
             color: #DAA520;
@@ -53,6 +54,7 @@
             flex-shrink: 1;
             min-width: 0;
             white-space: nowrap;
+            max-width: 300px;
         }
         .navbar-brand img {
             width: 40px;
@@ -147,9 +149,22 @@
             min-width: 0;
             flex: 1;
             justify-content: center;
+            overflow-x: auto;
+            padding: 0 10px;
+        }
+        .navbar-menu::-webkit-scrollbar {
+            height: 4px;
+        }
+        .navbar-menu::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+        .navbar-menu::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.5);
+            border-radius: 2px;
         }
         .navbar-menu li {
-            flex-shrink: 1;
+            flex-shrink: 0;
             min-width: 0;
         }
         .navbar-menu a {
@@ -167,8 +182,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100px;
-            flex-shrink: 1;
+            max-width: 120px;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
