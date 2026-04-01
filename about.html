@@ -165,11 +165,13 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             flex-shrink: 1;
             min-width: 0;
+            flex-wrap: wrap;
+            max-width: 40%;
         }
         .navbar-brand img {
             width: 40px;
@@ -181,12 +183,18 @@
             color: #DAA520;
             flex-shrink: 1;
             min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .english-brand {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-family: Arial, sans-serif;
-            margin-left: 12px;
             opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         .language-switcher {
             position: relative;
@@ -247,29 +255,35 @@
         }
         .navbar-menu {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             list-style: none;
             align-items: center;
             flex-wrap: nowrap;
             white-space: nowrap;
             min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .navbar-menu::-webkit-scrollbar {
+            display: none;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 6px 8px;
+            padding: 6px 6px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
-            line-height: 1.5;
+            line-height: 1.4;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 120px;
+            max-width: 100px;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -690,36 +704,64 @@
         
         @media (max-width: 768px) {
             .navbar {
-                padding: 15px 20px;
+                padding: 10px 15px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+            .navbar-brand {
                 flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
+                gap: 2px;
+                align-items: flex-start;
+                max-width: 60%;
+                font-size: 1rem;
+            }
+            .navbar-brand span {
+                font-size: 0.9rem;
+                max-width: 100%;
+            }
+            .english-brand {
+                font-size: 0.65rem;
+                max-width: 100%;
             }
             .navbar-content {
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+                justify-content: flex-end;
+                width: auto;
             }
             .navbar-menu {
                 display: flex;
                 justify-content: center;
-                gap: 15px;
+                gap: 8px;
                 flex-wrap: wrap;
+                order: 2;
+                width: 100%;
             }
             .navbar-menu a {
-                font-size: 0.85rem;
-                padding: 3px 8px;
+                font-size: 0.8rem;
+                padding: 4px 6px;
+                max-width: 80px;
+            }
+            .language-switcher {
+                order: 0;
             }
             .navbar-search {
                 justify-content: center;
+                order: 1;
+                width: 100%;
             }
             .search-input {
-                width: 200px;
-                font-size: 0.85rem;
+                width: 150px;
+                font-size: 0.8rem;
+                padding: 5px 10px;
             }
             .search-button {
-                font-size: 0.85rem;
-                padding: 6px 12px;
+                font-size: 0.8rem;
+                padding: 5px 10px;
             }
             .container {
                 padding: 120px 20px 40px;
