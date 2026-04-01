@@ -1035,31 +1035,18 @@
         async function callTranslateAPI(text, from, to) {
             console.log('📤 发送翻译请求:', { text: text.substring(0, 50), from, to });
             
-            // 使用 Doubao-Seed-Translation API
-            const API_URL = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
-            const API_KEY = 'api-key-20260327160822';
-            const MODEL_ID = '250915'; // Doubao-Seed-Translation
-            console.log('🔗 调用 API URL:', API_URL);
+            // 使用后端翻译API
+            const API_URL = '/api/translate';
             
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: MODEL_ID,
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'You are a professional translator. Translate the following text from ' + from + ' to ' + to + '. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.'
-                        },
-                        {
-                            role: 'user',
-                            content: text
-                        }
-                    ],
-                    temperature: 0.3
+                    q: text,
+                    from: from,
+                    to: to
                 })
             });
             
@@ -1069,16 +1056,20 @@
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ API 错误:', errorText);
-                throw new Error('翻译 API 调用失败：' + response.status);
+                // 出错时返回原文
+                return text;
             }
             
             const data = await response.json();
             console.log('📦 API 返回完整数据:', data);  // 打印完整对象
             
             let translatedText = null;
-            if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
-                translatedText = data.choices[0].message.content;
-                console.log('✅ 使用 choices[0].message.content 字段');
+            if (data.results && data.results.length > 0) {
+                translatedText = data.results[0];
+                console.log('✅ 使用 results[0] 字段');
+            } else if (data.translatedText) {
+                translatedText = data.translatedText;
+                console.log('✅ 使用 translatedText 字段');
             } else {
                 console.warn('⚠️ 未识别翻译字段，使用原文本');
                 return text;
@@ -1094,22 +1085,52 @@
         async function callBatchTranslateAPI(texts, from, to) {
             console.log('📤 发送批量翻译请求:', { count: texts.length, from, to });
             
-            // 由于 Doubao-Seed-Translation API 不支持批量翻译，我们使用循环调用单个翻译
-            const results = [];
-            for (const text of texts) {
-                try {
-                    const translatedText = await callTranslateAPI(text, from, to);
-                    results.push(translatedText);
-                } catch (error) {
-                    console.error('❌ 批量翻译单个文本失败:', text.substring(0, 50), error);
-                    results.push(text); // 失败时使用原文
-                }
-                // 避免 API 请求过于密集
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
+            // 使用后端批量翻译API
+            const API_URL = '/api/translate';
             
-            console.log('✅ 批量翻译完成，返回', results.length, '个结果');
-            return results;
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        texts: texts,
+                        from: from,
+                        to: to
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('批量翻译 API 调用失败：' + response.status);
+                }
+                
+                const data = await response.json();
+                if (data.success && data.results) {
+                    console.log('✅ 批量翻译完成，返回', data.results.length, '个结果');
+                    return data.results;
+                } else {
+                    throw new Error('批量翻译 API 返回数据格式错误');
+                }
+            } catch (error) {
+                console.error('批量翻译失败:', error);
+                // 失败时回退到单个翻译
+                const results = [];
+                for (const text of texts) {
+                    try {
+                        const translatedText = await callTranslateAPI(text, from, to);
+                        results.push(translatedText);
+                    } catch (error) {
+                        console.error('❌ 批量翻译单个文本失败:', text.substring(0, 50), error);
+                        results.push(text); // 失败时使用原文
+                    }
+                    // 避免 API 请求过于密集
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                console.log('✅ 批量翻译完成，返回', results.length, '个结果');
+                return results;
+            }
         }
         
         // 监听动态内容变化，自动翻译新添加的内容
