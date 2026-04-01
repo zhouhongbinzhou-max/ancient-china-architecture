@@ -129,6 +129,20 @@
                 opacity: 1;
             }
             
+            /* 从导航栏点击时的面板样式 */
+            #translator-widget .translator-panel.navbar-active {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                bottom: auto !important;
+                right: auto !important;
+                transform: translate(-50%, -50%) scale(1) !important;
+                transform-origin: center !important;
+                opacity: 1 !important;
+                z-index: 1000000 !important;
+                transition: all 0.3s ease !important;
+            }
+            
             #translator-widget .translator-panel-header {
                 background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
                 color: #fff;
@@ -337,12 +351,38 @@
         // 关闭面板
         closeBtn.addEventListener('click', () => {
             panel.classList.remove('active');
+            panel.classList.remove('navbar-active');
+            // 清除内联样式，恢复默认状态
+            panel.style.display = '';
+            panel.style.position = '';
+            panel.style.top = '';
+            panel.style.left = '';
+            panel.style.transform = '';
+            panel.style.width = '';
+            panel.style.background = '';
+            panel.style.borderRadius = '';
+            panel.style.boxShadow = '';
+            panel.style.zIndex = '';
+            panel.style.opacity = '';
         });
         
         // 点击外部关闭面板
         document.addEventListener('click', (e) => {
             if (!widget.contains(e.target)) {
                 panel.classList.remove('active');
+                panel.classList.remove('navbar-active');
+                // 清除内联样式，恢复默认状态
+                panel.style.display = '';
+                panel.style.position = '';
+                panel.style.top = '';
+                panel.style.left = '';
+                panel.style.transform = '';
+                panel.style.width = '';
+                panel.style.background = '';
+                panel.style.borderRadius = '';
+                panel.style.boxShadow = '';
+                panel.style.zIndex = '';
+                panel.style.opacity = '';
             }
         });
         
@@ -1140,9 +1180,76 @@
     
     // 全局函数，用于从导航栏调用
     window.toggleTranslator = function() {
-        const panel = document.getElementById('translatorPanel');
-        if (panel) {
-            panel.classList.toggle('active');
+        console.log('toggleTranslator function called');
+        let widget = document.getElementById('translator-widget');
+        console.log('widget:', widget);
+        let panel = document.getElementById('translatorPanel');
+        console.log('panel:', panel);
+        
+        // 如果widget不存在，创建它
+        if (!widget) {
+            console.log('Creating widget...');
+            createTranslatorWidget();
+            widget = document.getElementById('translator-widget');
+            console.log('Widget created:', widget);
+            panel = document.getElementById('translatorPanel');
+            console.log('Panel created:', panel);
+        }
+        
+        if (panel && widget) {
+            console.log('Panel and widget exist');
+            // 检查是否已经从导航栏激活
+            const isNavbarActive = panel.classList.contains('navbar-active');
+            console.log('isNavbarActive:', isNavbarActive);
+            
+            if (isNavbarActive) {
+                console.log('Closing panel...');
+                // 如果已经激活，则关闭
+                panel.classList.remove('navbar-active');
+                panel.classList.remove('active');
+                // 清除内联样式，恢复默认状态
+                panel.style.display = '';
+                panel.style.position = '';
+                panel.style.top = '';
+                panel.style.left = '';
+                panel.style.transform = '';
+                panel.style.width = '';
+                panel.style.background = '';
+                panel.style.borderRadius = '';
+                panel.style.boxShadow = '';
+                panel.style.zIndex = '';
+                panel.style.opacity = '';
+                console.log('Panel closed');
+            } else {
+                console.log('Opening panel...');
+                // 先移除所有相关类，避免冲突
+                panel.classList.remove('active');
+                panel.classList.remove('navbar-active');
+                
+                // 确保widget可见
+                widget.style.display = 'block';
+                widget.style.position = 'fixed';
+                widget.style.zIndex = '999999';
+                
+                // 强制显示面板
+                panel.style.display = 'block';
+                panel.style.position = 'fixed';
+                panel.style.top = '50%';
+                panel.style.left = '50%';
+                panel.style.transform = 'translate(-50%, -50%)';
+                panel.style.width = '320px';
+                panel.style.background = '#fff';
+                panel.style.borderRadius = '16px';
+                panel.style.boxShadow = '0 10px 40px rgba(0,0,0,0.15)';
+                panel.style.zIndex = '1000000';
+                panel.style.opacity = '1';
+                
+                // 添加navbar-active类
+                panel.classList.add('navbar-active');
+                console.log('Panel opened');
+            }
+        } else {
+            console.log('Panel or widget does not exist');
         }
     };
 })();
