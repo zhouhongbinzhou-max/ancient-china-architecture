@@ -312,16 +312,20 @@ app.post('/api/translate', async (req, res) => {
                                 }
                             ];
 
+                            // 强制使用翻译模型ID
+                            const translateModelId = "ep-20260327161112-jjmbv";
+                            
                             // 构建翻译API请求格式
                             const postData = JSON.stringify({
-                                model: TRANSLATE_MODEL_ID, // 使用环境变量中的接入点ID
+                                model: translateModelId, // 使用翻译模型ID
                                 text: text,
                                 from: from,
                                 to: to
                             });
 
                             console.log('📤 发送的 postData:', postData);
-                            console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
+                            console.log('📤 使用的模型ID:', translateModelId);
+                            console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
                             console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
                             // 使用翻译API端点
                             const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
@@ -399,16 +403,20 @@ app.post('/api/translate', async (req, res) => {
             }
         ];
 
+        // 强制使用翻译模型ID
+        const translateModelId = "ep-20260327161112-jjmbv";
+        
         // 构建翻译API请求格式
         const postData = JSON.stringify({
-            model: TRANSLATE_MODEL_ID, // 使用环境变量中的接入点ID
+            model: translateModelId, // 使用翻译模型ID
             text: q,
             from: from,
             to: to
         });
 
         console.log('📤 发送的 postData:', postData);
-        console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
+        console.log('📤 使用的模型ID:', translateModelId);
+        console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
         console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
         // 使用翻译API端点
         const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
