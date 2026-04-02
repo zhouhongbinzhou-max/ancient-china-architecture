@@ -987,7 +987,7 @@
                             <div class="image-preview-area" id="imagePreviewArea" style="display: none;">
                                 <!-- 图片预览将在这里动态添加 -->
                             </div>
-                            <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
+                            <button class="upload-btn" id="uploadBtn">
                                 📷 上传图片
                             </button>
                             <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
@@ -1808,7 +1808,20 @@
         }
         
         // 页面加载完成后初始化
-        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', function() {
+            // 立即绑定上传按钮事件
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', function() {
+                    const fileInput = document.getElementById('fileInput');
+                    if (fileInput) {
+                        fileInput.click();
+                    }
+                });
+            }
+            // 调用其他初始化函数
+            init();
+        });
         
     </script>
     <!-- 智能翻译小部件 -->
