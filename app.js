@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.API_KEY || '90d3b17b-8fef-4682-bf72-7d51b24a48f4'; // 使用您的真实 API Key
 const ENDPOINT_ID = process.env.ENDPOINT_ID || "ep-20260321225445-p7gjs"; // 问答模型接入点 ID
 const TRANSLATE_API_KEY = process.env.TRANSLATE_API_KEY || '90d3b17b-8fef-4682-bf72-7d51b24a48f4'; // 翻译模型 API Key (使用与问答模型相同的API Key)
-const TRANSLATE_MODEL_ID = process.env.TRANSLATE_MODEL_ID || "ep-20260321225445-p7gjs"; // 翻译模型接入点 ID（重要！使用与问答模型相同的接入点 ID）
+const TRANSLATE_MODEL_ID = process.env.TRANSLATE_MODEL_ID || "ep-20260327161112-jjmbv"; // 翻译模型接入点 ID（重要！使用专门的翻译模型）
 
 // 后端缓存机制
 const responseCache = new Map();
