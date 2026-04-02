@@ -45,7 +45,7 @@
                         <span class="btn-loading" style="display:none;">翻译中...</span>
                     </button>
                     <button class="translator-btn translator-reset-btn" id="resetBtn" style="margin-top: 10px; background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">
-                        <span class="btn-text">↩️ 恢复原文</span>
+                        <span class="btn-text"><span style="display: inline-flex; align-items: center; justify-content: center; margin-right: 5px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6"></path><path d="M2 12A10 10 0 0 1 22 12"></path></svg></span>恢复原文</span>
                     </button>
                     <div class="translator-progress" id="translatorProgress" style="display:none;">
                         <div class="progress-bar">
