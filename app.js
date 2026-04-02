@@ -320,6 +320,8 @@ app.post('/api/translate', async (req, res) => {
                             });
 
                             console.log('📤 发送的 postData:', postData);
+                            console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
+                            console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
                             // 改回使用原始的API端点
                             const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 原始API端点
                             
@@ -390,6 +392,8 @@ app.post('/api/translate', async (req, res) => {
         });
 
         console.log('📤 发送的 postData:', postData);
+        console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
+        console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
         // 改回使用原始的API端点
         const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 原始API端点
         
