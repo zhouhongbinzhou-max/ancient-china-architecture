@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3000;
 // 生产环境请务必在 Render 的环境变量中设置 API_KEY 和 ENDPOINT_ID，不要在此处硬编码
 const API_KEY = process.env.API_KEY || '90d3b17b-8fef-4682-bf72-7d51b24a48f4'; // 使用您的真实 API Key
 const ENDPOINT_ID = process.env.ENDPOINT_ID || "ep-20260321225445-p7gjs"; // 问答模型接入点 ID
-const TRANSLATE_API_KEY = process.env.TRANSLATE_API_KEY || '90d3b17b-8fef-4682-bf72-7d51b24a48f4'; // 翻译模型 API Key (使用与问答模型相同的API Key)
-const TRANSLATE_MODEL_ID = process.env.TRANSLATE_MODEL_ID || "ep-20260327161112-jjmbv"; // 翻译模型接入点 ID（重要！使用专门的翻译模型）
+const TRANSLATE_API_KEY = process.env.TRANSLATE_API_KEY || '1e4f6fb5-a60b-4e00-82c9-eeed1ed5f32e'; // 翻译模型 API Key (使用与问答模型相同的API Key)
+const TRANSLATE_MODEL_ID = process.env.TRANSLATE_MODEL_ID || "ep-20260402194642-87hfc"; // 翻译模型接入点 ID（重要！使用专门的翻译模型）
 
 // 后端缓存机制
 const responseCache = new Map();
@@ -316,7 +316,11 @@ app.post('/api/translate', async (req, res) => {
                                                 text: text,
                                                 translation_options: {
                                                     source_language: from,
-                                                    target_language: to
+                                                    target_language: to,
+                                                    // 优化翻译参数
+                                                    translation_style: "literal", // 字面翻译，保持原文结构
+                                                    preserve_structure: true, // 保持原文结构
+                                                    max_output_length: text.length * 2 // 限制输出长度，防止过度翻译
                                                 }
                                             }
                                         ]
@@ -388,7 +392,11 @@ app.post('/api/translate', async (req, res) => {
                             text: q,
                             translation_options: {
                                 source_language: from,
-                                target_language: to
+                                target_language: to,
+                                // 优化翻译参数
+                                translation_style: "literal", // 字面翻译，保持原文结构
+                                preserve_structure: true, // 保持原文结构
+                                max_output_length: q.length * 2 // 限制输出长度，防止过度翻译
                             }
                         }
                     ]
