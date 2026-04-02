@@ -1280,18 +1280,11 @@
     <script src="translator-widget.js"></script>
     <script>
         function toggleTranslator() {
-            // 模拟点击悬浮翻译插件的toggle按钮
-            const toggleBtn = document.getElementById('translatorToggle');
-            if (toggleBtn) {
-                toggleBtn.click();
-            } else {
-                // 如果toggle按钮不存在，尝试直接切换面板状态
-                const widget = document.getElementById('translator-widget');
-                if (widget) {
-                    const panel = widget.querySelector('.translator-panel');
-                    if (panel) {
-                        panel.classList.toggle('active');
-                    }
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
                 }
             }
         }

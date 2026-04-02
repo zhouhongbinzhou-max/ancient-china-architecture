@@ -316,11 +316,7 @@ app.post('/api/translate', async (req, res) => {
                                                 text: text,
                                                 translation_options: {
                                                     source_language: from,
-                                                    target_language: to,
-                                                    // 优化翻译参数
-                                                    translation_style: "literal", // 字面翻译，保持原文结构
-                                                    preserve_structure: true, // 保持原文结构
-                                                    max_output_length: text.length * 2 // 限制输出长度，防止过度翻译
+                                                    target_language: to
                                                 }
                                             }
                                         ]
@@ -392,11 +388,7 @@ app.post('/api/translate', async (req, res) => {
                             text: q,
                             translation_options: {
                                 source_language: from,
-                                target_language: to,
-                                // 优化翻译参数
-                                translation_style: "literal", // 字面翻译，保持原文结构
-                                preserve_structure: true, // 保持原文结构
-                                max_output_length: q.length * 2 // 限制输出长度，防止过度翻译
+                                target_language: to
                             }
                         }
                     ]
