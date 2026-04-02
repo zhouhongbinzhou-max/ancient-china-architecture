@@ -44,6 +44,9 @@
                         <span class="btn-text">开始翻译</span>
                         <span class="btn-loading" style="display:none;">翻译中...</span>
                     </button>
+                    <button class="translator-btn translator-reset-btn" id="resetBtn" style="margin-top: 10px; background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">
+                        <span class="btn-text">↩️ 恢复原文</span>
+                    </button>
                     <div class="translator-progress" id="translatorProgress" style="display:none;">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
@@ -627,6 +630,34 @@
             }
         });
         
+        // 恢复原文按钮点击事件
+        const resetBtn = document.getElementById('resetBtn');
+        resetBtn.addEventListener('click', () => {
+            if (confirm('确定要恢复原文吗？这将清除所有翻译内容并重新加载页面。')) {
+                // 清除所有翻译相关的 localStorage
+                localStorage.removeItem('translator_history');
+                localStorage.removeItem('translator_current_page_lang');
+                localStorage.removeItem('translator_last_from');
+                localStorage.removeItem('translator_last_to');
+                localStorage.removeItem('translator_last_translation_time');
+                
+                // 清除所有缓存的翻译结果
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('translate_')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                
+                console.log('🔄 已清除所有翻译数据，准备恢复原文...');
+                
+                // 重新加载页面以恢复原文
+                window.location.reload();
+            }
+        });
+        
         // 监听文本选择事件，实现类似有道翻译的划词翻译功能
         document.addEventListener('mouseup', function() {
             const selectedText = window.getSelection().toString().trim();
@@ -675,20 +706,41 @@
         
         // 翻译页面所有文本节点
         async function translatePage(from, to) {
-            console.log(' 开始翻译页面...');
-            console.log('当前源语言:', from, '目标语言:', to);
+            console.log('🌐 开始翻译页面...');
+            console.log('📤 当前源语言:', from, '目标语言:', to);
             
-            // 检查语言是否变化，如果变化则清除所有翻译标记
+            // 获取翻译历史记录
+            let translationHistory = JSON.parse(localStorage.getItem('translator_history') || '[]');
+            const currentPageLang = localStorage.getItem('translator_current_page_lang') || 'zh';
+            
+            console.log('📜 翻译历史:', translationHistory);
+            console.log('🌍 当前页面语言:', currentPageLang);
+            
+            // 检查是否是链式翻译（从已翻译的语言继续翻译）
+            const isChainTranslation = translationHistory.length > 0 && currentPageLang !== 'zh';
+            
+            if (isChainTranslation) {
+                console.log('🔗 检测到链式翻译，从', currentPageLang, '翻译到', to);
+                // 更新源语言为当前页面语言
+                from = currentPageLang;
+                // 更新下拉框显示
+                sourceLang.value = from;
+            }
+            
+            // 检查是否需要清除翻译标记（只有当从原始语言开始翻译时才清除）
             const lastFrom = localStorage.getItem('translator_last_from');
             const lastTo = localStorage.getItem('translator_last_to');
             
-            if (lastFrom !== from || lastTo !== to) {
-                console.log('🔄 检测到语言变化，清除所有翻译标记');
+            // 如果是从中文开始的新翻译，或者是完全不同的语言对，则清除标记
+            if ((from === 'zh' && translationHistory.length === 0) || 
+                (lastFrom === from && lastTo === to)) {
+                console.log('🔄 清除所有翻译标记');
                 clearAllTranslationMarks();
-                // 保存当前语言配置
-                localStorage.setItem('translator_last_from', from);
-                localStorage.setItem('translator_last_to', to);
             }
+            
+            // 保存当前语言配置
+            localStorage.setItem('translator_last_from', from);
+            localStorage.setItem('translator_last_to', to);
             
             // 获取所有可翻译的文本节点
             const textNodes = getAllTextNodes(document.body);
@@ -709,16 +761,40 @@
                 const hasCyrillic = /[\u0400-\u04FF]/.test(text);
                 if (hasCyrillic) return 'ru';
                 
+                // 检测日语字符（平假名、片假名）
+                const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
+                if (hasJapanese) return 'ja';
+                
+                // 检测韩语字符
+                const hasKorean = /[\uAC00-\uD7AF\u1100-\u11FF]/.test(text);
+                if (hasKorean) return 'ko';
+                
                 // 默认为英文
                 return 'en';
             }
             
-            // 过滤需要翻译的节点（长度大于 1 个字符，确保所有中文都被翻译，且语言匹配源语言）
+            // 过滤需要翻译的节点
             const nodesToTranslate = textNodes.filter(node => {
                 const text = node.textContent.trim();
                 const nodeLang = detectLanguage(text);
-                // 长度改为 1 个字符，确保所有中文都被翻译
-                const shouldTranslate = node._translated !== true && text.length >= 1 && nodeLang === from;
+                
+                // 链式翻译逻辑：
+                // 1. 如果是链式翻译，翻译所有非目标语言的文本
+                // 2. 如果是新翻译，只翻译源语言的文本
+                let shouldTranslate = false;
+                
+                if (isChainTranslation) {
+                    // 链式翻译：翻译所有非目标语言的文本（且未被翻译过）
+                    shouldTranslate = node._translated !== true && 
+                                     text.length >= 1 && 
+                                     nodeLang !== to;
+                } else {
+                    // 新翻译：只翻译源语言的文本
+                    shouldTranslate = node._translated !== true && 
+                                     text.length >= 1 && 
+                                     nodeLang === from;
+                }
+                
                 if (shouldTranslate) {
                     console.log(`🔍 检测到需要翻译的节点: "${text}" (语言: ${nodeLang})`);
                 }
@@ -881,6 +957,28 @@
                 
                 // 保存翻译状态，用于页面切换后自动翻译
                 localStorage.setItem('translator_last_translation_time', Date.now());
+                
+                // 更新翻译历史记录
+                let translationHistory = JSON.parse(localStorage.getItem('translator_history') || '[]');
+                translationHistory.push({
+                    from: from,
+                    to: to,
+                    timestamp: Date.now(),
+                    count: translatedCount
+                });
+                // 只保留最近10条记录
+                if (translationHistory.length > 10) {
+                    translationHistory = translationHistory.slice(-10);
+                }
+                localStorage.setItem('translator_history', JSON.stringify(translationHistory));
+                
+                // 更新当前页面语言
+                localStorage.setItem('translator_current_page_lang', to);
+                console.log('📝 已更新翻译历史:', translationHistory);
+                console.log('🌍 当前页面语言已更新为:', to);
+                
+                // 更新源语言下拉框为当前页面语言，方便继续翻译
+                sourceLang.value = to;
             }, 100);
         }
         
