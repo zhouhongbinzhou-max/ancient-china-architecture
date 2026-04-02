@@ -1031,60 +1031,80 @@
         
         // 调用翻译 API
         async function callTranslateAPI(text, from, to) {
-            console.log('📤 发送翻译请求:', { text: text.substring(0, 50), from, to });
+            // 生成唯一请求ID，用于跟踪API调用
+            const requestId = 'req_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            console.log(`📤 [${requestId}] 发送翻译请求:`, { text: text.substring(0, 50), from, to });
             
             // 使用后端翻译API
             const API_URL = '/api/translate';
+            console.log(`📤 [${requestId}] API 接口:`, API_URL);
             
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    q: text,
-                    from: from,
-                    to: to
-                })
-            });
-            
-            console.log('📥 API 响应状态:', response.status);
-            console.log('📥 API 响应头:', response.headers.get('content-type'));
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ API 错误:', errorText);
-                // 出错时返回原文
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        q: text,
+                        from: from,
+                        to: to
+                    })
+                });
+                
+                console.log(`📥 [${requestId}] API 响应状态:`, response.status);
+                console.log(`📥 [${requestId}] API 响应头:`, response.headers.get('content-type'));
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ [${requestId}] API 错误:`, errorText);
+                    // 出错时返回原文
+                    return text;
+                }
+                
+                const data = await response.json();
+                console.log(`📦 [${requestId}] API 返回完整数据:`, data);  // 打印完整对象
+                
+                // 检查API返回的接口ID
+                if (data.apiId || data.modelId) {
+                    console.log(`🔑 [${requestId}] API 接口ID:`, data.apiId || data.modelId);
+                }
+                
+                let translatedText = null;
+                if (data.results && data.results.length > 0) {
+                    translatedText = data.results[0];
+                    console.log(`✅ [${requestId}] 使用 results[0] 字段`);
+                } else if (data.translatedText) {
+                    translatedText = data.translatedText;
+                    console.log(`✅ [${requestId}] 使用 translatedText 字段`);
+                } else if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
+                    translatedText = data.choices[0].message.content;
+                    console.log(`✅ [${requestId}] 使用 choices[0].message.content 字段`);
+                } else {
+                    console.warn(`⚠️ [${requestId}] 未识别翻译字段，使用原文本`);
+                    return text;
+                }
+                
+                // 优化翻译结果
+                const optimizedText = optimizeTranslation(translatedText, to);
+                console.log(`✅ [${requestId}] 最终翻译文本:`, optimizedText);
+                return optimizedText;
+            } catch (error) {
+                console.error(`❌ [${requestId}] API 调用异常:`, error);
+                // 异常时返回原文
                 return text;
             }
-            
-            const data = await response.json();
-            console.log('📦 API 返回完整数据:', data);  // 打印完整对象
-            
-            let translatedText = null;
-            if (data.results && data.results.length > 0) {
-                translatedText = data.results[0];
-                console.log('✅ 使用 results[0] 字段');
-            } else if (data.translatedText) {
-                translatedText = data.translatedText;
-                console.log('✅ 使用 translatedText 字段');
-            } else {
-                console.warn('⚠️ 未识别翻译字段，使用原文本');
-                return text;
-            }
-            
-            // 优化翻译结果
-            const optimizedText = optimizeTranslation(translatedText, to);
-            console.log('✅ 最终翻译文本:', optimizedText);
-            return optimizedText;
         }
         
         // 批量调用翻译 API
         async function callBatchTranslateAPI(texts, from, to) {
-            console.log('📤 发送批量翻译请求:', { count: texts.length, from, to });
+            // 生成唯一请求ID，用于跟踪API调用
+            const requestId = 'batch_req_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            console.log(`📤 [${requestId}] 发送批量翻译请求:`, { count: texts.length, from, to });
             
             // 使用后端批量翻译API
             const API_URL = '/api/translate';
+            console.log(`📤 [${requestId}] API 接口:`, API_URL);
             
             try {
                 const response = await fetch(API_URL, {
@@ -1099,19 +1119,31 @@
                     })
                 });
                 
+                console.log(`📥 [${requestId}] API 响应状态:`, response.status);
+                
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ [${requestId}] API 错误:`, errorText);
                     throw new Error('批量翻译 API 调用失败：' + response.status);
                 }
                 
                 const data = await response.json();
+                console.log(`📦 [${requestId}] API 返回完整数据:`, data);  // 打印完整对象
+                
+                // 检查API返回的接口ID
+                if (data.apiId || data.modelId) {
+                    console.log(`🔑 [${requestId}] API 接口ID:`, data.apiId || data.modelId);
+                }
+                
                 if (data.success && data.results) {
-                    console.log('✅ 批量翻译完成，返回', data.results.length, '个结果');
+                    console.log(`✅ [${requestId}] 批量翻译完成，返回`, data.results.length, '个结果');
                     return data.results;
                 } else {
+                    console.warn(`⚠️ [${requestId}] 批量翻译 API 返回数据格式错误`);
                     throw new Error('批量翻译 API 返回数据格式错误');
                 }
             } catch (error) {
-                console.error('批量翻译失败:', error);
+                console.error(`❌ [${requestId}] 批量翻译失败:`, error);
                 // 失败时回退到单个翻译
                 const results = [];
                 for (const text of texts) {
@@ -1119,14 +1151,14 @@
                         const translatedText = await callTranslateAPI(text, from, to);
                         results.push(translatedText);
                     } catch (error) {
-                        console.error('❌ 批量翻译单个文本失败:', text.substring(0, 50), error);
+                        console.error(`❌ [${requestId}] 批量翻译单个文本失败:`, text.substring(0, 50), error);
                         results.push(text); // 失败时使用原文
                     }
                     // 避免 API 请求过于密集
                     await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
-                console.log('✅ 批量翻译完成，返回', results.length, '个结果');
+                console.log(`✅ [${requestId}] 批量翻译完成，返回`, results.length, '个结果');
                 return results;
             }
         }
