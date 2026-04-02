@@ -987,7 +987,7 @@
                             <div class="image-preview-area" id="imagePreviewArea" style="display: none;">
                                 <!-- 图片预览将在这里动态添加 -->
                             </div>
-                            <button class="upload-btn" id="uploadBtn">
+                            <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
                                 📷 上传图片
                             </button>
                             <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
