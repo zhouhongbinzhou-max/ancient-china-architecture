@@ -315,20 +315,31 @@ app.post('/api/translate', async (req, res) => {
                             // 强制使用翻译模型ID
                             const translateModelId = "ep-20260327161112-jjmbv";
                             
-                            // 构建翻译API请求格式
+                            // 构建聊天API请求格式
+                            const messages = [
+                                {
+                                    role: "system",
+                                    content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
+                                },
+                                {
+                                    role: "user",
+                                    content: text
+                                }
+                            ];
+                            
                             const postData = JSON.stringify({
                                 model: translateModelId, // 使用翻译模型ID
-                                text: text,
-                                from: from,
-                                to: to
+                                messages: messages,
+                                temperature: 0.3,
+                                max_tokens: 1000
                             });
 
                             console.log('📤 发送的 postData:', postData);
                             console.log('📤 使用的模型ID:', translateModelId);
                             console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
                             console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-                            // 使用翻译API端点
-                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
+                            // 使用正确的翻译API端点
+                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 使用聊天API端点，因为翻译模型也支持聊天API
                             
                             if (result.error) {
                                 console.error('❌ 翻译 API 错误:', result.error);
@@ -406,20 +417,31 @@ app.post('/api/translate', async (req, res) => {
         // 强制使用翻译模型ID
         const translateModelId = "ep-20260327161112-jjmbv";
         
-        // 构建翻译API请求格式
+        // 构建聊天API请求格式
+        const messages = [
+            {
+                role: "system",
+                content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
+            },
+            {
+                role: "user",
+                content: q
+            }
+        ];
+        
         const postData = JSON.stringify({
             model: translateModelId, // 使用翻译模型ID
-            text: q,
-            from: from,
-            to: to
+            messages: messages,
+            temperature: 0.3,
+            max_tokens: 1000
         });
 
         console.log('📤 发送的 postData:', postData);
         console.log('📤 使用的模型ID:', translateModelId);
         console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
         console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-        // 使用翻译API端点
-        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
+        // 使用正确的翻译API端点
+        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 使用聊天API端点，因为翻译模型也支持聊天API
         
         console.log('📦 翻译 API 响应:', JSON.stringify(result).substring(0, 200));
         
