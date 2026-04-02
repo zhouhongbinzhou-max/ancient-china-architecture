@@ -301,8 +301,8 @@ app.post('/api/translate', async (req, res) => {
                 const batchResults = await Promise.all(
                     batch.map(async (text, index) => {
                         try {
-                            // 强制使用翻译模型ID
-                            const translateModelId = "ep-20260327161112-jjmbv";
+                            // 使用代码模型ID，因为翻译模型不支持聊天API
+                            const translateModelId = "ep-20260321225445-p7gjs";
                             
                             // 构建聊天API请求格式
                             const messages = [
@@ -391,8 +391,8 @@ app.post('/api/translate', async (req, res) => {
         console.log('🔑 使用翻译 API Key:', TRANSLATE_API_KEY.substring(0, 8) + '...');
         console.log('🎯 使用翻译模型:', TRANSLATE_MODEL_ID);
 
-        // 强制使用翻译模型ID
-        const translateModelId = "ep-20260327161112-jjmbv";
+        // 使用代码模型ID，因为翻译模型不支持聊天API
+        const translateModelId = "ep-20260321225445-p7gjs";
         
         // 构建聊天API请求格式
         const messages = [
