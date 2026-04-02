@@ -987,7 +987,7 @@
                             <div class="image-preview-area" id="imagePreviewArea" style="display: none;">
                                 <!-- 图片预览将在这里动态添加 -->
                             </div>
-                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                            <button class="upload-btn" id="uploadBtn">
                                 📷 上传图片
                             </button>
                             <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
@@ -1125,6 +1125,17 @@
                     sendMessage();
                 }
             });
+            
+            // 初始化上传按钮
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', function() {
+                    const fileInput = document.getElementById('fileInput');
+                    if (fileInput) {
+                        fileInput.click();
+                    }
+                });
+            }
         }
         
         // 消息 ID 计数器
