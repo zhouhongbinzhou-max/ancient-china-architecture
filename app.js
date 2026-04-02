@@ -301,66 +301,49 @@ app.post('/api/translate', async (req, res) => {
                 const batchResults = await Promise.all(
                     batch.map(async (text, index) => {
                         try {
-                            // 使用代码模型ID，因为翻译模型不支持聊天API
-                            const translateModelId = "ep-20260321225445-p7gjs";
+                            // 使用新的翻译模型接入点ID
+                            const translateModelId = "ep-20260402194642-87hfc";
                             
-                            // 构建聊天API请求格式
-                            const messages = [
-                                {
-                                    role: "system",
-                                    content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
-                                },
-                                {
-                                    role: "user",
-                                    content: text
-                                }
-                            ];
-                            
+                            // 构建火山引擎翻译API请求格式
                             const postData = JSON.stringify({
-                                model: translateModelId, // 使用翻译模型ID
-                                messages: messages,
-                                temperature: 0.3,
-                                max_tokens: 1000
+                                model: translateModelId,
+                                input: [
+                                    {
+                                        role: "user",
+                                        content: [
+                                            {
+                                                type: "input_text",
+                                                text: text,
+                                                translation_options: {
+                                                    source_language: from,
+                                                    target_language: to
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
                             });
+                            
                             console.log('📤 发送的 postData:', postData);
                             console.log('📤 使用的模型ID:', translateModelId);
-                            console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
-                            console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-                            // 使用正确的翻译API端点
-                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 使用聊天API端点，因为翻译模型也支持聊天API
+                            console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...');
+                            
+                            // 使用翻译API的responses端点
+                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/responses');
                             
                             if (result.error) {
                                 console.error('❌ 翻译 API 错误:', result.error);
-                                // API调用失败时，返回一个默认的翻译结果
-                                return text.replace(/故宫/g, 'Forbidden City').replace(/建筑特色/g, 'architectural features').replace(/哪些/g, 'what are');
+                                return text;
                             }
                             
-                            // 提取翻译结果 - 支持多种格式
+                            // 提取翻译结果 - 从responses API格式
                             let translatedText = null;
-                            // 翻译API格式
-                            if (result.translated_text) {
-                                translatedText = result.translated_text;
-                            }
-                            // 其他翻译API格式
-                            else if (result.result) {
-                                translatedText = result.result;
-                            }
-                            // 其他翻译API格式
-                            else if (result.translation) {
-                                translatedText = result.translation;
-                            }
-                            // Chat API格式（作为备选）
-                            else if (result.choices && result.choices[0] && result.choices[0].message) {
-                                translatedText = result.choices[0].message.content;
-                            }
-                            
-                            if (translatedText) {
-                                // 处理多个释义的情况，只保留第一个
-                                if (translatedText.includes(';')) {
-                                    translatedText = translatedText.split(';')[0].trim();
-                                }
-                                if (translatedText.includes('、')) {
-                                    translatedText = translatedText.split('、')[0].trim();
+                            if (result.output && result.output[0] && result.output[0].content) {
+                                const content = result.output[0].content;
+                                if (Array.isArray(content) && content[0] && content[0].text) {
+                                    translatedText = content[0].text;
+                                } else if (typeof content === 'string') {
+                                    translatedText = content;
                                 }
                             }
                             
@@ -389,66 +372,57 @@ app.post('/api/translate', async (req, res) => {
 
         console.log('📝 收到翻译请求:', q.substring(0, 50));
         console.log('🔑 使用翻译 API Key:', TRANSLATE_API_KEY.substring(0, 8) + '...');
-        console.log('🎯 使用翻译模型:', TRANSLATE_MODEL_ID);
 
-        // 使用代码模型ID，因为翻译模型不支持聊天API
-        const translateModelId = "ep-20260321225445-p7gjs";
+        // 使用新的翻译模型接入点ID
+        const translateModelId = "ep-20260402194642-87hfc";
         
-        // 构建聊天API请求格式
-        const messages = [
-            {
-                role: "system",
-                content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
-            },
-            {
-                role: "user",
-                content: q
-            }
-        ];
-        
+        // 构建火山引擎翻译API请求格式
         const postData = JSON.stringify({
-            model: translateModelId, // 使用翻译模型ID
-            messages: messages,
-            temperature: 0.3,
-            max_tokens: 1000
+            model: translateModelId,
+            input: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "input_text",
+                            text: q,
+                            translation_options: {
+                                source_language: from,
+                                target_language: to
+                            }
+                        }
+                    ]
+                }
+            ]
         });
 
         console.log('📤 发送的 postData:', postData);
         console.log('📤 使用的模型ID:', translateModelId);
-        console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
-        console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-        // 使用正确的翻译API端点
-        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 使用聊天API端点，因为翻译模型也支持聊天API
+        console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...');
+        
+        // 使用翻译API的responses端点
+        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/responses');
         
         console.log('📦 翻译 API 响应:', JSON.stringify(result).substring(0, 200));
         
         // 检查是否有错误
         if (result.error) {
             console.error('❌ 翻译 API 错误:', result.error);
-            // API调用失败时，返回一个默认的翻译结果
-            return res.json({
-                success: true,
-                results: ["What are the architectural features of the Forbidden City?"]
+            return res.status(500).json({
+                error: '翻译失败',
+                message: result.error.message || '未知错误'
             });
         }
         
-        // 提取翻译结果 - 支持多种格式
+        // 提取翻译结果 - 从responses API格式
         let translatedText = null;
-        // 翻译API格式
-        if (result.translated_text) {
-            translatedText = result.translated_text;
-        }
-        // 其他翻译API格式
-        else if (result.result) {
-            translatedText = result.result;
-        }
-        // 其他翻译API格式
-        else if (result.translation) {
-            translatedText = result.translation;
-        }
-        // Chat API格式（作为备选）
-        else if (result.choices && result.choices[0] && result.choices[0].message) {
-            translatedText = result.choices[0].message.content;
+        if (result.output && result.output[0] && result.output[0].content) {
+            const content = result.output[0].content;
+            if (Array.isArray(content) && content[0] && content[0].text) {
+                translatedText = content[0].text;
+            } else if (typeof content === 'string') {
+                translatedText = content;
+            }
         }
         
         if (!translatedText) {
@@ -489,7 +463,7 @@ function callVolcengineAPI(postData, apiKey, endpoint = '/api/v3/chat/completion
     return new Promise((resolve, reject) => {
         const options = {
             method: 'POST',
-            hostname: 'ark-cn-beijing.volces.com',
+            hostname: 'ark.cn-beijing.volces.com',
             path: endpoint,
             headers: {
                 'Content-Type': 'application/json',
