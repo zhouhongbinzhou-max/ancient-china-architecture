@@ -653,10 +653,8 @@
                         if (node.textContent.trim().length === 0) {
                             return NodeFilter.FILTER_REJECT;
                         }
-                        // 过滤导航栏文本，避免翻译后破坏布局
-                        if (node.parentElement?.closest('.navbar')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
+                        // 导航栏文本也允许翻译，但保留结构
+                        // 注意：不再排除.navbar，让导航栏可以被翻译
                         // 过滤翻译小部件本身的文本
                         if (node.parentElement?.closest('#translator-widget')) {
                             return NodeFilter.FILTER_REJECT;

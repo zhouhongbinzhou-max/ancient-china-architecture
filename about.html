@@ -26,6 +26,36 @@
             position: relative;
         }
         
+        /* 论坛悬浮入口 */
+        .forum-float-btn {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+            color: #fff;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            padding: 20px 12px;
+            border-radius: 0 8px 8px 0;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            box-shadow: 3px 0 15px rgba(196, 30, 58, 0.5);
+            z-index: 999;
+            transition: all 0.3s ease;
+            border: 2px solid #FFD700;
+            border-left: none;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .forum-float-btn:hover {
+            background: linear-gradient(135deg, #DC143C 0%, #A00000 100%);
+            padding: 25px 15px;
+            box-shadow: 5px 0 20px rgba(196, 30, 58, 0.7);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
         /* 动画层 - 毛玻璃效果 */
         .animation-overlay {
             position: fixed;
@@ -157,21 +187,18 @@
             align-items: center;
             border-bottom: 3px solid #8B4513;
             box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
         }
         .navbar-brand {
             color: #DAA520;
-            font-size: 1.6rem;
-            font-weight: 900;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             flex-shrink: 1;
             min-width: 0;
-            flex-wrap: wrap;
-            max-width: 40%;
         }
         .navbar-brand img {
             width: 40px;
@@ -179,111 +206,61 @@
             border-radius: 4px;
             flex-shrink: 0;
         }
-        .navbar-brand span {
-            color: #DAA520;
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             flex-shrink: 1;
             min-width: 0;
+        }
+        .brand-main {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #DAA520;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .english-brand {
-            font-size: 0.75rem;
+        .brand-sub {
+            font-size: 0.7rem;
+            color: #F5DEB3;
             font-family: Arial, sans-serif;
-            opacity: 0.9;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100%;
-        }
-        .language-switcher {
-            position: relative;
-        }
-        .lang-selector {
-            position: relative;
-            display: inline-block;
-        }
-        .lang-btn {
-            padding: 6px 14px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid #8B4513;
-            border-radius: 4px;
-            color: #DAA520;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-        .lang-btn:hover {
-            background: rgba(218,165,32,0.2);
-            border-color: #DAA520;
-        }
-        .lang-btn.active {
-            background: #8B4513;
-            color: #F5DEB3;
-        }
-        .lang-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #1A252F;
-            border: 1px solid #8B4513;
-            border-radius: 4px;
-            padding: 6px 0;
-            min-width: 110px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: none;
-            margin-top: 4px;
-        }
-        .lang-selector:hover .lang-dropdown {
-            display: block;
-        }
-        .lang-option {
-            padding: 6px 14px;
-            color: #DAA520;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.8rem;
-        }
-        .lang-option:hover {
-            background: rgba(139,69,19,0.3);
-            color: #F5DEB3;
         }
         .navbar-menu {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             list-style: none;
             align-items: center;
             flex-wrap: nowrap;
             white-space: nowrap;
             min-width: 0;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            flex: 1;
+            justify-content: center;
         }
-        .navbar-menu::-webkit-scrollbar {
-            display: none;
+        .navbar-menu li {
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 6px 6px;
+            padding: 4px 6px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
-            line-height: 1.4;
+            line-height: 1.5;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100px;
+            max-width: 120px;
+            flex-shrink: 1;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -356,11 +333,36 @@
         .navbar-content {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: nowrap;
             justify-content: flex-end;
-            flex: 1;
-            min-width: 0;
+            flex-shrink: 0;
+        }
+        
+        .translate-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .translate-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .translate-btn img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         
         .navbar-search {
@@ -379,7 +381,8 @@
             outline: none;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            width: 200px;
+            width: 150px;
+            flex-shrink: 0;
         }
         
         .search-input:focus {
@@ -399,6 +402,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            flex-shrink: 0;
         }
         
         .search-button:hover {
@@ -696,72 +700,77 @@
 
         
         /* 响应式 */
+        @media (max-width: 1200px) {
+            .navbar {
+                padding: 10px 20px;
+            }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.75rem;
+                padding: 3px 5px;
+                max-width: 120px;
+            }
+            .search-input {
+                width: 130px;
+            }
+        }
         @media (max-width: 1024px) {
             .about-features {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.7rem;
+                max-width: 100px;
+            }
         }
-        
+        @media (max-width: 900px) {
+            .navbar-menu {
+                flex-wrap: wrap;
+                gap: 2px;
+            }
+            .navbar-menu li {
+                flex: 1 1 auto;
+            }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.7rem;
+                padding: 2px 4px;
+                max-width: none;
+            }
+        }
         @media (max-width: 768px) {
             .navbar {
-                padding: 10px 15px;
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 10px;
-                align-items: center;
-            }
-            .navbar-brand {
+                padding: 15px 20px;
                 flex-direction: column;
-                gap: 2px;
-                align-items: flex-start;
-                max-width: 60%;
-                font-size: 1rem;
-            }
-            .navbar-brand span {
-                font-size: 0.9rem;
-                max-width: 100%;
-            }
-            .english-brand {
-                font-size: 0.65rem;
-                max-width: 100%;
+                gap: 15px;
+                align-items: stretch;
             }
             .navbar-content {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 10px;
-                align-items: center;
-                justify-content: flex-end;
-                width: auto;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
             }
             .navbar-menu {
                 display: flex;
                 justify-content: center;
-                gap: 8px;
+                gap: 15px;
                 flex-wrap: wrap;
-                order: 2;
-                width: 100%;
             }
             .navbar-menu a {
-                font-size: 0.8rem;
-                padding: 4px 6px;
-                max-width: 80px;
-            }
-            .language-switcher {
-                order: 0;
+                font-size: 0.85rem;
+                padding: 3px 8px;
             }
             .navbar-search {
                 justify-content: center;
-                order: 1;
-                width: 100%;
             }
             .search-input {
-                width: 150px;
-                font-size: 0.8rem;
-                padding: 5px 10px;
+                width: 200px;
+                font-size: 0.85rem;
             }
             .search-button {
-                font-size: 0.8rem;
-                padding: 5px 10px;
+                font-size: 0.85rem;
+                padding: 6px 12px;
             }
             .container {
                 padding: 120px 20px 40px;
@@ -800,60 +809,58 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <a href="index.html" class="navbar-brand">
-            <img src="assets/logo.png" alt="中国古代建筑文化平台" style="width: 40px; height: 40px; margin-right: 10px;">
-            <span>中国古代建筑</span>
-            <span class="english-brand">Cross-Border Exchange Platform</span>
-            <span>文化跨境交流平台</span>
-        </a>
-        <div class="navbar-content">
-            <ul class="navbar-menu">
-                <li><a href="index.html" data-lang-key="home">首页</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
-                    <div class="dropdown-menu">
-                        <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
-                        <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
-                    <div class="dropdown-menu">
-                        <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
-                        <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
-                    <div class="dropdown-menu">
-                        <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
-                        <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
-                        <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
-                    <div class="dropdown-menu">
-                        <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
-                        <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
-                        <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
-                    <div class="dropdown-menu">
-                        <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
-                        <a href="contact.html" data-lang-key="contact-us">联系我们</a>
-                        <a href="join.html" data-lang-key="join-us">加入我们</a>
-                    </div>
-                </li>
-            </ul>
-            <div class="language-switcher">
-                <button class="lang-btn" onclick="toggleTranslator()" style="margin-right: 10px; display: flex; align-items: center; gap: 6px;" title="智能翻译">
-                    <img src="assets/translation-logo.jpg" alt="翻译" style="width: 16px; height: 16px; border-radius: 50%; object-fit: cover; padding: 0; margin: 0;">
-                    翻译
-                </button>
-                </div>
+            <img src="assets/logo.png" alt="中国古代建筑文化平台">
+            <div class="brand-text">
+                <span class="brand-main">中国古代建筑</span>
+                <span class="brand-sub">Cross-Border Exchange Platform</span>
             </div>
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="index.html" data-lang-key="home">首页</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-lang-key="architecture-appreciation">建筑欣赏</a>
+                <div class="dropdown-menu">
+                    <a href="cultural-cities.html" data-lang-key="cultural-cities">中国文化名城</a>
+                    <a href="famous-buildings.html" data-lang-key="famous-buildings">著名建筑</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-lang-key="ai-qa">AI问答</a>
+                <div class="dropdown-menu">
+                    <a href="test-ai.html" data-lang-key="intelligent-qa">智能问答系统</a>
+                    <a href="https://www.doubao.com/" target="_blank" data-lang-key="ask-doubao">古典建筑问豆包</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-lang-key="culture-topics">文化专题</a>
+                <div class="dropdown-menu">
+                    <a href="architecture-culture.html" data-lang-key="architecture-culture">建筑文化</a>
+                    <a href="architecture-technique.html" data-lang-key="architecture-technique">建筑技法</a>
+                    <a href="architecture-style.html" data-lang-key="architecture-style">建筑风格</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-lang-key="international-exchange">国际交流</a>
+                <div class="dropdown-menu">
+                    <a href="international-exchange.html" data-lang-key="cross-border-impact">建筑文化跨境影响</a>
+                    <a href="international-exchange.html#master-perspectives" data-lang-key="master-perspectives">国际大师观点</a>
+                    <a href="international-exchange.html#exchange-cases" data-lang-key="exchange-cases">跨境交流案例</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-lang-key="about-us">关于我们</a>
+                <div class="dropdown-menu">
+                    <a href="about.html" data-lang-key="platform-intro">平台介绍</a>
+                    <a href="contact.html" data-lang-key="contact-us">联系我们</a>
+                    <a href="join.html" data-lang-key="join-us">加入我们</a>
+                </div>
+            </li>
+        </ul>
+        <div class="navbar-content">
+            <button class="translate-btn" onclick="toggleTranslator()" title="智能翻译">
+                <img src="assets/translation-logo.jpg" alt="翻译">
+                翻译
+            </button>
             <div class="navbar-search">
                 <form action="https://baike.baidu.com/search/word" method="get" target="_blank">
                     <input type="text" placeholder="搜索中国古代建筑知识..." name="word" class="search-input" data-lang-key="search-placeholder">
@@ -990,5 +997,8 @@
             }
         }
     </script>
+    
+    <!-- 论坛悬浮入口 -->
+    <a href="forum.html" class="forum-float-btn" title="进入建筑论坛">进入论坛</a>
 </body>
 </html>

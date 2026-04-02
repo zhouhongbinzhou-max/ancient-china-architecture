@@ -25,6 +25,36 @@
             min-height: 100vh;
         }
         
+        /* 论坛悬浮入口 */
+        .forum-float-btn {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+            color: #fff;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            padding: 20px 12px;
+            border-radius: 0 8px 8px 0;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            box-shadow: 3px 0 15px rgba(196, 30, 58, 0.5);
+            z-index: 999;
+            transition: all 0.3s ease;
+            border: 2px solid #FFD700;
+            border-left: none;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .forum-float-btn:hover {
+            background: linear-gradient(135deg, #DC143C 0%, #A00000 100%);
+            padding: 25px 15px;
+            box-shadow: 5px 0 20px rgba(196, 30, 58, 0.7);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
         /* 导航栏 */
         .navbar {
             background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
@@ -43,20 +73,21 @@
         }
         .navbar-brand {
             color: #DAA520;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 900;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             flex-shrink: 0;
             white-space: nowrap;
+            max-width: 200px;
         }
         .navbar-brand img {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 4px;
             flex-shrink: 0;
         }
@@ -68,46 +99,56 @@
         }
         .navbar-brand .brand-main {
             color: #DAA520;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 900;
             line-height: 1.2;
+            white-space: nowrap;
         }
         .navbar-brand .brand-sub {
             color: #DAA520;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-family: Arial, sans-serif;
             opacity: 0.9;
             line-height: 1;
+            white-space: nowrap;
         }
         .navbar-menu {
             display: flex;
-            gap: 8px;
+            gap: 2px;
             list-style: none;
-            align-items: center;
+            align-items: stretch;
             flex-wrap: nowrap;
-            white-space: nowrap;
             min-width: 0;
             flex: 1;
             justify-content: center;
-            margin: 0 15px;
+            margin: 0 5px;
+            overflow: visible;
         }
         .navbar-menu li {
-            flex-shrink: 0;
+            flex: 0 1 auto;
             position: relative;
+            display: flex;
+            align-items: center;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 8px 10px;
+            padding: 4px 6px;
             border-radius: 4px;
             font-weight: 500;
-            display: inline-block;
-            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
             white-space: nowrap;
+            min-width: 40px;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -134,18 +175,25 @@
         }
         
         .dropdown-toggle {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            line-height: 1.4;
-            padding: 8px 10px;
+            line-height: 1.2;
+            padding: 4px 6px;
             border-radius: 4px;
             color: #DAA520;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             font-weight: 500;
+            white-space: nowrap;
+            min-width: 40px;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .dropdown-toggle:hover {
@@ -156,12 +204,14 @@
         .dropdown-menu {
             position: absolute;
             top: 100%;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             background: #1A252F;
             border: 1px solid #8B4513;
             border-radius: 4px;
             padding: 8px 0;
-            min-width: 180px;
+            min-width: 200px;
+            max-width: 280px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 1000;
             display: none;
@@ -178,8 +228,15 @@
             color: #DAA520;
             text-decoration: none;
             transition: all 0.3s;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             border-radius: 0;
+            white-space: normal;
+            line-height: 1.4;
+            text-align: left;
+            min-width: auto;
+            max-width: none;
+            overflow: visible;
+            text-overflow: clip;
         }
         
         .dropdown-menu a:hover {
@@ -190,10 +247,11 @@
         .navbar-content {
             display: flex;
             align-items: center;
-            gap: 15px;
-            flex-wrap: nowrap;
+            gap: 10px;
+            flex-wrap: wrap;
             justify-content: flex-end;
             flex-shrink: 0;
+            max-width: 35%;
         }
         
         .navbar-search {
@@ -203,17 +261,17 @@
         }
         
         .search-input {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 2px solid #8B4513;
             border-right: none;
             border-radius: 4px 0 0 4px;
             background: rgba(255,255,255,0.9);
             color: #333;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            width: 180px;
+            width: 150px;
         }
         
         .search-input:focus {
@@ -222,16 +280,17 @@
         }
         
         .search-button {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: #27ae60;
             border: 2px solid #27ae60;
             border-radius: 0 4px 4px 0;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            white-space: nowrap;
         }
         
         .search-button:hover {
@@ -241,20 +300,21 @@
         
         /* 翻译按钮 */
         .translate-btn {
-            padding: 8px 16px;
+            padding: 6px 10px;
             background: #3498db;
             border: 2px solid #3498db;
             border-radius: 4px;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             flex-shrink: 0;
+            white-space: nowrap;
         }
         
         .translate-btn:hover {
@@ -432,12 +492,45 @@
         }
         
         /* 响应式 */
+        @media (max-width: 1200px) {
+            .navbar {
+                padding: 10px 20px;
+            }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.75rem;
+                padding: 3px 5px;
+                max-width: 120px;
+            }
+            .search-input {
+                width: 130px;
+            }
+        }
         @media (max-width: 1024px) {
             .cities-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.7rem;
+                max-width: 100px;
+            }
         }
-        
+        @media (max-width: 900px) {
+            .navbar-menu {
+                flex-wrap: wrap;
+                gap: 2px;
+            }
+            .navbar-menu li {
+                flex: 1 1 auto;
+            }
+            .navbar-menu a,
+            .dropdown-toggle {
+                font-size: 0.7rem;
+                padding: 2px 4px;
+                max-width: none;
+            }
+        }
         @media (max-width: 768px) {
             .navbar {
                 padding: 15px 20px;
@@ -693,5 +786,8 @@
         // 切换翻译小部件显示 - 使用translator-widget.js中定义的window.toggleTranslator
         // 不需要在这里重新定义，避免覆盖全局函数
     </script>
+    
+    <!-- 论坛悬浮入口 -->
+    <a href="forum.html" class="forum-float-btn" title="进入建筑论坛">进入论坛</a>
 </body>
 </html>

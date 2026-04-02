@@ -20,6 +20,36 @@
             position: relative;
         }
         
+        /* 论坛悬浮入口 */
+        .forum-float-btn {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+            color: #fff;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            padding: 20px 12px;
+            border-radius: 0 8px 8px 0;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            box-shadow: 3px 0 15px rgba(196, 30, 58, 0.5);
+            z-index: 999;
+            transition: all 0.3s ease;
+            border: 2px solid #FFD700;
+            border-left: none;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .forum-float-btn:hover {
+            background: linear-gradient(135deg, #DC143C 0%, #A00000 100%);
+            padding: 25px 15px;
+            box-shadow: 5px 0 20px rgba(196, 30, 58, 0.7);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
         /* 全屏背景图层 */
         .page-background {
             position: fixed;
@@ -49,9 +79,10 @@
         
         
         
+        /* 导航栏 */
         .navbar {
             background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
-            padding: 12px 30px;
+            padding: 12px 40px;
             position: fixed;
             width: 100%;
             top: 0;
@@ -62,20 +93,17 @@
             border-bottom: 3px solid #8B4513;
             box-shadow: 0 2px 15px rgba(0,0,0,0.5);
             box-sizing: border-box;
-            min-height: 70px;
         }
         .navbar-brand {
             color: #DAA520;
-            font-size: 1.5rem;
-            font-weight: 900;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            flex-shrink: 0;
-            white-space: nowrap;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-brand img {
             width: 40px;
@@ -83,28 +111,32 @@
             border-radius: 4px;
             flex-shrink: 0;
         }
-        .navbar-brand .brand-text {
+        .brand-text {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
             gap: 2px;
+            flex-shrink: 1;
+            min-width: 0;
         }
-        .navbar-brand .brand-main {
-            color: #DAA520;
+        .brand-main {
             font-size: 1.3rem;
             font-weight: 900;
-            line-height: 1.2;
-        }
-        .navbar-brand .brand-sub {
             color: #DAA520;
-            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .brand-sub {
+            font-size: 0.7rem;
+            color: #F5DEB3;
             font-family: Arial, sans-serif;
-            opacity: 0.9;
-            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .navbar-menu {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             list-style: none;
             align-items: center;
             flex-wrap: nowrap;
@@ -112,25 +144,28 @@
             min-width: 0;
             flex: 1;
             justify-content: center;
-            margin: 0 15px;
         }
         .navbar-menu li {
-            flex-shrink: 0;
-            position: relative;
+            flex-shrink: 1;
+            min-width: 0;
         }
         .navbar-menu a {
             color: #DAA520;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s;
             position: relative;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            padding: 8px 10px;
+            padding: 4px 6px;
             border-radius: 4px;
             font-weight: 500;
             display: inline-block;
-            line-height: 1.4;
+            line-height: 1.5;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+            flex-shrink: 1;
         }
         .navbar-menu a:hover {
             color: #F5DEB3;
@@ -159,21 +194,7 @@
         .dropdown-toggle {
             display: block;
             cursor: pointer;
-            line-height: 1.4;
-            padding: 8px 10px;
-            border-radius: 4px;
-            color: #DAA520;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            position: relative;
-            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            font-weight: 500;
-        }
-        
-        .dropdown-toggle:hover {
-            color: #F5DEB3;
-            background: rgba(245,222,179,0.1);
+            line-height: 1.5;
         }
         
         .dropdown-menu {
@@ -188,10 +209,14 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 1000;
             display: none;
-            margin-top: 2px;
+            margin-top: 0;
         }
         
         .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu:hover {
             display: block;
         }
         
@@ -219,6 +244,32 @@
             flex-shrink: 0;
         }
         
+        .translate-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            color: #DAA520;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        .translate-btn:hover {
+            background: rgba(218,165,32,0.2);
+            border-color: #DAA520;
+        }
+        .translate-btn img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
         .navbar-search {
             display: flex;
             align-items: center;
@@ -226,70 +277,169 @@
         }
         
         .search-input {
-            padding: 8px 12px;
+            padding: 6px 12px;
             border: 2px solid #8B4513;
-            border-right: none;
             border-radius: 4px 0 0 4px;
-            background: rgba(255,255,255,0.9);
-            color: #333;
+            background: rgba(255,255,255,0.1);
+            color: #DAA520;
             font-size: 0.85rem;
             outline: none;
             transition: all 0.3s;
             font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            width: 180px;
-        }
-        
-        .search-input:focus {
-            background: rgba(255,255,255,1);
-            border-color: #DAA520;
-        }
-        
-        .search-button {
-            padding: 8px 16px;
-            background: #27ae60;
-            border: 2px solid #27ae60;
-            border-radius: 0 4px 4px 0;
-            color: white;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-        }
-        
-        .search-button:hover {
-            background: #229954;
-            border-color: #229954;
-        }
-        
-        /* 翻译按钮 */
-        .translate-btn {
-            padding: 8px 16px;
-            background: #3498db;
-            border: 2px solid #3498db;
-            border-radius: 4px;
-            color: white;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            width: 150px;
             flex-shrink: 0;
         }
         
-        .translate-btn:hover {
-            background: #2980b9;
-            border-color: #2980b9;
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #DAA520;
+            box-shadow: 0 0 10px rgba(139,69,19,0.3);
         }
         
-        .translate-btn img {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            object-fit: cover;
+        .search-button {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: 2px solid #8B4513;
+            border-radius: 0 4px 4px 0;
+            color: #F5DEB3;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            flex-shrink: 0;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(139,69,19,0.4);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .navbar {
+                padding: 10px 30px;
+            }
+            .navbar-menu {
+                gap: 8px;
+            }
+            .navbar-menu a {
+                font-size: 0.75rem;
+                padding: 3px 5px;
+            }
+            .brand-main {
+                font-size: 1.2rem;
+            }
+            .brand-sub {
+                font-size: 0.65rem;
+            }
+            .search-input {
+                width: 120px;
+                font-size: 0.8rem;
+            }
+            .search-button {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+            .translate-btn {
+                font-size: 0.8rem;
+                padding: 5px 12px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .navbar {
+                padding: 8px 20px;
+            }
+            .navbar-menu {
+                gap: 5px;
+            }
+            .navbar-menu a {
+                font-size: 0.7rem;
+                max-width: 100px;
+            }
+            .brand-main {
+                font-size: 1.1rem;
+            }
+            .brand-sub {
+                font-size: 0.6rem;
+            }
+            .navbar-brand img {
+                width: 35px;
+                height: 35px;
+            }
+            .search-input {
+                width: 100px;
+            }
+            .navbar-content {
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .navbar-brand {
+                align-self: center;
+            }
+            .navbar-menu {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .navbar-menu a {
+                font-size: 0.65rem;
+                padding: 2px 4px;
+            }
+            .navbar-content {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+            .search-input {
+                width: 150px;
+            }
+            .dropdown-menu {
+                min-width: 150px;
+            }
+            .dropdown-menu a {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 8px;
+            }
+            .brand-text {
+                display: none;
+            }
+            .navbar-menu {
+                gap: 3px;
+            }
+            .navbar-menu a {
+                font-size: 0.6rem;
+                max-width: 80px;
+            }
+            .navbar-content {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+            .search-input {
+                width: 120px;
+            }
+            .translate-btn {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
         }
         
         .container {
@@ -1337,12 +1487,13 @@
                         },
                         body: JSON.stringify({
                             question: message
-                        }),
-                        // 添加请求超时设置
-                        signal: AbortSignal.timeout(10000) // 10秒超时
+                        })
+                        // 移除超时设置，避免请求被过早中止
                     });
                     
                     const responseText = await response.text();
+                    
+                    console.log('📥 API 原始响应:', responseText);
                     
                     if (!response.ok) {
                         let errorData = {};
@@ -1363,24 +1514,30 @@
                     
                     const data = JSON.parse(responseText);
                     
+                    console.log('📦 API 解析后数据:', data);
+                    
                     // 兼容多种返回格式
                     let content = null;
                     
                     // 格式 1: { response: "..." }
                     if (data.response) {
                         content = data.response;
+                        console.log('✅ 格式 1 解析成功:', content.substring(0, 50));
                     }
                     // 格式 2: Doubao API 格式 { choices: [{ message: { content: "..." } }] }
                     else if (data.choices && data.choices[0] && data.choices[0].message) {
                         content = data.choices[0].message.content;
+                        console.log('✅ 格式 2 解析成功:', content.substring(0, 50));
                     }
                     // 格式 3: { content: "..." }
                     else if (data.content) {
                         content = data.content;
+                        console.log('✅ 格式 3 解析成功:', content.substring(0, 50));
                     }
                     // 格式 4: { answer: "..." }
                     else if (data.answer) {
                         content = data.answer;
+                        console.log('✅ 格式 4 解析成功:', content.substring(0, 50));
                     }
                     
                     if (content) {
@@ -1389,6 +1546,7 @@
                         throw new Error('API 返回数据格式错误 - 无法提取回复内容');
                     }
                 } catch (error) {
+                    console.error('❌ API 调用错误:', error);
                     lastError = error;
                     
                     // 如果是最后一次重试，抛出错误
@@ -1648,5 +1806,8 @@
         // 切换翻译小部件显示 - 使用translator-widget.js中定义的window.toggleTranslator
         // 不需要在这里重新定义，避免覆盖全局函数
     </script>
+    
+    <!-- 论坛悬浮入口 -->
+    <a href="forum.html" class="forum-float-btn" title="进入建筑论坛">进入论坛</a>
 </body>
 </html>
