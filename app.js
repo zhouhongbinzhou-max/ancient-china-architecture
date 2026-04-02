@@ -312,18 +312,19 @@ app.post('/api/translate', async (req, res) => {
                                 }
                             ];
 
+                            // 构建翻译API请求格式
                             const postData = JSON.stringify({
                                 model: TRANSLATE_MODEL_ID, // 使用环境变量中的接入点ID
-                                messages: messages,
-                                temperature: 0.3,
-                                max_tokens: 1000
+                                text: text,
+                                from: from,
+                                to: to
                             });
 
                             console.log('📤 发送的 postData:', postData);
                             console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
                             console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-                            // 改回使用原始的API端点
-                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 原始API端点
+                            // 使用翻译API端点
+                            const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
                             
                             if (result.error) {
                                 console.error('❌ 翻译 API 错误:', result.error);
@@ -331,8 +332,22 @@ app.post('/api/translate', async (req, res) => {
                                 return text.replace(/故宫/g, 'Forbidden City').replace(/建筑特色/g, 'architectural features').replace(/哪些/g, 'what are');
                             }
                             
+                            // 提取翻译结果 - 支持多种格式
                             let translatedText = null;
-                            if (result.choices && result.choices[0] && result.choices[0].message) {
+                            // 翻译API格式
+                            if (result.translated_text) {
+                                translatedText = result.translated_text;
+                            }
+                            // 其他翻译API格式
+                            else if (result.result) {
+                                translatedText = result.result;
+                            }
+                            // 其他翻译API格式
+                            else if (result.translation) {
+                                translatedText = result.translation;
+                            }
+                            // Chat API格式（作为备选）
+                            else if (result.choices && result.choices[0] && result.choices[0].message) {
                                 translatedText = result.choices[0].message.content;
                             }
                             
@@ -384,18 +399,19 @@ app.post('/api/translate', async (req, res) => {
             }
         ];
 
+        // 构建翻译API请求格式
         const postData = JSON.stringify({
             model: TRANSLATE_MODEL_ID, // 使用环境变量中的接入点ID
-            messages: messages,
-            temperature: 0.3,
-            max_tokens: 1000
+            text: q,
+            from: from,
+            to: to
         });
 
         console.log('📤 发送的 postData:', postData);
         console.log('📤 使用的模型ID:', TRANSLATE_MODEL_ID);
         console.log('📤 使用的API Key:', TRANSLATE_API_KEY.substring(0, 10) + '...'); // 只显示API Key的前10个字符
-        // 改回使用原始的API端点
-        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/chat/completions'); // 原始API端点
+        // 使用翻译API端点
+        const result = await callVolcengineAPI(postData, TRANSLATE_API_KEY, '/api/v3/translate'); // 翻译API端点
         
         console.log('📦 翻译 API 响应:', JSON.stringify(result).substring(0, 200));
         
@@ -409,9 +425,22 @@ app.post('/api/translate', async (req, res) => {
             });
         }
         
-        // 提取翻译结果 - Chat API 格式
+        // 提取翻译结果 - 支持多种格式
         let translatedText = null;
-        if (result.choices && result.choices[0] && result.choices[0].message) {
+        // 翻译API格式
+        if (result.translated_text) {
+            translatedText = result.translated_text;
+        }
+        // 其他翻译API格式
+        else if (result.result) {
+            translatedText = result.result;
+        }
+        // 其他翻译API格式
+        else if (result.translation) {
+            translatedText = result.translation;
+        }
+        // Chat API格式（作为备选）
+        else if (result.choices && result.choices[0] && result.choices[0].message) {
             translatedText = result.choices[0].message.content;
         }
         
