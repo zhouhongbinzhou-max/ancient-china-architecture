@@ -489,7 +489,7 @@ function callVolcengineAPI(postData, apiKey, endpoint = '/api/v3/chat/completion
     return new Promise((resolve, reject) => {
         const options = {
             method: 'POST',
-            hostname: 'ark.cn-beijing.volces.com',
+            hostname: 'ark-cn-beijing.volces.com',
             path: endpoint,
             headers: {
                 'Content-Type': 'application/json',
