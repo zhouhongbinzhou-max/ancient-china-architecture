@@ -502,11 +502,15 @@ function callVolcengineAPI(postData, apiKey, endpoint = '/api/v3/chat/completion
             let data = '';
             apiRes.on('data', chunk => data += chunk);
             apiRes.on('end', () => {
+                console.log('📥 API响应状态码:', apiRes.statusCode);
+                console.log('📥 API响应头:', apiRes.headers);
+                console.log('📥 API响应内容:', data.substring(0, 500)); // 只显示前500个字符
                 try {
                     const result = JSON.parse(data);
                     resolve(result);
                 } catch (e) {
-                    resolve({ error: '解析失败', message: e.message });
+                    console.error('❌ JSON解析错误:', e.message);
+                    resolve({ error: '解析失败', message: e.message, rawData: data.substring(0, 200) });
                 }
             });
         });
