@@ -301,17 +301,6 @@ app.post('/api/translate', async (req, res) => {
                 const batchResults = await Promise.all(
                     batch.map(async (text, index) => {
                         try {
-                            const messages = [
-                                {
-                                    role: "system",
-                                    content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
-                                },
-                                {
-                                    role: "user",
-                                    content: text
-                                }
-                            ];
-
                             // 强制使用翻译模型ID
                             const translateModelId = "ep-20260327161112-jjmbv";
                             
@@ -333,7 +322,6 @@ app.post('/api/translate', async (req, res) => {
                                 temperature: 0.3,
                                 max_tokens: 1000
                             });
-
                             console.log('📤 发送的 postData:', postData);
                             console.log('📤 使用的模型ID:', translateModelId);
                             console.log('📤 环境变量中的翻译模型ID:', TRANSLATE_MODEL_ID);
@@ -402,17 +390,6 @@ app.post('/api/translate', async (req, res) => {
         console.log('📝 收到翻译请求:', q.substring(0, 50));
         console.log('🔑 使用翻译 API Key:', TRANSLATE_API_KEY.substring(0, 8) + '...');
         console.log('🎯 使用翻译模型:', TRANSLATE_MODEL_ID);
-
-        const messages = [
-            {
-                role: "system",
-                content: `You are a professional translator. Translate the following text from ${from} to ${to}. Keep the translation concise and accurate. Use single words when possible instead of sentences. Use specific terms instead of explanations.`
-            },
-            {
-                role: "user",
-                content: q
-            }
-        ];
 
         // 强制使用翻译模型ID
         const translateModelId = "ep-20260327161112-jjmbv";
