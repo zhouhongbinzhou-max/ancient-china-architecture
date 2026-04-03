@@ -230,9 +230,27 @@ app.post('/api/analyze-image', async (req, res) => {
             return res.status(400).json({ error: '请提供图片' });
         }
 
+        // 生成缓存键
+        const cacheKey = `image_${images[0].data.substring(0, 100)}_${question || ''}`;
+        
+        // 检查缓存
+        if (responseCache.has(cacheKey)) {
+            const cachedResponse = responseCache.get(cacheKey);
+            if (Date.now() - cachedResponse.timestamp < CACHE_EXPIRY) {
+                console.log('💾 从缓存获取图片分析结果');
+                return res.json({
+                    success: true,
+                    response: cachedResponse.response,
+                    fromCache: true
+                });
+            } else {
+                responseCache.delete(cacheKey);
+            }
+        }
+
         const messages = [{
             role: "system",
-            content: "你是专注于中国古代建筑文化的智能助手，擅长分析和识别古代建筑。"
+            content: "你是专注于中国古代建筑文化的智能助手，擅长分析和识别古代建筑。请简洁明了地回答，不要包含无关内容。"
         }];
 
         const imageContent = images.map(img => ({
@@ -246,29 +264,81 @@ app.post('/api/analyze-image', async (req, res) => {
         const postData = JSON.stringify({
             model: ENDPOINT_ID,
             messages,
-            temperature: 0.7,
-            max_tokens: 2000
+            temperature: 0.5, // 降低温度，减少随机性
+            max_tokens: 1000, // 减少最大 token 数，加快响应
+            top_p: 0.8, // 限制词表，加快生成速度
+            stream: false // 禁用流式输出，减少网络开销
         });
 
-        const result = await callVolcengineAPI(postData, API_KEY);
+        // 减少重试次数，避免不必要的等待
+        const maxRetries = 2;
+        let lastError = null;
         
-        // 检查是否有错误
-        if (result.error) {
-            console.error('❌ 图片分析 API 错误:', result.error);
-            // 即使API错误，也返回模拟数据，确保前端正常显示
-            return res.json({
-                success: true,
-                response: '这是一张中国古代建筑的图片。由于AI服务暂时不可用，无法提供详细分析。请尝试描述图片内容，我会基于我的知识为你提供相关信息。'
-            });
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                console.log(`📸 第${attempt}次调用图片分析 API...`);
+                const result = await callVolcengineAPI(postData, API_KEY);
+                
+                // 检查是否有错误
+                if (result.error) {
+                    console.error('❌ 图片分析 API 错误:', result.error);
+                    lastError = result.error;
+                    if (attempt < maxRetries) {
+                        console.log(`🔄 等待 500ms 后重试...`);
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        continue;
+                    }
+                    // 重试失败，返回模拟数据
+                    const mockResponse = '这是一张中国古代建筑的图片。由于AI服务暂时不可用，无法提供详细分析。请尝试描述图片内容，我会基于我的知识为你提供相关信息。';
+                    // 缓存模拟响应
+                    responseCache.set(cacheKey, {
+                        response: mockResponse,
+                        timestamp: Date.now()
+                    });
+                    return res.json({
+                        success: true,
+                        response: mockResponse
+                    });
+                }
+                
+                // 提取 AI 回复内容
+                const aiResponse = result.choices?.[0]?.message?.content || 'AI 没有返回内容';
+                
+                // 缓存响应
+                responseCache.set(cacheKey, {
+                    response: aiResponse,
+                    timestamp: Date.now()
+                });
+                
+                const response = {
+                    success: true,
+                    response: aiResponse,
+                    raw: result
+                };
+                res.json(response);
+                return;
+            } catch (error) {
+                console.error('❌ 图片分析错误:', error);
+                lastError = error;
+                if (attempt < maxRetries) {
+                    console.log(`🔄 等待 500ms 后重试...`);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    continue;
+                }
+            }
         }
         
-        // 提取 AI 回复内容并添加 success 字段
-        const response = {
+        // 所有重试都失败，返回模拟数据
+        const mockResponse = '这是一张中国古代建筑的图片。由于AI服务暂时不可用，无法提供详细分析。请尝试描述图片内容，我会基于我的知识为你提供相关信息。';
+        // 缓存模拟响应
+        responseCache.set(cacheKey, {
+            response: mockResponse,
+            timestamp: Date.now()
+        });
+        res.json({
             success: true,
-            response: result.choices?.[0]?.message?.content || 'AI 没有返回内容',
-            raw: result
-        };
-        res.json(response);
+            response: mockResponse
+        });
     } catch (error) {
         console.error('❌ 图片分析错误:', error);
         // 即使发生错误，也返回模拟数据，确保前端正常显示
