@@ -1344,10 +1344,28 @@
                     const data = JSON.parse(responseText);
                     console.log('📦 API 返回数据:', data);
                     
-                    // 确保返回正确的数据结构
+                    // 兼容多种返回格式
+                    let responseContent = null;
+                    
+                    // 格式 1: { success: true, response: "..." }
                     if (data.success && data.response) {
+                        responseContent = data.response;
+                        console.log('✅ 格式 1 解析成功:', responseContent.substring(0, 50));
+                    }
+                    // 格式 2: { choices: [{ message: { content: "..." } }] }
+                    else if (data.choices && data.choices[0] && data.choices[0].message) {
+                        responseContent = data.choices[0].message.content;
+                        console.log('✅ 格式 2 解析成功:', responseContent.substring(0, 50));
+                    }
+                    // 格式 3: { content: "..." }
+                    else if (data.content) {
+                        responseContent = data.content;
+                        console.log('✅ 格式 3 解析成功:', responseContent.substring(0, 50));
+                    }
+                    
+                    if (responseContent) {
                         console.log('✅ 图片分析成功');
-                        return data;  // 返回整个对象，调用方会提取 response
+                        return { success: true, response: responseContent };
                     } else {
                         console.error('❌ API 返回数据格式异常:', data);
                         throw new Error('图片分析失败：返回数据格式异常');
@@ -1619,6 +1637,24 @@
             throw lastError || new Error('API 调用失败');
         }
         
+        // 处理Markdown格式
+        function processMarkdown(text) {
+            if (!text) return '';
+            
+            // 转换标题
+            text = text.replace(/^## (.*$)/gim, '<h3 style="margin: 10px 0; font-size: 1.1rem; font-weight: bold;">$1</h3>');
+            text = text.replace(/^# (.*$)/gim, '<h2 style="margin: 10px 0; font-size: 1.2rem; font-weight: bold;">$1</h2>');
+            
+            // 转换列表
+            text = text.replace(/^\* (.*$)/gim, '<li style="margin-left: 20px;">$1</li>');
+            text = text.replace(/(<li>.*<\/li>)/gs, '<ul style="margin: 10px 0;">$1</ul>');
+            
+            // 转换换行
+            text = text.replace(/\n/g, '<br>');
+            
+            return text;
+        }
+        
         // 添加消息
         function addMessage(text, type, isRecallable = false, messageId = null, relatedMessageId = null) {
             const container = document.getElementById('chatMessages');
@@ -1633,7 +1669,10 @@
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = text;
+            
+            // 处理Markdown格式
+            const processedText = processMarkdown(text);
+            contentDiv.innerHTML = processedText;
             
             const timeDiv = document.createElement('div');
             timeDiv.className = 'message-time';
@@ -1684,7 +1723,9 @@
             // 添加文字内容
             if (text) {
                 const textDiv = document.createElement('div');
-                textDiv.textContent = text;
+                // 处理Markdown格式
+                const processedText = processMarkdown(text);
+                textDiv.innerHTML = processedText;
                 textDiv.style.marginBottom = images.length > 0 ? '10px' : '0';
                 contentDiv.appendChild(textDiv);
             }
