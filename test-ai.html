@@ -942,7 +942,7 @@
     
     <div class="container">
         <div class="page-title">
-            <h1>古典建筑文化问豆包</h1>
+            <h1>古典建筑文化问AI</h1>
             <p>智能探索中国古代建筑的文化内涵与历史魅力</p>
         </div>
         
@@ -1435,8 +1435,12 @@
             // 显示加载状态
             showLoading();
             
+            // 创建当前请求对象
+            const request = { messageId: userMessageId, cancelled: false };
+            // 更新全局currentRequest
+            currentRequest = request;
+            
             try {
-                currentRequest = { messageId: userMessageId, cancelled: false };
                 let response;
                 
                 // 检查缓存
@@ -1477,11 +1481,22 @@
                 }
                 
                 // 检查请求是否被取消
-                if (currentRequest && currentRequest.messageId === userMessageId && !currentRequest.cancelled) {
+                console.log('🔍 检查请求状态:', {
+                    request: request,
+                    userMessageId: userMessageId,
+                    notCancelled: !request.cancelled
+                });
+                // 使用局部request对象而不是全局currentRequest
+                if (!request.cancelled) {
                     hideLoading();
                     const aiMessageId = ++messageIdCounter;
                     messageMap.set(userMessageId, aiMessageId);
                     addMessage(response, 'ai', false, aiMessageId, userMessageId);
+                    console.log('✅ 成功添加AI回复');
+                } else {
+                    console.log('❌ 跳过添加AI回复，请求已取消');
+                    // 即使条件不满足，也隐藏加载状态
+                    hideLoading();
                 }
             } catch (error) {
                 console.error('API 调用失败:', error);
@@ -1493,7 +1508,7 @@
                 }
                 
                 // 只有在请求未被取消时才显示错误
-                if (currentRequest && currentRequest.messageId === userMessageId && !currentRequest.cancelled) {
+                if (!request.cancelled) {
                     hideLoading();
                     // API 失败时使用模拟回复
                     const mockResponse = getMockResponse(message);
@@ -1502,9 +1517,10 @@
                     addMessage(mockResponse, 'ai', false, aiMessageId, userMessageId);
                 }
             } finally {
-                // 只有当前请求是最后一个时才启用发送按钮
+                // 启用发送按钮
+                sendBtn.disabled = false;
+                // 只有当当前全局currentRequest是本请求时才重置
                 if (currentRequest && currentRequest.messageId === userMessageId) {
-                    sendBtn.disabled = false;
                     currentRequest = null;
                 }
             }
@@ -1743,12 +1759,13 @@
                     if (currentRequest && currentRequest.messageId === messageId) {
                         currentRequest.cancelled = true;
                         console.log('已取消当前 AI 请求');
-                        // 重新启用发送按钮
+                        // 重置 currentRequest，确保后续消息可以正常发送
+                        currentRequest = null;
+                        // 启用发送按钮
                         const sendBtn = document.getElementById('sendBtn');
                         if (sendBtn) {
                             sendBtn.disabled = false;
                         }
-                        currentRequest = null;
                     }
                     
                     // 查找并删除对应的 AI 回复
