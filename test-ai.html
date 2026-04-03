@@ -1409,8 +1409,21 @@
                 imagesToSend = [...uploadedImages];
                 conversationImages = [...uploadedImages];  // 更新上下文图片
             } else if (conversationImages.length > 0) {
-                // 没有新图片，但有上下文图片，使用上下文的图片
-                imagesToSend = [...conversationImages];
+                // 检测是否包含继续使用上一张图片的关键词
+                const continueKeywords = [
+                    '上一张图', '上一张建筑', '上一张建筑图片', '上一张建筑图', 
+                    '上一张图片', '上一个建筑', '刚才那个建筑', '刚才的建筑',
+                    '那张图', '那个建筑', '这张图', '这个建筑'
+                ];
+                
+                const hasContinueKeyword = continueKeywords.some(keyword => 
+                    message.toLowerCase().includes(keyword.toLowerCase())
+                );
+                
+                // 只有当用户输入包含关键词时，才使用上下文的图片
+                if (hasContinueKeyword) {
+                    imagesToSend = [...conversationImages];
+                }
             }
             
             // 添加用户消息（可撤回）
@@ -1420,8 +1433,8 @@
                 addMessage(messageContent, 'user', true, userMessageId);
             }
             
-            // 如果有上下文图片但没有新图片，添加提示
-            if (!hasImages && conversationImages.length > 0 && message) {
+            // 如果使用了上下文图片，添加提示
+            if (!hasImages && imagesToSend.length > 0 && message) {
                 const tipDiv = document.createElement('div');
                 tipDiv.style.cssText = 'font-size: 12px; color: #999; margin-top: 5px; font-style: italic;';
                 tipDiv.textContent = '💡 正在基于上一张图片继续提问...';
