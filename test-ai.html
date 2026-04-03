@@ -1148,6 +1148,8 @@
         const recalledMessageIds = new Set();
         // 当前上传的图片列表
         let uploadedImages = [];
+        // 对话上下文中的图片（用于连续对话）
+        let conversationImages = [];
         // 对话历史
         const conversationHistory = [];
         // 缓存机制
@@ -1394,8 +1396,12 @@
             // 确定使用哪组图片
             let imagesToSend = [];
             if (hasImages) {
-                // 只有新图片时才发送图片
+                // 有新图片，使用新图片并更新上下文
                 imagesToSend = [...uploadedImages];
+                conversationImages = [...uploadedImages];  // 更新上下文图片
+            } else if (conversationImages.length > 0) {
+                // 没有新图片，但有上下文图片，使用上下文的图片
+                imagesToSend = [...conversationImages];
             }
             
             // 添加用户消息（可撤回）
@@ -1403,6 +1409,17 @@
                 addMessageWithImages(messageContent, imagesToSend, 'user', true, userMessageId);
             } else {
                 addMessage(messageContent, 'user', true, userMessageId);
+            }
+            
+            // 如果有上下文图片但没有新图片，添加提示
+            if (!hasImages && conversationImages.length > 0 && message) {
+                const tipDiv = document.createElement('div');
+                tipDiv.style.cssText = 'font-size: 12px; color: #999; margin-top: 5px; font-style: italic;';
+                tipDiv.textContent = '💡 正在基于上一张图片继续提问...';
+                const lastUserMessage = document.querySelector('.user-message:last-child .message-content');
+                if (lastUserMessage) {
+                    lastUserMessage.appendChild(tipDiv);
+                }
             }
             
             input.value = '';
@@ -1726,6 +1743,12 @@
                     if (currentRequest && currentRequest.messageId === messageId) {
                         currentRequest.cancelled = true;
                         console.log('已取消当前 AI 请求');
+                        // 重新启用发送按钮
+                        const sendBtn = document.getElementById('sendBtn');
+                        if (sendBtn) {
+                            sendBtn.disabled = false;
+                        }
+                        currentRequest = null;
                     }
                     
                     // 查找并删除对应的 AI 回复
