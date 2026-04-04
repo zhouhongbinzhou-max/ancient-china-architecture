@@ -716,7 +716,11 @@
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    window.location.href = 'auth.html';
+                    // 没有token，显示登录表单
+                    document.getElementById('profile-section').style.display = 'none';
+                    document.getElementById('login-section').style.display = 'block';
+                    document.getElementById('register-section').style.display = 'none';
+                    showError('请先登录后再修改个人信息', 'login-message');
                     return;
                 }
                 
