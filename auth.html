@@ -552,17 +552,29 @@
         }
         
         // 显示错误消息
-        function showError(message) {
-            const errorEl = document.getElementById('error-message');
+        function showError(message, elementId = 'error-message') {
+            const errorEl = document.getElementById(elementId);
             errorEl.textContent = message;
             errorEl.style.display = 'block';
         }
         
         // 显示成功消息
-        function showSuccess(message) {
-            const successEl = document.getElementById('success-message');
+        function showSuccess(message, elementId = 'success-message') {
+            const successEl = document.getElementById(elementId);
             successEl.textContent = message;
             successEl.style.display = 'block';
+        }
+        
+        // 清除消息
+        function clearMessages(elementId = 'login-message') {
+            const errorEl = document.getElementById(elementId);
+            if (errorEl) {
+                errorEl.style.display = 'none';
+            }
+            const successEl = document.getElementById(elementId.replace('error', 'success') || 'success-message');
+            if (successEl) {
+                successEl.style.display = 'none';
+            }
         }
         
         // 登录表单提交
@@ -720,7 +732,7 @@
                     document.getElementById('profile-section').style.display = 'none';
                     document.getElementById('login-section').style.display = 'block';
                     document.getElementById('register-section').style.display = 'none';
-                    showError('请先登录后再修改个人信息', 'login-message');
+                    showError('请先登录后再修改个人信息');
                     return;
                 }
                 
