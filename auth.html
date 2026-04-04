@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户认证 - 中国古建筑</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #ffd700;
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h2 {
+            color: #8B4513;
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #CD853F 0%, #8B4513 100%);
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .auth-footer a {
+            color: #8B4513;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .toggle-form {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .toggle-form a {
+            color: #8B4513;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        #login-form {
+            display: block;
+        }
+        
+        #register-form {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-container {
+                margin: 30px 20px;
+                padding: 30px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            nav ul li {
+                margin-left: 0;
+                margin-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="中国古建筑">
+                中国古建筑
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="architecture.html">建筑欣赏</a></li>
+                    <li><a href="test-ai.html">AI 问答</a></li>
+                    <li><a href="forum.html">论坛交流</a></li>
+                    <li><a href="auth.html">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2 id="auth-title">用户登录</h2>
+                <p id="auth-subtitle">请输入您的账号信息</p>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+            
+            <!-- 登录表单 -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">邮箱</label>
+                    <input type="email" id="login-email" placeholder="请输入邮箱" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn">登录</button>
+                <div class="toggle-form">
+                    <p>还没有账号？ <a href="#" id="toggle-register">立即注册</a></p>
+                </div>
+            </form>
+            
+            <!-- 注册表单 -->
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">用户名</label>
+                    <input type="text" id="register-username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">邮箱</label>
+                    <input type="email" id="register-email" placeholder="请输入邮箱" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" placeholder="请输入密码（至少6位）" required minlength="6">
+                </div>
+                <button type="submit" class="btn">注册</button>
+                <div class="toggle-form">
+                    <p>已有账号？ <a href="#" id="toggle-login">立即登录</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 切换表单
+        document.getElementById('toggle-register').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('auth-title').textContent = '用户注册';
+            document.getElementById('auth-subtitle').textContent = '创建您的账号';
+            clearMessages();
+        });
+        
+        document.getElementById('toggle-login').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('auth-title').textContent = '用户登录';
+            document.getElementById('auth-subtitle').textContent = '请输入您的账号信息';
+            clearMessages();
+        });
+        
+        // 清除消息
+        function clearMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            const errorEl = document.getElementById('error-message');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+        
+        // 显示成功消息
+        function showSuccess(message) {
+            const successEl = document.getElementById('success-message');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+        
+        // 登录表单提交
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearMessages();
+            
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // 保存用户信息到localStorage
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.user.token);
+                    
+                    showSuccess('登录成功，正在跳转...');
+                    
+                    // 跳转到论坛页面
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 1500);
+                } else {
+                    showError(data.error || '登录失败');
+                }
+            } catch (error) {
+                console.error('登录失败:', error);
+                showError('网络错误，请稍后重试');
+            }
+        });
+        
+        // 注册表单提交
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearMessages();
+            
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // 保存用户信息到localStorage
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.user.token);
+                    
+                    showSuccess('注册成功，正在跳转...');
+                    
+                    // 跳转到论坛页面
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 1500);
+                } else {
+                    showError(data.error || '注册失败');
+                }
+            } catch (error) {
+                console.error('注册失败:', error);
+                showError('网络错误，请稍后重试');
+            }
+        });
+        
+        // 检查是否已登录
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // 跳转到论坛页面
+                window.location.href = 'forum.html';
+            }
+        }
+        
+        // 页面加载时检查
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

@@ -528,6 +528,204 @@ app.post('/api/translate', async (req, res) => {
     }
 });
 
+// 用户数据存储（使用内存存储，实际生产环境应使用数据库）
+let users = [];
+
+// 从文件加载用户数据（如果存在）
+try {
+    const fs = require('fs');
+    const path = require('path');
+    const userFile = path.join(__dirname, 'users-data.json');
+    
+    if (fs.existsSync(userFile)) {
+        const data = fs.readFileSync(userFile, 'utf8');
+        users = JSON.parse(data);
+        console.log(`👥 已加载 ${users.length} 个用户`);
+    }
+} catch (error) {
+    console.log('⚠️ 无法加载用户数据，使用空数组');
+}
+
+// 保存用户数据到文件
+function saveUserData() {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const userFile = path.join(__dirname, 'users-data.json');
+        fs.writeFileSync(userFile, JSON.stringify(users, null, 2));
+    } catch (error) {
+        console.error('❌ 保存用户数据失败:', error);
+    }
+}
+
+// 密码加密（简单哈希，实际生产环境应使用bcrypt等安全算法）
+function hashPassword(password) {
+    const crypto = require('crypto');
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+// 生成随机token
+function generateToken() {
+    const crypto = require('crypto');
+    return crypto.randomBytes(32).toString('hex');
+}
+
+// 认证中间件
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ success: false, error: '未授权' });
+    }
+    
+    const user = users.find(u => u.token === token);
+    if (!user) {
+        return res.status(403).json({ success: false, error: '无效的token' });
+    }
+    
+    req.user = user;
+    next();
+}
+
+// API 路由：用户注册
+app.post('/api/auth/register', (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        
+        if (!username || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: '请填写所有必填字段'
+            });
+        }
+        
+        // 检查邮箱是否已存在
+        if (users.find(u => u.email === email)) {
+            return res.status(400).json({
+                success: false,
+                error: '该邮箱已注册'
+            });
+        }
+        
+        // 检查用户名是否已存在
+        if (users.find(u => u.username === username)) {
+            return res.status(400).json({
+                success: false,
+                error: '该用户名已存在'
+            });
+        }
+        
+        const newUser = {
+            id: Date.now().toString(),
+            username: username.trim(),
+            email: email.trim().toLowerCase(),
+            password: hashPassword(password),
+            token: generateToken(),
+            createdAt: new Date().toISOString()
+        };
+        
+        users.push(newUser);
+        saveUserData();
+        
+        console.log('✅ 新用户注册:', newUser.username);
+        
+        res.json({
+            success: true,
+            user: {
+                id: newUser.id,
+                username: newUser.username,
+                email: newUser.email,
+                token: newUser.token
+            }
+        });
+    } catch (error) {
+        console.error('❌ 注册失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '注册失败'
+        });
+    }
+});
+
+// API 路由：用户登录
+app.post('/api/auth/login', (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: '请填写邮箱和密码'
+            });
+        }
+        
+        const user = users.find(u => u.email === email.trim().toLowerCase());
+        
+        if (!user || user.password !== hashPassword(password)) {
+            return res.status(401).json({
+                success: false,
+                error: '邮箱或密码错误'
+            });
+        }
+        
+        // 更新token
+        user.token = generateToken();
+        saveUserData();
+        
+        console.log('✅ 用户登录:', user.username);
+        
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                token: user.token
+            }
+        });
+    } catch (error) {
+        console.error('❌ 登录失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '登录失败'
+        });
+    }
+});
+
+// API 路由：获取当前用户信息
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+    res.json({
+        success: true,
+        user: {
+            id: req.user.id,
+            username: req.user.username,
+            email: req.user.email
+        }
+    });
+});
+
+// API 路由：用户登出
+app.post('/api/auth/logout', authenticateToken, (req, res) => {
+    try {
+        req.user.token = null;
+        saveUserData();
+        
+        console.log('✅ 用户登出:', req.user.username);
+        
+        res.json({
+            success: true,
+            message: '登出成功'
+        });
+    } catch (error) {
+        console.error('❌ 登出失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '登出失败'
+        });
+    }
+});
+
 // 论坛帖子数据存储（使用内存存储，实际生产环境应使用数据库）
 let forumPosts = [];
 
