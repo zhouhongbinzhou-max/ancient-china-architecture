@@ -726,6 +726,55 @@ app.post('/api/auth/logout', authenticateToken, (req, res) => {
     }
 });
 
+// API 路由：修改个人信息
+app.put('/api/auth/profile', authenticateToken, (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        
+        // 更新用户信息
+        if (username) {
+            req.user.username = username.trim();
+        }
+        
+        if (email) {
+            const emailLower = email.trim().toLowerCase();
+            // 检查邮箱是否已被其他用户使用
+            const existingUser = users.find(u => u.email === emailLower && u.id !== req.user.id);
+            if (existingUser) {
+                return res.status(400).json({
+                    success: false,
+                    error: '该邮箱已被使用'
+                });
+            }
+            req.user.email = emailLower;
+        }
+        
+        if (password) {
+            req.user.password = hashPassword(password);
+        }
+        
+        saveUserData();
+        
+        console.log('✅ 用户信息更新:', req.user.username);
+        
+        res.json({
+            success: true,
+            user: {
+                id: req.user.id,
+                username: req.user.username,
+                email: req.user.email,
+                token: req.user.token
+            }
+        });
+    } catch (error) {
+        console.error('❌ 更新个人信息失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '更新个人信息失败'
+        });
+    }
+});
+
 // 论坛帖子数据存储（使用内存存储，实际生产环境应使用数据库）
 let forumPosts = [];
 

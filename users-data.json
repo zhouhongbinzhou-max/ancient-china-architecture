@@ -4,7 +4,15 @@
     "username": "周_sir",
     "email": "a2897798032@qq.com",
     "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
-    "token": "f94e045f7697b0f4ad634804dfba7e24cb0854d749b696da03d74779b347b0de",
+    "token": "cedb89bc63855712d2f2a864132dc12a657c0564e7cdb5e118b003d7b0010f9f",
     "createdAt": "2026-04-04T11:28:00.788Z"
+  },
+  {
+    "id": "1775305056245",
+    "username": "updateduser",
+    "email": "updated@example.com",
+    "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "token": "1c66e86dedd4d0a5ad8febb58bfd57857cdd4a3a8d8e27c77b3fdc9805625d4f",
+    "createdAt": "2026-04-04T12:17:36.252Z"
   }
 ]

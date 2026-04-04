@@ -582,7 +582,9 @@
             console.log('开始登录请求:', { email });
             
             try {
-                const apiUrl = 'https://ancient-china-architecture.onrender.com/api/auth/login';
+                // 检测当前环境，自动选择API URL
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const apiUrl = isLocal ? 'http://localhost:3000/api/auth/login' : 'https://ancient-china-architecture.onrender.com/api/auth/login';
                 console.log('API URL:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
@@ -652,7 +654,9 @@
             console.log('开始注册请求:', { username, email });
             
             try {
-                const apiUrl = 'https://ancient-china-architecture.onrender.com/api/auth/register';
+                // 检测当前环境，自动选择API URL
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const apiUrl = isLocal ? 'http://localhost:3000/api/auth/register' : 'https://ancient-china-architecture.onrender.com/api/auth/register';
                 console.log('API URL:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
@@ -693,6 +697,127 @@
         });
         
         // 检查是否已登录
+        // 获取API基础URL
+        function getApiBaseUrl() {
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            return isLocal ? 'http://localhost:3000' : 'https://ancient-china-architecture.onrender.com';
+        }
+        
+        // 显示修改个人信息表单
+        function showProfileForm() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('profile-section').style.display = 'block';
+            loadUserProfile();
+        }
+        
+        // 加载用户个人信息
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('profile-username').value = data.user.username;
+                    document.getElementById('profile-email').value = data.user.email;
+                }
+            } catch (error) {
+                console.error('加载个人信息失败:', error);
+                showError('加载个人信息失败', 'profile-message');
+            }
+        }
+        
+        // 保存个人信息
+        async function saveProfile(event) {
+            event.preventDefault();
+            clearMessages('profile-message');
+            
+            const username = document.getElementById('profile-username').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const password = document.getElementById('profile-password').value;
+            
+            // 表单验证
+            if (!username || !email) {
+                showError('请填写用户名和邮箱', 'profile-message');
+                return;
+            }
+            
+            if (password && password.length < 6) {
+                showError('密码长度至少6位', 'profile-message');
+                return;
+            }
+            
+            // 邮箱格式验证
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('请输入有效的邮箱地址', 'profile-message');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 更新localStorage中的用户信息
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.user.token);
+                    
+                    showSuccess('个人信息更新成功', 'profile-message');
+                    
+                    // 3秒后跳转到论坛页面
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 1500);
+                } else {
+                    showError(data.error || '更新失败', 'profile-message');
+                }
+            } catch (error) {
+                console.error('更新个人信息失败:', error);
+                showError('网络错误: ' + error.message, 'profile-message');
+            }
+        }
+        
+        // 返回登录页面
+        function backToLogin() {
+            document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+        }
+        
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (token) {
@@ -703,7 +828,28 @@
         
         // 页面加载时检查
         window.onload = function() {
-            checkAuth();
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            if (action === 'profile') {
+                // 显示个人信息修改表单
+                showProfileForm();
+            } else {
+                checkAuth();
+            }
+            
+            // 绑定修改个人信息表单提交事件
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', saveProfile);
+            }
+            
+            // 绑定返回登录按钮事件
+            const backToLoginBtn = document.getElementById('back-to-login');
+            if (backToLoginBtn) {
+                backToLoginBtn.addEventListener('click', backToLogin);
+            }
         };
     </script>
     
@@ -728,5 +874,36 @@
             }
         }
     </script>
+    
+    <!-- 修改个人信息表单 -->
+    <div id="profile-section" class="form-container" style="display: none;">
+        <h2>修改个人信息</h2>
+        <p>更新您的账户信息</p>
+        
+        <div id="profile-message"></div>
+        
+        <form id="profile-form">
+            <div class="form-group">
+                <label for="profile-username">用户名</label>
+                <input type="text" id="profile-username" class="form-input" placeholder="请输入用户名">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-email">邮箱</label>
+                <input type="email" id="profile-email" class="form-input" placeholder="请输入邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-password">新密码</label>
+                <input type="password" id="profile-password" class="form-input" placeholder="留空表示不修改密码">
+            </div>
+            
+            <button type="submit" class="form-button">保存修改</button>
+            
+            <div class="form-footer">
+                <span id="back-to-login">返回登录</span>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
