@@ -1440,7 +1440,7 @@
             // 从后端API加载帖子
             async function loadPosts() {
                 try {
-                    const response = await fetch('/api/forum/posts', {
+                    const response = await fetch('https://ancient-china-architecture.onrender.com/api/forum/posts', {
                         headers: {
                             ...getAuthHeaders()
                         }
@@ -1517,7 +1517,7 @@
             // 保存帖子到后端API
             async function savePost(post) {
                 try {
-                    const response = await fetch('/api/forum/posts', {
+                    const response = await fetch('https://ancient-china-architecture.onrender.com/api/forum/posts', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1554,7 +1554,7 @@
                 const currentUser = user ? user.username : (document.getElementById('author').value.trim() || '访客');
                 
                 try {
-                    const response = await fetch(`/api/forum/posts/${postId}/replies`, {
+                    const response = await fetch(`https://ancient-china-architecture.onrender.com/api/forum/posts/${postId}/replies`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1594,7 +1594,7 @@
                 const currentUser = user ? user.username : (localStorage.getItem('currentUser') || '访客');
                 
                 try {
-                    const response = await fetch(`/api/forum/posts/${postId}/like`, {
+                    const response = await fetch(`https://ancient-china-architecture.onrender.com/api/forum/posts/${postId}/like`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1622,7 +1622,7 @@
             // 分享帖子
             window.sharePost = async function(postId) {
                 try {
-                    const response = await fetch('/api/forum/posts', {
+                    const response = await fetch('https://ancient-china-architecture.onrender.com/api/forum/posts', {
                         headers: {
                             ...getAuthHeaders()
                         }

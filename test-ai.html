@@ -1563,7 +1563,7 @@
         // 调用豆包 API（通过本地后端代理）
         async function callDoubaoAPI(message) {
             // 使用相对路径，前端和后端在同一域名下
-            const API_URL = '/api/ask';
+            const API_URL = 'https://ancient-china-architecture.onrender.com/api/ask';
             
             // 重试机制：最多重试 2 次（减少重试次数，加快失败响应）
             const maxRetries = 2;
