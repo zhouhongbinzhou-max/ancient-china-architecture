@@ -11,64 +11,296 @@
             box-sizing: border-box;
         }
         
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap');
+        
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
             background-color: #f5f5f5;
-            line-height: 1.6;
+            color: #333;
+            background-image: url('assets/forum-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 100px 20px 40px;
         }
         
-        header {
-            background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-content {
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
+            padding: 12px 30px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 3px solid #8B4513;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            min-height: 70px;
         }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
+        .navbar-brand {
+            color: #DAA520;
+            font-size: 1.2rem;
+            font-weight: 900;
             text-decoration: none;
-            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+        .navbar-brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .navbar-brand .brand-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+        .navbar-brand .brand-main {
+            color: #DAA520;
+            font-size: 1.1rem;
+            font-weight: 900;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .navbar-brand .brand-sub {
+            color: #DAA520;
+            font-size: 0.65rem;
+            font-family: Arial, sans-serif;
+            opacity: 0.9;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 2px;
+            list-style: none;
+            align-items: stretch;
+            flex-wrap: nowrap;
+            min-width: 0;
+            flex: 1;
+            justify-content: center;
+            margin: 0 5px;
+            overflow: visible;
+        }
+        .navbar-menu li {
+            flex: 0 1 auto;
+            position: relative;
             display: flex;
             align-items: center;
         }
-        
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 20px;
-        }
-        
-        nav ul li a {
-            color: white;
+        .navbar-menu a {
+            color: #DAA520;
             text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            padding: 4px 6px;
+            border-radius: 4px;
             font-weight: 500;
-            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            white-space: nowrap;
+            min-width: 40px;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .navbar-menu a:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #DAA520;
+            transition: width 0.3s;
+        }
+        .navbar-menu a:hover::after {
+            width: 80%;
         }
         
-        nav ul li a:hover {
-            color: #ffd700;
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            line-height: 1.2;
+            padding: 4px 6px;
+            border-radius: 4px;
+            color: #DAA520;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 40px;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dropdown-toggle:hover {
+            color: #F5DEB3;
+            background: rgba(245,222,179,0.1);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1A252F;
+            border: 1px solid #8B4513;
+            border-radius: 4px;
+            padding: 8px 0;
+            min-width: 200px;
+            max-width: 280px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            margin-top: 2px;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #DAA520;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+            border-radius: 0;
+            white-space: normal;
+            line-height: 1.4;
+            text-align: left;
+            min-width: auto;
+            max-width: none;
+            overflow: visible;
+            text-overflow: clip;
+        }
+        
+        .dropdown-menu a:hover {
+            background: rgba(139,69,19,0.2);
+            color: #F5DEB3;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            max-width: 35%;
+        }
+        
+        .navbar-search {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            padding: 6px 10px;
+            border: 2px solid #8B4513;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 0.8rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            width: 150px;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,1);
+            border-color: #DAA520;
+        }
+        
+        .search-button {
+            padding: 6px 12px;
+            background: #27ae60;
+            border: 2px solid #27ae60;
+            border-radius: 0 4px 4px 0;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            white-space: nowrap;
+        }
+        
+        .search-button:hover {
+            background: #229954;
+            border-color: #229954;
+        }
+        
+        /* 翻译按钮 */
+        .translate-btn {
+            padding: 6px 10px;
+            background: #3498db;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        
+        .translate-btn:hover {
+            background: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .translate-btn img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         
         .auth-container {
@@ -217,23 +449,33 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <a href="index.html" class="logo">
-                <img src="images/logo.png" alt="中国古建筑">
-                中国古建筑
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="cultural-cities.html">建筑欣赏</a></li>
-                    <li><a href="test-ai.html">AI 问答</a></li>
-                    <li><a href="forum.html">论坛交流</a></li>
-                    <li><a href="auth.html">登录/注册</a></li>
-                </ul>
-            </nav>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="assets/logo.png" alt="中国古代建筑文化平台">
+            <div class="brand-text">
+                <span class="brand-main">中国古代建筑</span>
+                <span class="brand-sub">Cross-Border Exchange Platform</span>
+            </div>
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="cultural-cities.html">建筑欣赏</a></li>
+            <li><a href="test-ai.html">AI 问答</a></li>
+            <li><a href="forum.html">论坛交流</a></li>
+            <li><a href="auth.html">登录/注册</a></li>
+        </ul>
+        <div class="navbar-content">
+            <div class="navbar-search">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索中国古代建筑知识..." onkeypress="if(event.key === 'Enter') search()">
+                <button class="search-button" onclick="search()">搜索</button>
+            </div>
+            <button class="translate-btn" onclick="toggleTranslator()" title="智能翻译">
+                <img src="assets/translation-logo.jpg" alt="翻译">
+                翻译
+            </button>
         </div>
-    </header>
+    </nav>
     
     <div class="container">
         <div class="auth-container">
@@ -340,7 +582,7 @@
             console.log('开始登录请求:', { email });
             
             try {
-                const apiUrl = '/api/auth/login';
+                const apiUrl = 'http://localhost:3000/api/auth/login';
                 console.log('API URL:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
@@ -410,7 +652,7 @@
             console.log('开始注册请求:', { username, email });
             
             try {
-                const apiUrl = '/api/auth/register';
+                const apiUrl = 'http://localhost:3000/api/auth/register';
                 console.log('API URL:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
@@ -463,6 +705,28 @@
         window.onload = function() {
             checkAuth();
         };
+    </script>
+    
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+    <script>
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+        
+        // 搜索功能
+        function search() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                window.open(`https://baike.baidu.com/search/word?word=${encodeURIComponent(searchTerm)}`, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
