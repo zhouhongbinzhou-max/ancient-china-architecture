@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账户信息 - 中国古代建筑文化跨境交流平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            background-color: #f5f5f5;
+            color: #333;
+            background-image: url('assets/home-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* 导航栏 */
+        header {
+            background: rgba(51, 51, 51, 0.95);
+            color: #fff;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #d4af37;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #555;
+            border-radius: 4px 0 0 4px;
+            background: #444;
+            color: #fff;
+            outline: none;
+        }
+        
+        .search-button {
+            padding: 8px 15px;
+            background: #8B0000;
+            color: #fff;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .search-button:hover {
+            background: #a80000;
+        }
+        
+        .translate-btn {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: #8B0000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .translate-btn:hover {
+            background: #a80000;
+        }
+        
+        .translate-btn img {
+            height: 16px;
+            margin-right: 5px;
+        }
+        
+        /* 用户菜单 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            display: block;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1001;
+            right: 0;
+        }
+        
+        .dropdown-menu a {
+            color: #fff;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: #555;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        /* 账户信息容器 */
+        .account-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .account-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .account-header h2 {
+            color: #8B0000;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .account-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* 消息提示 */
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #8B0000;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8B0000;
+            box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.1);
+        }
+        
+        .form-button {
+            width: 100%;
+            padding: 15px;
+            background: #8B0000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .form-button:hover {
+            background: #a80000;
+        }
+        
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .form-footer span {
+            color: #8B0000;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .form-footer span:hover {
+            color: #a80000;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            .search-box {
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+            
+            .account-container {
+                margin: 30px 20px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="中国古代建筑">
+                <h1>中国古代建筑</h1>
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="architecture.html">建筑欣赏</a></li>
+                    <li><a href="test-ai.html">AI问答</a></li>
+                    <li><a href="forum.html">论坛交流</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索中国古代建筑知识..." onkeypress="if(event.key === 'Enter') search()">
+                <button class="search-button" onclick="search()">搜索</button>
+            </div>
+            
+            <button class="translate-btn" onclick="toggleTranslator()" title="智能翻译">
+                <img src="assets/translation-logo.jpg" alt="翻译">
+                翻译
+            </button>
+            
+            <div class="dropdown" id="user-menu">
+                <a href="#" class="dropdown-toggle" id="user-menu-toggle">
+                    登录/注册
+                </a>
+                <div class="dropdown-menu" id="user-dropdown">
+                    <a href="auth.html" id="login-link">登录</a>
+                    <a href="auth.html" id="register-link">注册</a>
+                    <a href="account.html" id="profile-link" style="display: none;">修改个人信息</a>
+                    <a href="#" id="logout-link" style="display: none;">登出</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="account-container">
+            <div class="account-header">
+                <h2>账户信息</h2>
+                <p>管理您的个人资料</p>
+            </div>
+            
+            <div id="error-message" class="message error-message"></div>
+            <div id="success-message" class="message success-message"></div>
+            
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="profile-username">用户名</label>
+                    <input type="text" id="profile-username" class="form-input" placeholder="请输入用户名">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-email">邮箱</label>
+                    <input type="email" id="profile-email" class="form-input" placeholder="请输入邮箱">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-password">新密码</label>
+                    <input type="password" id="profile-password" class="form-input" placeholder="留空表示不修改密码">
+                </div>
+                
+                <button type="submit" class="form-button">保存修改</button>
+                
+                <div class="form-footer">
+                    <span id="back-to-forum">返回论坛</span>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 检测当前环境，自动选择API URL
+        function getApiBaseUrl() {
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            return isLocal ? 'http://localhost:3000' : 'https://ancient-china-architecture.onrender.com';
+        }
+        
+        // 显示错误消息
+        function showError(message, elementId = 'error-message') {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+        
+        // 显示成功消息
+        function showSuccess(message, elementId = 'success-message') {
+            const successEl = document.getElementById(elementId);
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+        
+        // 清除消息
+        function clearMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+        
+        // 加载用户个人信息
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    // 没有token，跳转到登录页面
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('profile-username').value = data.user.username;
+                    document.getElementById('profile-email').value = data.user.email;
+                }
+            } catch (error) {
+                console.error('加载个人信息失败:', error);
+                showError('加载个人信息失败');
+            }
+        }
+        
+        // 保存个人信息
+        async function saveProfile(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const username = document.getElementById('profile-username').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const password = document.getElementById('profile-password').value;
+            
+            // 表单验证
+            if (!username || !email) {
+                showError('请填写用户名和邮箱');
+                return;
+            }
+            
+            if (password && password.length < 6) {
+                showError('密码长度至少6位');
+                return;
+            }
+            
+            // 邮箱格式验证
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('请输入有效的邮箱地址');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 更新localStorage中的用户信息
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.user.token);
+                    
+                    showSuccess('个人信息更新成功');
+                    
+                    // 3秒后跳转到论坛页面
+                    setTimeout(() => {
+                        window.location.href = 'forum.html';
+                    }, 1500);
+                } else {
+                    showError(data.error || '更新失败');
+                }
+            } catch (error) {
+                console.error('更新个人信息失败:', error);
+                showError('网络错误: ' + error.message);
+            }
+        }
+        
+        // 返回论坛
+        function backToForum() {
+            window.location.href = 'forum.html';
+        }
+        
+        // 检查用户登录状态
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // 没有token，跳转到登录页面
+                window.location.href = 'auth.html';
+            }
+        }
+        
+        // 检查用户菜单
+        function updateUserMenu() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+            
+            if (user && token) {
+                // 更新用户菜单
+                document.getElementById('user-menu-toggle').textContent = user.username;
+                document.getElementById('login-link').style.display = 'none';
+                document.getElementById('register-link').style.display = 'none';
+                document.getElementById('profile-link').style.display = 'block';
+                document.getElementById('logout-link').style.display = 'block';
+            } else {
+                // 重置用户菜单
+                document.getElementById('user-menu-toggle').textContent = '登录/注册';
+                document.getElementById('login-link').style.display = 'block';
+                document.getElementById('register-link').style.display = 'block';
+                document.getElementById('profile-link').style.display = 'none';
+                document.getElementById('logout-link').style.display = 'none';
+            }
+        }
+        
+        // 登出功能
+        document.getElementById('logout-link').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                updateUserMenu();
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    updateUserMenu();
+                    window.location.href = 'auth.html';
+                }
+            } catch (error) {
+                console.error('登出失败:', error);
+                // 即使失败也清除本地存储
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                updateUserMenu();
+                window.location.href = 'auth.html';
+            }
+        });
+        
+        // 页面加载时检查
+        window.onload = function() {
+            checkAuth();
+            updateUserMenu();
+            loadUserProfile();
+            
+            // 绑定修改个人信息表单提交事件
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', saveProfile);
+            }
+            
+            // 绑定返回论坛按钮事件
+            const backToForumBtn = document.getElementById('back-to-forum');
+            if (backToForumBtn) {
+                backToForumBtn.addEventListener('click', backToForum);
+            }
+        };
+        
+        // 搜索功能
+        function search() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                window.open(`https://baike.baidu.com/search/word?word=${encodeURIComponent(searchTerm)}`, '_blank');
+            }
+        }
+        
+        // 智能翻译小部件
+        function toggleTranslator() {
+            const widget = document.getElementById('translator-widget');
+            if (widget) {
+                const panel = widget.querySelector('.translator-panel');
+                if (panel) {
+                    panel.classList.toggle('active');
+                }
+            }
+        }
+    </script>
+    
+    <!-- 智能翻译小部件 -->
+    <script src="translator-widget.js"></script>
+</body>
+</html>
