@@ -524,6 +524,7 @@
         .post-actions {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
         
         .action-btn {
@@ -532,11 +533,103 @@
             color: #8B4513;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
         }
         
         .action-btn:hover {
             color: #A0522D;
+            background: rgba(139, 69, 19, 0.1);
+        }
+        
+        .action-btn.liked {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .like-count {
+            font-weight: bold;
+            margin-left: 3px;
+        }
+        
+        .reply-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 3px solid #8B4513;
+        }
+        
+        .reply-form {
+            margin-bottom: 15px;
+        }
+        
+        .reply-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+        }
+        
+        .reply-form button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border: none;
+            border-radius: 4px;
+            color: #F5DEB3;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .reply-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(139, 69, 19, 0.4);
+        }
+        
+        .reply-list {
+            margin-top: 15px;
+        }
+        
+        .reply-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .reply-author {
+            font-weight: 600;
+            color: #8B0000;
+            font-size: 0.9rem;
+        }
+        
+        .reply-time {
+            color: #999;
+            font-size: 0.8rem;
+        }
+        
+        .reply-content {
+            color: #666;
+            line-height: 1.5;
+            font-size: 0.95rem;
         }
         
         .sidebar-section {
@@ -1266,12 +1359,238 @@
                 });
             });
             
+            // 从localStorage加载帖子
+            function loadPosts() {
+                const posts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+                const postList = document.querySelector('.post-list');
+                
+                // 清空现有帖子
+                postList.innerHTML = '';
+                
+                // 按时间倒序排列帖子
+                posts.sort((a, b) => new Date(b.time) - new Date(a.time));
+                
+                // 添加帖子到页面
+                posts.forEach((post, index) => {
+                    const postItem = document.createElement('div');
+                    postItem.className = 'post-item';
+                    postItem.dataset.postId = index;
+                    
+                    const likes = post.likes || 0;
+                    const replies = post.replies || [];
+                    const likedBy = post.likedBy || [];
+                    const currentUser = localStorage.getItem('currentUser') || '访客';
+                    const hasLiked = likedBy.includes(currentUser);
+                    
+                    postItem.innerHTML = `
+                        <div class="post-header">
+                            <span class="post-author">${post.author}</span>
+                            <span class="post-time">${post.time}</span>
+                        </div>
+                        <h3 class="post-title">${post.title}</h3>
+                        <p class="post-content">${post.content}</p>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="toggleReply(${index})">
+                                💬 回复 (${replies.length})
+                            </button>
+                            <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike(${index})">
+                                ❤️ 点赞 <span class="like-count">${likes}</span>
+                            </button>
+                            <button class="action-btn" onclick="sharePost(${index})">
+                                📤 分享
+                            </button>
+                        </div>
+                        <div class="reply-section" id="reply-section-${index}" style="display: none;">
+                            <div class="reply-form">
+                                <textarea id="reply-content-${index}" placeholder="请输入您的回复..."></textarea>
+                                <button onclick="submitReply(${index})">提交回复</button>
+                            </div>
+                            <div class="reply-list" id="reply-list-${index}">
+                                ${replies.map(reply => `
+                                    <div class="reply-item">
+                                        <div class="reply-header">
+                                            <span class="reply-author">${reply.author}</span>
+                                            <span class="reply-time">${reply.time}</span>
+                                        </div>
+                                        <div class="reply-content">${reply.content}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    postList.appendChild(postItem);
+                });
+            }
+            
+            // 保存帖子到localStorage
+            function savePost(post) {
+                const posts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+                post.likes = 0;
+                post.replies = [];
+                post.likedBy = [];
+                posts.push(post);
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+            }
+            
+            // 切换回复区域显示
+            window.toggleReply = function(postId) {
+                const replySection = document.getElementById(`reply-section-${postId}`);
+                if (replySection) {
+                    replySection.style.display = replySection.style.display === 'none' ? 'block' : 'none';
+                }
+            };
+            
+            // 提交回复
+            window.submitReply = function(postId) {
+                const replyContent = document.getElementById(`reply-content-${postId}`).value.trim();
+                if (!replyContent) {
+                    alert('请输入回复内容！');
+                    return;
+                }
+                
+                const posts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+                const currentUser = document.getElementById('author').value.trim() || '访客';
+                
+                if (!posts[postId]) return;
+                
+                if (!posts[postId].replies) {
+                    posts[postId].replies = [];
+                }
+                
+                const reply = {
+                    author: currentUser,
+                    content: replyContent,
+                    time: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                };
+                
+                posts[postId].replies.push(reply);
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+                
+                // 重新加载帖子
+                loadPosts();
+                
+                // 保持回复区域展开
+                setTimeout(() => {
+                    const replySection = document.getElementById(`reply-section-${postId}`);
+                    if (replySection) {
+                        replySection.style.display = 'block';
+                    }
+                }, 100);
+            };
+            
+            // 切换点赞
+            window.toggleLike = function(postId) {
+                const posts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+                const currentUser = localStorage.getItem('currentUser') || '访客';
+                
+                if (!posts[postId]) return;
+                
+                if (!posts[postId].likedBy) {
+                    posts[postId].likedBy = [];
+                }
+                if (!posts[postId].likes) {
+                    posts[postId].likes = 0;
+                }
+                
+                const hasLiked = posts[postId].likedBy.includes(currentUser);
+                
+                if (hasLiked) {
+                    // 取消点赞
+                    posts[postId].likedBy = posts[postId].likedBy.filter(user => user !== currentUser);
+                    posts[postId].likes--;
+                } else {
+                    // 添加点赞
+                    posts[postId].likedBy.push(currentUser);
+                    posts[postId].likes++;
+                }
+                
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+                
+                // 重新加载帖子
+                loadPosts();
+            };
+            
+            // 分享帖子
+            window.sharePost = function(postId) {
+                const posts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+                if (!posts[postId]) return;
+                
+                const post = posts[postId];
+                const shareText = `${post.title} - ${post.content.substring(0, 100)}...`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: post.title,
+                        text: shareText,
+                        url: window.location.href
+                    }).then(() => {
+                        alert('分享成功！');
+                    }).catch((error) => {
+                        console.log('分享失败:', error);
+                        // 备用方案：复制到剪贴板
+                        copyToClipboard(shareText);
+                    });
+                } else {
+                    // 备用方案：复制到剪贴板
+                    copyToClipboard(shareText);
+                }
+            };
+            
+            // 复制到剪贴板
+            function copyToClipboard(text) {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('帖子内容已复制到剪贴板！');
+                    }).catch(() => {
+                        alert('复制失败，请手动复制');
+                    });
+                } else {
+                    // 使用传统的复制方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('帖子内容已复制到剪贴板！');
+                }
+            }
+            
             // 表单提交
             document.getElementById('postForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                alert('帖子发布成功！');
+                
+                const author = document.getElementById('author').value.trim();
+                const title = document.getElementById('title').value.trim();
+                const content = document.getElementById('content').value.trim();
+                
+                if (!author || !title || !content) {
+                    alert('请填写所有必填字段！');
+                    return;
+                }
+                
+                // 创建帖子对象
+                const post = {
+                    author: author,
+                    title: title,
+                    content: content,
+                    time: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                };
+                
+                // 保存帖子
+                savePost(post);
+                
+                // 重新加载帖子
+                loadPosts();
+                
+                // 重置表单
                 this.reset();
+                
+                alert('帖子发布成功！');
             });
+            
+            // 初始加载帖子
+            loadPosts();
         });
     
     </script>

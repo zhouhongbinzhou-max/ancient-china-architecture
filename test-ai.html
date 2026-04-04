@@ -1486,14 +1486,14 @@
                     console.log('💾 从缓存获取回复');
                     response = cached.response;
                 } else {
-                    // 显示处理中提示
-                    updateLoadingStatus('正在分析图片，请稍候...');
-                    
+                    // 显示处理中提示，根据是否有图片显示不同的提示
                     if (imagesToSend.length > 0) {
+                        updateLoadingStatus('正在分析图片，请稍候...');
                         // 有图片，调用后端图片分析 API（支持多图）
                         const result = await analyzeImageBackend(imagesToSend, message);
                         response = result.response;
                     } else {
+                        updateLoadingStatus('AI 正在思考...');
                         // 纯文字消息
                         response = await callDoubaoAPI(message);
                     }
@@ -1836,6 +1836,14 @@
                         messageMap.delete(messageId);
                     }
                     
+                    // 检查是否是包含图片的消息
+                    const messageContent = messageDiv.querySelector('.message-content');
+                    if (messageContent && messageContent.querySelector('img')) {
+                        // 如果是包含图片的消息，清除上下文图片
+                        conversationImages = [];
+                        console.log('已清除上下文图片');
+                    }
+                    
                     // 隐藏加载动画（如果正在显示）
                     hideLoading();
                 }
@@ -1848,6 +1856,14 @@
                         const actionsDiv = userMessageDiv.querySelector('.message-actions');
                         if (actionsDiv) {
                             actionsDiv.remove();
+                        }
+                        
+                        // 检查对应的用户消息是否包含图片
+                        const messageContent = userMessageDiv.querySelector('.message-content');
+                        if (messageContent && messageContent.querySelector('img')) {
+                            // 如果是包含图片的消息，清除上下文图片
+                            conversationImages = [];
+                            console.log('已清除上下文图片');
                         }
                     }
                 }
