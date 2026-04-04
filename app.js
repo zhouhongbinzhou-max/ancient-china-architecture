@@ -528,6 +528,186 @@ app.post('/api/translate', async (req, res) => {
     }
 });
 
+// 论坛帖子数据存储（使用内存存储，实际生产环境应使用数据库）
+let forumPosts = [];
+
+// 从文件加载帖子数据（如果存在）
+try {
+    const fs = require('fs');
+    const path = require('path');
+    const dataFile = path.join(__dirname, 'forum-data.json');
+    
+    if (fs.existsSync(dataFile)) {
+        const data = fs.readFileSync(dataFile, 'utf8');
+        forumPosts = JSON.parse(data);
+        console.log(`📚 已加载 ${forumPosts.length} 条论坛帖子`);
+    }
+} catch (error) {
+    console.log('⚠️ 无法加载论坛数据，使用空数组');
+}
+
+// 保存帖子数据到文件
+function saveForumData() {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const dataFile = path.join(__dirname, 'forum-data.json');
+        fs.writeFileSync(dataFile, JSON.stringify(forumPosts, null, 2));
+    } catch (error) {
+        console.error('❌ 保存论坛数据失败:', error);
+    }
+}
+
+// API 路由：获取所有论坛帖子
+app.get('/api/forum/posts', (req, res) => {
+    // 按时间倒序排列
+    const sortedPosts = [...forumPosts].sort((a, b) => 
+        new Date(b.time) - new Date(a.time)
+    );
+    res.json({
+        success: true,
+        posts: sortedPosts
+    });
+});
+
+// API 路由：发布新帖子
+app.post('/api/forum/posts', (req, res) => {
+    try {
+        const { author, title, content } = req.body;
+        
+        if (!author || !title || !content) {
+            return res.status(400).json({
+                success: false,
+                error: '请填写所有必填字段'
+            });
+        }
+        
+        const newPost = {
+            id: Date.now().toString(),
+            author: author.trim(),
+            title: title.trim(),
+            content: content.trim(),
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            likes: 0,
+            likedBy: [],
+            replies: []
+        };
+        
+        forumPosts.push(newPost);
+        saveForumData();
+        
+        console.log('✅ 新帖子发布:', newPost.title);
+        
+        res.json({
+            success: true,
+            post: newPost
+        });
+    } catch (error) {
+        console.error('❌ 发布帖子失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '发布失败'
+        });
+    }
+});
+
+// API 路由：点赞帖子
+app.post('/api/forum/posts/:id/like', (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { userId } = req.body;
+        
+        const post = forumPosts.find(p => p.id === postId);
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                error: '帖子不存在'
+            });
+        }
+        
+        if (!post.likedBy) {
+            post.likedBy = [];
+        }
+        if (!post.likes) {
+            post.likes = 0;
+        }
+        
+        const hasLiked = post.likedBy.includes(userId);
+        
+        if (hasLiked) {
+            // 取消点赞
+            post.likedBy = post.likedBy.filter(id => id !== userId);
+            post.likes--;
+        } else {
+            // 添加点赞
+            post.likedBy.push(userId);
+            post.likes++;
+        }
+        
+        saveForumData();
+        
+        res.json({
+            success: true,
+            likes: post.likes,
+            hasLiked: !hasLiked
+        });
+    } catch (error) {
+        console.error('❌ 点赞失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '点赞失败'
+        });
+    }
+});
+
+// API 路由：添加回复
+app.post('/api/forum/posts/:id/replies', (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { author, content } = req.body;
+        
+        if (!author || !content) {
+            return res.status(400).json({
+                success: false,
+                error: '请填写回复内容'
+            });
+        }
+        
+        const post = forumPosts.find(p => p.id === postId);
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                error: '帖子不存在'
+            });
+        }
+        
+        if (!post.replies) {
+            post.replies = [];
+        }
+        
+        const newReply = {
+            id: Date.now().toString(),
+            author: author.trim(),
+            content: content.trim(),
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16)
+        };
+        
+        post.replies.push(newReply);
+        saveForumData();
+        
+        res.json({
+            success: true,
+            reply: newReply
+        });
+    } catch (error) {
+        console.error('❌ 添加回复失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '添加回复失败'
+        });
+    }
+});
+
 // 调用火山引擎 API
 function callVolcengineAPI(postData, apiKey, endpoint = '/api/v3/chat/completions') {
     return new Promise((resolve, reject) => {
